@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Getting Started with Jekyll and GitHub Pages"
-date: 2025-08-17 14:30:00 +0000
+date: 2025-08-16 14:30:00 +0000
 categories: [tutorial, jekyll]
 tags: [jekyll, github-pages, static-site, tutorial]
 ---

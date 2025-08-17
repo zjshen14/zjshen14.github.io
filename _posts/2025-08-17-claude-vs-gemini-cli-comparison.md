@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Claude Code vs Gemini CLI: Comprehensive Comparison"
-date: 2025-08-17 16:00:00 +0000
+date: 2025-08-16 16:00:00 +0000
 categories: [ai, coding, tools]
 tags: [claude, gemini, cli, ai-tools, comparison, coding-assistants]
 ---
