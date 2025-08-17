@@ -11,7 +11,8 @@ url: "https://zjshen14.github.io" # the base hostname & protocol for your site
 # Build settings
 markdown: kramdown
 highlighter: rouge
-theme: minima
+# theme: minima
+permalink: /:year/:month/:day/:title.html
 
 # Plugins
 plugins:
