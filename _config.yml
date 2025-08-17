@@ -1,12 +1,12 @@
 # Site settings
-title: My Personal Blog
-email: your-email@example.com
+title: Zhijie Shen's Blog
+email: zjshen14@gmail.com
 description: >-
   A personal blog built with Jekyll and hosted on GitHub Pages.
-  Share thoughts, tutorials, and experiences.
+  Share thoughts, tutorials, and experiences in technology and programming.
 
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://yourusername.github.io" # the base hostname & protocol for your site
+url: "https://zjshen14.github.io" # the base hostname & protocol for your site
 
 # Build settings
 markdown: kramdown
@@ -20,8 +20,7 @@ plugins:
   - jekyll-seo-tag
 
 # Social links
-github_username: yourusername
-twitter_username: yourtwitter
+github_username: zjshen14
 
 # Pagination
 paginate: 5

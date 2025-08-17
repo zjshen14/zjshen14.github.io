@@ -19,7 +19,7 @@ Welcome to my personal blog! This is where I share my thoughts, experiences, and
 
 Feel free to reach out to me through:
 
-- GitHub: [@yourusername](https://github.com/yourusername)
-- Email: your-email@example.com
+- GitHub: [@zjshen14](https://github.com/zjshen14)
+- Email: zjshen14@gmail.com
 
 Thanks for visiting!
