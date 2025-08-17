@@ -1,0 +1,39 @@
+# Site settings
+title: My Personal Blog
+email: your-email@example.com
+description: >-
+  A personal blog built with Jekyll and hosted on GitHub Pages.
+  Share thoughts, tutorials, and experiences.
+
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "https://yourusername.github.io" # the base hostname & protocol for your site
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+theme: minima
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Social links
+github_username: yourusername
+twitter_username: yourtwitter
+
+# Pagination
+paginate: 5
+paginate_path: "/page:num/"
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+  - README.md
