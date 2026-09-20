@@ -2,7 +2,7 @@
 
 - **Date**: 2026-09-20
 - **Status**: Draft (Pending Review)
-- **Author**: Antigravity Assistant & zhijie
+- **Author**: Antigravity Assistant & Author
 
 ---
 

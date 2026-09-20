@@ -7,7 +7,7 @@ export const defaultLocale: Locale = 'en';
 
 export const uiStrings = {
   en: {
-    siteTitle: "Zhijie's Tech Blog",
+    siteTitle: "Between Bits",
     siteDescription: "Thoughts, engineering notes, and architectures.",
     navBlog: "Blog",
     navAbout: "About",
@@ -31,7 +31,7 @@ export const uiStrings = {
     footerText: "Built with Astro & hosted on GitHub Pages."
   },
   zh: {
-    siteTitle: "志杰的技术博客",
+    siteTitle: "比特之间",
     siteDescription: "技术思考、工程架构与心得记录。",
     navBlog: "博客",
     navAbout: "关于我",

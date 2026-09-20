@@ -10,7 +10,7 @@ export async function GET(context: APIContext) {
   })).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
   return rss({
-    title: "志杰的技术博客",
+    title: "比特之间",
     description: "技术思考、工程架构与心得记录。",
     site: context.site || 'https://zjshen14.github.io',
     items: posts.map(post => {

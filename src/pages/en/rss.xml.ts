@@ -10,7 +10,7 @@ export async function GET(context: APIContext) {
   })).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
   return rss({
-    title: "Zhijie's Tech Blog",
+    title: "Between Bits",
     description: "Thoughts, engineering notes, and architectures.",
     site: context.site || 'https://zjshen14.github.io',
     items: posts.map(post => {
