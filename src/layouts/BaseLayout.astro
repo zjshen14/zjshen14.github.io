@@ -1,0 +1,94 @@
+---
+import '@/styles/global.css';
+import type { Locale } from '@/utils/i18n';
+import { uiStrings } from '@/utils/i18n';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  locale: Locale;
+  canonicalURL?: string;
+  ogImage?: string;
+  alternateUrl?: string;
+  alternateLang?: string;
+}
+
+const {
+  title,
+  description,
+  locale,
+  canonicalURL = Astro.url.href,
+  ogImage = '/og-default.png',
+  alternateUrl,
+  alternateLang
+} = Astro.props;
+
+const t = uiStrings[locale];
+const pageTitle = title ? `${title} | ${t.siteTitle}` : t.siteTitle;
+const pageDescription = description || t.siteDescription;
+---
+
+<!doctype html>
+<html lang={locale === 'zh' ? 'zh-CN' : 'en'} class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Bilingual Hreflang SEO -->
+    <link rel="alternate" hreflang="en" href={new URL('/en/', Astro.site).href} />
+    <link rel="alternate" hreflang="zh" href={new URL('/zh/', Astro.site).href} />
+    {alternateUrl && alternateLang && (
+      <link rel="alternate" hreflang={alternateLang === 'zh' ? 'zh-CN' : 'en'} href={new URL(alternateUrl, Astro.site).href} />
+    )}
+
+    <!-- Open Graph / Facebook / LinkedIn -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:image" content={new URL(ogImage, Astro.url).href} />
+
+    <!-- Twitter Cards / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalURL} />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content={new URL(ogImage, Astro.url).href} />
+
+    <!-- RSS Autodiscovery -->
+    <link rel="alternate" type="application/rss+xml" title={`${t.siteTitle} RSS (${locale.toUpperCase()})`} href={`/${locale}/rss.xml`} />
+
+    <!-- FOUC Prevention Script -->
+    <script is:inline>
+      const theme = (() => {
+        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+          return localStorage.getItem('theme');
+        }
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          return 'dark';
+        }
+        return 'light';
+      })();
+
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    </script>
+  </head>
+  <body class="flex flex-col min-h-screen">
+    <Header locale={locale} currentPath={Astro.url.pathname} alternateUrl={alternateUrl} />
+    <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 py-8">
+      <slot />
+    </main>
+    <Footer locale={locale} />
+  </body>
+</html>
