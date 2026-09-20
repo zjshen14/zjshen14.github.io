@@ -1,0 +1,30 @@
+---
+import type { Locale } from '@/utils/i18n';
+import { uiStrings } from '@/utils/i18n';
+
+interface Props {
+  translation: {
+    locale: Locale;
+    slug: string;
+    url: string;
+  } | null;
+  currentLocale: Locale;
+}
+
+const { translation, currentLocale } = Astro.props;
+if (!translation) return null;
+
+const t = uiStrings[currentLocale];
+---
+
+<div class="my-6 p-4 rounded-xl border border-indigo-200 dark:border-indigo-900/60 bg-indigo-50/50 dark:bg-indigo-950/30 flex items-center justify-between text-sm">
+  <span class="text-indigo-900 dark:text-indigo-200 font-medium">
+    {currentLocale === 'en' ? "This article is also available in Chinese:" : "本文同时提供英文版本："}
+  </span>
+  <a
+    href={translation.url}
+    class="inline-flex items-center font-semibold text-indigo-600 dark:text-indigo-400 hover:underline ml-2"
+  >
+    {t.readInOtherLang} →
+  </a>
+</div>

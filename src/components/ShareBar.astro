@@ -1,0 +1,97 @@
+---
+import type { Locale } from '@/utils/i18n';
+import { uiStrings } from '@/utils/i18n';
+
+interface Props {
+  title: string;
+  url: string;
+  locale: Locale;
+}
+
+const { title, url, locale } = Astro.props;
+const t = uiStrings[locale];
+
+const xShareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
+const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+---
+
+<div class="mt-12 pt-6 border-t border-zinc-200 dark:border-zinc-800 flex flex-wrap items-center justify-between gap-4">
+  <span class="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+    {locale === 'zh' ? "分享文章" : "Share this post"}
+  </span>
+
+  <div class="flex items-center space-x-3">
+    <!-- Share on X -->
+    <a
+      href={xShareUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 transition-colors"
+      title={t.shareOnX}
+    >
+      <svg class="w-3.5 h-3.5 mr-1.5 fill-current" viewBox="0 0 24 24">
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+      </svg>
+      {t.shareOnX}
+    </a>
+
+    <!-- Share on LinkedIn -->
+    <a
+      href={linkedInShareUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 transition-colors"
+      title={t.shareOnLinkedIn}
+    >
+      <svg class="w-3.5 h-3.5 mr-1.5 fill-current" viewBox="0 0 24 24">
+        <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+      </svg>
+      {t.shareOnLinkedIn}
+    </a>
+
+    <!-- Copy Link Button -->
+    <button
+      id="copy-link-btn"
+      type="button"
+      data-url={url}
+      data-msg={t.linkCopied}
+      class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 transition-colors"
+    >
+      <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+      </svg>
+      <span id="copy-btn-text">{t.copyLink}</span>
+    </button>
+  </div>
+</div>
+
+<!-- Copy Toast Notification -->
+<div id="copy-toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none bg-zinc-900 text-zinc-100 dark:bg-zinc-100 dark:text-zinc-900 px-4 py-2.5 rounded-xl shadow-xl text-sm font-medium">
+  {t.linkCopied}
+</div>
+
+<script is:inline>
+  function setupCopyButton() {
+    const copyBtn = document.getElementById('copy-link-btn');
+    const toast = document.getElementById('copy-toast');
+    if (copyBtn && toast) {
+      copyBtn.onclick = async () => {
+        const url = copyBtn.getAttribute('data-url') || window.location.href;
+        try {
+          await navigator.clipboard.writeText(url);
+          toast.classList.remove('translate-y-20', 'opacity-0');
+          toast.classList.add('translate-y-0', 'opacity-100');
+          setTimeout(() => {
+            toast.classList.add('translate-y-20', 'opacity-0');
+            toast.classList.remove('translate-y-0', 'opacity-100');
+          }, 2500);
+        } catch (e) {
+          console.error("Failed to copy link:", e);
+        }
+      };
+    }
+  }
+
+  setupCopyButton();
+  document.addEventListener('astro:after-swap', setupCopyButton);
+</script>
