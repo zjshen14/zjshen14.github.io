@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import TranslationAlert from '@/components/TranslationAlert.astro';
 import ShareBar from '@/components/ShareBar.astro';
-import { LOCALES, type Locale, uiStrings, getPostSlugParts, getPostTranslation } from '@/utils/i18n';
+import { type Locale, uiStrings, getPostSlugParts, getPostTranslation } from '@/utils/i18n';
 import { getReadingTime } from '@/utils/readingTime';
 
 export async function getStaticPaths() {
