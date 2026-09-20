@@ -1,0 +1,39 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PostCard from '@/components/PostCard.astro';
+import { LOCALES, type Locale, uiStrings, getPostSlugParts } from '@/utils/i18n';
+
+export function getStaticPaths() {
+  return LOCALES.map(locale => ({ params: { locale } }));
+}
+
+const { locale } = Astro.params as { locale: Locale };
+const t = uiStrings[locale];
+
+const posts = (await getCollection('blog', p => {
+  const parts = getPostSlugParts(p);
+  return parts.locale === locale && !p.data.draft;
+})).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout locale={locale} title={t.navBlog}>
+  <div class="py-6">
+    <h1 class="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100 mb-2">
+      {t.allPosts}
+    </h1>
+    <p class="text-zinc-600 dark:text-zinc-400 mb-8">
+      {locale === 'en' ? "All engineering notes and articles." : "所有技术文章与工程笔记。"}
+    </p>
+
+    {posts.length === 0 ? (
+      <p class="text-zinc-500 dark:text-zinc-400">{t.noPostsFound}</p>
+    ) : (
+      <div class="divide-y divide-zinc-200 dark:divide-zinc-800/80">
+        {posts.map(post => (
+          <PostCard post={post} locale={locale} />
+        ))}
+      </div>
+    )}
+  </div>
+</BaseLayout>

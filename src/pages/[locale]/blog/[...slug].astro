@@ -1,0 +1,98 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import TranslationAlert from '@/components/TranslationAlert.astro';
+import ShareBar from '@/components/ShareBar.astro';
+import { LOCALES, type Locale, uiStrings, getPostSlugParts, getPostTranslation } from '@/utils/i18n';
+import { getReadingTime } from '@/utils/readingTime';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog', p => !p.data.draft);
+
+  return allPosts.map(post => {
+    const { locale, articleSlug } = getPostSlugParts(post);
+    return {
+      params: { locale, slug: articleSlug },
+      props: { post, allPosts }
+    };
+  });
+}
+
+const { post, allPosts } = Astro.props;
+const { locale } = Astro.params as { locale: Locale };
+const t = uiStrings[locale];
+
+const { Content } = await post.render();
+const translation = getPostTranslation(post, allPosts);
+const { text: readingTimeText } = getReadingTime(post.body, locale);
+
+const formattedDate = post.data.pubDate.toLocaleDateString(locale === 'zh' ? 'zh-CN' : 'en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+});
+---
+
+<BaseLayout
+  locale={locale}
+  title={post.data.title}
+  description={post.data.description}
+  canonicalURL={post.data.canonicalURL || Astro.url.href}
+  ogImage={post.data.ogImage}
+  alternateUrl={translation?.url}
+  alternateLang={translation?.locale}
+>
+  <article class="py-6">
+    <!-- Back to blog -->
+    <a href={`/${locale}/blog/`} class="inline-flex items-center text-sm font-medium text-zinc-500 hover:text-indigo-600 dark:text-zinc-400 dark:hover:text-indigo-400 mb-6 transition-colors">
+      {t.backToBlog}
+    </a>
+
+    <!-- Title & Meta -->
+    <header class="mb-8">
+      <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100 leading-tight">
+        {post.data.title}
+      </h1>
+      <div class="mt-4 flex flex-wrap items-center gap-3 text-sm text-zinc-500 dark:text-zinc-400">
+        <time datetime={post.data.pubDate.toISOString()}>{formattedDate}</time>
+        <span>•</span>
+        <span>{readingTimeText}</span>
+      </div>
+
+      <!-- Translation Banner -->
+      <TranslationAlert translation={translation} currentLocale={locale} />
+    </header>
+
+    <!-- Markdown Content with Prose Styling & Code Blocks -->
+    <div class="prose prose-zinc dark:prose-invert max-w-none prose-headings:tracking-tight prose-a:text-indigo-600 dark:prose-a:text-indigo-400 prose-pre:rounded-xl prose-pre:border prose-pre:border-zinc-200 dark:prose-pre:border-zinc-800">
+      <Content />
+    </div>
+
+    <!-- Social Share Bar & Copy Link -->
+    <ShareBar title={post.data.title} url={Astro.url.href} locale={locale} />
+  </article>
+
+  <!-- Add copy button to code blocks -->
+  <script is:inline>
+    function addCopyButtons() {
+      const codeBlocks = document.querySelectorAll('pre');
+      codeBlocks.forEach(block => {
+        if (block.querySelector('.copy-code-btn')) return;
+        block.style.position = 'relative';
+        const button = document.createElement('button');
+        button.className = 'copy-code-btn absolute top-2 right-2 px-2 py-1 text-xs font-semibold rounded bg-zinc-700/80 hover:bg-zinc-600 text-zinc-200 opacity-0 group-hover:opacity-100 transition-opacity';
+        button.innerText = 'Copy';
+        button.addEventListener('click', async () => {
+          const code = block.querySelector('code')?.innerText || block.innerText;
+          await navigator.clipboard.writeText(code);
+          button.innerText = 'Copied!';
+          setTimeout(() => { button.innerText = 'Copy'; }, 2000);
+        });
+        block.classList.add('group');
+        block.appendChild(button);
+      });
+    }
+    addCopyButtons();
+    document.addEventListener('astro:after-swap', addCopyButtons);
+  </script>
+</BaseLayout>

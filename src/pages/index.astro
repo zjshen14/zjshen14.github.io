@@ -1,0 +1,25 @@
+---
+// src/pages/index.astro
+// Root redirect detecting browser language
+---
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirecting...</title>
+    <script is:inline>
+      const lang = navigator.language || navigator.userLanguage || '';
+      if (lang.toLowerCase().startsWith('zh')) {
+        window.location.replace('/zh/');
+      } else {
+        window.location.replace('/en/');
+      }
+    </script>
+    <noscript>
+      <meta http-equiv="refresh" content="0;url=/en/" />
+    </noscript>
+  </head>
+  <body>
+    <p>Redirecting to <a href="/en/">English</a> or <a href="/zh/">中文</a>...</p>
+  </body>
+</html>

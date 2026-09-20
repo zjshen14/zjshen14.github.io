@@ -1,0 +1,58 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PostCard from '@/components/PostCard.astro';
+import { LOCALES, type Locale, uiStrings, getPostSlugParts } from '@/utils/i18n';
+
+export function getStaticPaths() {
+  return LOCALES.map(locale => ({ params: { locale } }));
+}
+
+const { locale } = Astro.params as { locale: Locale };
+const t = uiStrings[locale];
+
+const allPosts = await getCollection('blog', p => {
+  const parts = getPostSlugParts(p);
+  return parts.locale === locale && !p.data.draft;
+});
+
+const recentPosts = allPosts
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 5);
+---
+
+<BaseLayout locale={locale}>
+  <!-- Hero Section -->
+  <section class="py-12 border-b border-zinc-200 dark:border-zinc-800/80">
+    <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100">
+      {locale === 'en' ? "Hi, I'm Zhijie 👋" : "你好，我是志杰 👋"}
+    </h1>
+    <p class="mt-4 text-base sm:text-lg text-zinc-600 dark:text-zinc-300 leading-relaxed max-w-2xl">
+      {locale === 'en'
+        ? "Welcome to my personal technical blog. I write about software architecture, modern web ecosystems, AI agents, and practical engineering solutions."
+        : "欢迎来到我的技术博客。在这里我记录关于系统架构、现代前端/后端生态、AI Agent 与工程实践的思考与心得。"}
+    </p>
+  </section>
+
+  <!-- Recent Posts -->
+  <section class="py-8">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+        {t.recentPosts}
+      </h2>
+      <a href={`/${locale}/blog/`} class="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
+        {t.viewAllPosts}
+      </a>
+    </div>
+
+    {recentPosts.length === 0 ? (
+      <p class="text-zinc-500 dark:text-zinc-400">{t.noPostsFound}</p>
+    ) : (
+      <div>
+        {recentPosts.map(post => (
+          <PostCard post={post} locale={locale} />
+        ))}
+      </div>
+    )}
+  </section>
+</BaseLayout>
