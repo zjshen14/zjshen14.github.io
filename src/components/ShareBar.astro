@@ -1,6 +1,7 @@
 ---
 import type { Locale } from '@/utils/i18n';
 import { uiStrings } from '@/utils/i18n';
+import QRCode from 'qrcode';
 
 interface Props {
   title: string;
@@ -11,22 +12,36 @@ interface Props {
 const { title, url, locale } = Astro.props;
 const t = uiStrings[locale];
 
+// Sharing URLs
 const xShareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
 const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+const telegramShareUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`;
+const hnShareUrl = `https://news.ycombinator.com/submitlink?u=${encodeURIComponent(url)}&t=${encodeURIComponent(title)}`;
+
+// Pre-generate QR Code SVG for WeChat (0 runtime overhead)
+const qrCodeSvg = await QRCode.toString(url, {
+  type: 'svg',
+  margin: 1,
+  width: 200,
+  color: {
+    dark: '#09090b',
+    light: '#ffffff'
+  }
+});
 ---
 
-<div class="mt-12 pt-6 border-t border-zinc-200 dark:border-zinc-800 flex flex-wrap items-center justify-between gap-4">
-  <span class="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+<div class="mt-12 pt-6 border-t border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+  <span class="text-sm font-semibold text-zinc-600 dark:text-zinc-400">
     {locale === 'zh' ? "分享文章" : "Share this post"}
   </span>
 
-  <div class="flex items-center space-x-3">
+  <div class="flex flex-wrap items-center gap-2">
     <!-- Share on X -->
     <a
       href={xShareUrl}
       target="_blank"
       rel="noopener noreferrer"
-      class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 transition-colors"
+      class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-medium bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 transition-colors"
       title={t.shareOnX}
     >
       <svg class="w-3.5 h-3.5 mr-1.5 fill-current" viewBox="0 0 24 24">
@@ -40,14 +55,53 @@ const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${
       href={linkedInShareUrl}
       target="_blank"
       rel="noopener noreferrer"
-      class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 transition-colors"
+      class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-medium bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 transition-colors"
       title={t.shareOnLinkedIn}
     >
-      <svg class="w-3.5 h-3.5 mr-1.5 fill-current" viewBox="0 0 24 24">
+      <svg class="w-3.5 h-3.5 mr-1.5 fill-current text-sky-600 dark:text-sky-400" viewBox="0 0 24 24">
         <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
       </svg>
       {t.shareOnLinkedIn}
     </a>
+
+    <!-- Share on Telegram -->
+    <a
+      href={telegramShareUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-medium bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 transition-colors"
+      title={t.shareOnTelegram}
+    >
+      <svg class="w-3.5 h-3.5 mr-1.5 fill-current text-sky-500" viewBox="0 0 24 24">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>
+      </svg>
+      {t.shareOnTelegram}
+    </a>
+
+    <!-- Share on Hacker News -->
+    <a
+      href={hnShareUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-medium bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 transition-colors"
+      title={t.shareOnHN}
+    >
+      <span class="w-3.5 h-3.5 mr-1.5 inline-flex items-center justify-center font-bold text-[10px] bg-orange-500 text-white rounded-sm">Y</span>
+      {t.shareOnHN}
+    </a>
+
+    <!-- WeChat QR Code Button -->
+    <button
+      id="wechat-share-btn"
+      type="button"
+      class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-medium bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 transition-colors"
+      title={t.shareOnWeChat}
+    >
+      <svg class="w-3.5 h-3.5 mr-1.5 fill-current text-emerald-500" viewBox="0 0 24 24">
+        <path d="M8.5 2C4.36 2 1 4.91 1 8.5c0 1.99.98 3.77 2.53 4.96L2.6 16.3a.5.5 0 0 0 .72.54l3.52-1.51c.53.11 1.08.17 1.66.17.21 0 .42-.01.63-.03-.23-.62-.36-1.28-.36-1.97 0-3.59 3.36-6.5 7.5-6.5.6 0 1.18.06 1.74.17C17.06 4.29 13.12 2 8.5 2zM6 6a1.25 1.25 0 1 1 0 2.5A1.25 1.25 0 0 1 6 6zm5 0a1.25 1.25 0 1 1 0 2.5A1.25 1.25 0 0 1 11 6zm5 4.5c-3.59 0-6.5 2.46-6.5 5.5 0 1.68.88 3.19 2.27 4.21l-.75 2.45a.42.42 0 0 0 .61.46l2.99-1.28c.45.1 1 .16 1.38.16 3.59 0 6.5-2.46 6.5-5.5s-2.91-5.5-6.5-5.5zm-2 3.5a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm4 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+      </svg>
+      {t.shareOnWeChat}
+    </button>
 
     <!-- Copy Link Button -->
     <button
@@ -55,13 +109,44 @@ const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${
       type="button"
       data-url={url}
       data-msg={t.linkCopied}
-      class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 transition-colors"
+      class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-medium bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 transition-colors"
+      title={t.copyLink}
     >
       <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
       </svg>
-      <span id="copy-btn-text">{t.copyLink}</span>
+      <span>{t.copyLink}</span>
     </button>
+  </div>
+</div>
+
+<!-- WeChat QR Modal -->
+<div id="wechat-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/60 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-200">
+  <div class="relative bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 max-w-xs w-full shadow-2xl flex flex-col items-center text-center transform scale-95 transition-transform duration-200" id="wechat-modal-box">
+    <!-- Close button -->
+    <button id="wechat-close-btn" type="button" aria-label="Close" class="absolute top-3 right-3 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 p-1 rounded-lg">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <!-- Header -->
+    <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-500 mb-3">
+      <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+        <path d="M8.5 2C4.36 2 1 4.91 1 8.5c0 1.99.98 3.77 2.53 4.96L2.6 16.3a.5.5 0 0 0 .72.54l3.52-1.51c.53.11 1.08.17 1.66.17.21 0 .42-.01.63-.03-.23-.62-.36-1.28-.36-1.97 0-3.59 3.36-6.5 7.5-6.5.6 0 1.18.06 1.74.17C17.06 4.29 13.12 2 8.5 2zM6 6a1.25 1.25 0 1 1 0 2.5A1.25 1.25 0 0 1 6 6zm5 0a1.25 1.25 0 1 1 0 2.5A1.25 1.25 0 0 1 11 6zm5 4.5c-3.59 0-6.5 2.46-6.5 5.5 0 1.68.88 3.19 2.27 4.21l-.75 2.45a.42.42 0 0 0 .61.46l2.99-1.28c.45.1 1 .16 1.38.16 3.59 0 6.5-2.46 6.5-5.5s-2.91-5.5-6.5-5.5zm-2 3.5a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm4 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+      </svg>
+    </div>
+    <h3 class="text-base font-bold text-zinc-900 dark:text-zinc-100">{t.wechatModalTitle}</h3>
+
+    <!-- QR Code SVG Container -->
+    <div class="mt-4 p-3 bg-white rounded-xl shadow-inner border border-zinc-100 inline-block">
+      <div set:html={qrCodeSvg} class="w-44 h-44 flex items-center justify-center [&>svg]:w-full [&>svg]:h-full" />
+    </div>
+
+    <!-- Description -->
+    <p class="mt-3 text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed max-w-[200px]">
+      {t.wechatModalDesc}
+    </p>
   </div>
 </div>
 
@@ -71,7 +156,8 @@ const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${
 </div>
 
 <script is:inline>
-  function setupCopyButton() {
+  function setupSharingInteractions() {
+    // Copy link logic
     const copyBtn = document.getElementById('copy-link-btn');
     const toast = document.getElementById('copy-toast');
     if (copyBtn && toast) {
@@ -90,8 +176,38 @@ const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${
         }
       };
     }
+
+    // WeChat modal logic
+    const wechatBtn = document.getElementById('wechat-share-btn');
+    const wechatModal = document.getElementById('wechat-modal');
+    const wechatCloseBtn = document.getElementById('wechat-close-btn');
+    const wechatBox = document.getElementById('wechat-modal-box');
+
+    function openWechatModal() {
+      if (!wechatModal || !wechatBox) return;
+      wechatModal.classList.remove('opacity-0', 'pointer-events-none');
+      wechatModal.classList.add('opacity-100');
+      wechatBox.classList.remove('scale-95');
+      wechatBox.classList.add('scale-100');
+    }
+
+    function closeWechatModal() {
+      if (!wechatModal || !wechatBox) return;
+      wechatModal.classList.remove('opacity-100');
+      wechatModal.classList.add('opacity-0', 'pointer-events-none');
+      wechatBox.classList.remove('scale-100');
+      wechatBox.classList.add('scale-95');
+    }
+
+    if (wechatBtn) wechatBtn.onclick = openWechatModal;
+    if (wechatCloseBtn) wechatCloseBtn.onclick = closeWechatModal;
+    if (wechatModal) {
+      wechatModal.onclick = (e) => {
+        if (e.target === wechatModal) closeWechatModal();
+      };
+    }
   }
 
-  setupCopyButton();
-  document.addEventListener('astro:after-swap', setupCopyButton);
+  setupSharingInteractions();
+  document.addEventListener('astro:after-swap', setupSharingInteractions);
 </script>
