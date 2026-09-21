@@ -8,7 +8,7 @@ export const defaultLocale: Locale = 'en';
 export const uiStrings = {
   en: {
     siteTitle: "DevLog",
-    siteDescription: "Thoughts, engineering notes, and architectures.",
+    siteDescription: "Notes and reflections on AI, Crypto, and Technology Investment.",
     navBlog: "Blog",
     navAbout: "About",
     navTags: "Tags",
@@ -32,7 +32,7 @@ export const uiStrings = {
   },
   zh: {
     siteTitle: "研发手记",
-    siteDescription: "技术思考、工程架构与心得记录。",
+    siteDescription: "关于人工智能、加密经济与科技投资的思考笔记。",
     navBlog: "博客",
     navAbout: "关于我",
     navTags: "标签",

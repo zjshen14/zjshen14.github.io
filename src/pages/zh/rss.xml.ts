@@ -11,7 +11,7 @@ export async function GET(context: APIContext) {
 
   return rss({
     title: "研发手记",
-    description: "技术思考、工程架构与心得记录。",
+    description: "关于人工智能、加密经济与科技投资的思考笔记。",
     site: context.site || 'https://zjshen14.github.io',
     items: posts.map(post => {
       const { articleSlug } = getPostSlugParts(post);

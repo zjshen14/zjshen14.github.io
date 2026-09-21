@@ -11,7 +11,7 @@ export async function GET(context: APIContext) {
 
   return rss({
     title: "DevLog",
-    description: "Thoughts, engineering notes, and architectures.",
+    description: "Notes and reflections on AI, Crypto, and Technology Investment.",
     site: context.site || 'https://zjshen14.github.io',
     items: posts.map(post => {
       const { articleSlug } = getPostSlugParts(post);

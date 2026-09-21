@@ -1,14 +1,14 @@
 ---
-title: "Welcome to My Technical Blog"
-description: "Why I started this blog, what topics I'll cover, and how it was built with Astro and GitHub Pages."
+title: "Welcome to DevLog"
+description: "Why I started this blog, what topics I'll cover, and reflections on AI, Crypto, and Investment."
 pubDate: 2026-09-20
-tags: ["welcome", "astro", "blogging"]
+tags: ["welcome", "ai", "crypto", "investment"]
 draft: false
 ---
 
-Welcome to my personal technical blog!
+Welcome to DevLog!
 
-I created this space to document my technical journey, share deep-dives into software architecture, modern web development, and share lessons learned from engineering production systems.
+I created this space to document thoughts and research across **Artificial Intelligence**, **Crypto & Web3 protocols**, and **Technology Investment**. My goal is to explore how exponential technologies reshape markets and software systems.
 
 ## Why This Stack?
 
