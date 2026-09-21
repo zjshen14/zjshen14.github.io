@@ -1,40 +1,44 @@
 ---
-title: "Welcome to DevLog"
-description: "Why I started this blog, what topics I'll cover, and reflections on AI, Crypto, and Investment."
+title: "Starting DevLog: Learning, Building, and Sharing in Public"
+description: "Why I started this space: documenting what I learn and build in AI, Crypto, and Investment, and sharing the shareable parts with others."
 pubDate: 2026-09-20
-tags: ["welcome", "ai", "crypto", "investment"]
+tags: ["welcome", "ai", "crypto", "investment", "learning-in-public"]
 draft: false
 ---
 
-Welcome to DevLog!
+Welcome to **DevLog**!
 
-I created this space to document thoughts and research across **Artificial Intelligence**, **Crypto & Web3 protocols**, and **Technology Investment**. My goal is to explore how exponential technologies reshape markets and software systems.
+I created this space with a simple and grounded intention: **to document my own learning and day-to-day work, and to share the parts that can be made public with others.**
 
-## Why This Stack?
+## The Value of Writing It Down
 
-This site is built with **Astro 5** and hosted on **GitHub Pages**:
+The most effective way to truly understand a concept is to write about it.
 
-1. **Zero Runtime Bloat**: Only pure HTML and CSS are shipped for reading, delivering instant page loads and perfect Lighthouse scores.
-2. **Native Bilingual Support**: Every article can seamlessly link to its Chinese counterpart.
-3. **Markdown-First Workflow**: All content lives alongside code in version control.
+In daily engineering, research, and investing, ideas flow fast: an architectural decision in an AI workflow, an economic nuance in a decentralized protocol, or a mental model for sizing market risks. Without dedicated reflection, these lessons tend to evaporate into the noise of daily routines.
 
-## A Quick Code Example
+This blog serves first and foremost as my personal logbook—a disciplined canvas to crystallize thoughts, organize notes, and track how my mental models evolve over time.
 
-Here is how clean code blocks look with syntax highlighting:
+## Learning in Public
 
-```typescript
-interface BlogPost {
-  title: string;
-  locale: 'en' | 'zh';
-  published: boolean;
-}
+Much of our best work and learning happens behind closed doors, but knowledge compounds faster when shared.
 
-const welcome: BlogPost = {
-  title: "Welcome to My Technical Blog",
-  locale: "en",
-  published: true,
-};
-console.log(`Initialized: ${welcome.title}`);
-```
+Whenever possible, I believe in **sharing in public**:
+- Distilling lessons learned from real engineering and research.
+- Breaking down complex papers, systems, or on-chain mechanics into understandable pieces.
+- Sharing investment frameworks and retrospective notes on what worked and what didn't.
 
-Stay tuned for more articles on engineering, architectures, and experiments!
+If a note here saves you an hour of debugging, clarifies a protocol design, or sparks a new perspective, this blog has done its job. It’s not about claiming to have all the answers—it’s about sharing honest, high-signal notes from the frontier.
+
+## What to Expect Here
+
+You will find notes and essays spanning three interconnected domains:
+
+1. **Artificial Intelligence (AI)**: Autonomous agents, frontier model capabilities, prompt engineering vs. system scaffolding, and real-world production challenges.
+2. **Crypto & Web3**: Decentralized protocols, tokenomics, consensus mechanisms, and on-chain market dynamics.
+3. **Investment & Market Thinking**: Macro cycles, capital allocation in exponential technologies, mental models, and seeking asymmetric risk/reward.
+
+## A Quiet, Distraction-Free Space
+
+I chose to build this site with **Astro 5** and host it on **GitHub Pages** so it remains lightweight, fast, and completely free from algorithmic feed algorithms and social noise.
+
+Feel free to browse around, subscribe via [RSS](/en/rss.xml), or connect on [GitHub](https://github.com/zjshen14). Welcome aboard!
