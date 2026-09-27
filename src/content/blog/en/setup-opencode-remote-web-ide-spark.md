@@ -1,8 +1,8 @@
 ---
-title: "Remote Agent Hosting: Setting Up OpenCode Web IDE with HTTP Proxy & Spark 1.3 Free Quota"
-description: "A practical guide from our agent hosting project: how to self-host OpenCode Web IDE with reverse proxy and WebSockets, leverage Spark 1.3 developer free quota, and achieve seamless multi-device coding from laptop to phone."
+title: "Remote Agent Hosting: Setting Up OpenCode Web IDE with HTTP Proxy & Meta MuseSpark 1.3 Free Quota"
+description: "A practical guide from our agent hosting project: how to self-host OpenCode Web IDE with reverse proxy and WebSockets, leverage Meta's MuseSpark 1.3 developer free quota, and achieve seamless multi-device coding from laptop to phone."
 pubDate: 2026-09-26
-tags: ["ai", "agent", "opencode", "spark", "web-ide", "tutorial"]
+tags: ["ai", "agent", "opencode", "musespark", "meta", "web-ide", "tutorial"]
 draft: false
 ---
 
@@ -13,7 +13,7 @@ Running long-horizon agents locally has obvious bottlenecks:
 - While on the go, if you want to inspect agent progress or tweak prompts, you rarely have your full development toolchain installed on your mobile phone or lightweight tablet.
 - API keys, dependencies, and environment configurations quickly drift across multiple devices.
 
-To overcome this, we built a remote cloud setup around **OpenCode Web IDE**, secured with an **HTTP / WebSocket reverse proxy**. Even better, **Spark 1.3 (Developer Edition)** currently offers a generous **Free Quota** for developers, allowing you to run agent prototypes and coding workflows at virtually zero marginal cost.
+To overcome this, we built a remote cloud setup around **OpenCode Web IDE**, secured with an **HTTP / WebSocket reverse proxy**. Even better, Meta's latest frontier agent model—**MuseSpark 1.3 (Muse Spark 1.3)**—offers a generous **Free Quota (Developer / Contributor Tier)**. Tailor-made for multi-step agentic execution with a massive **1-million-token context window**, MuseSpark 1.3 slashes token overhead by ~25% and tool calls by ~20% compared to previous generations, allowing you to run agent prototypes and coding workflows at virtually zero marginal cost.
 
 Here is the architectural overview and step-by-step blueprint so you can set up your own persistent agent playground on any VPS or cloud server.
 
@@ -35,7 +35,7 @@ The system architecture is lean and battle-tested:
      └── OpenCode Web IDE Service
                │
                ▼ Tool invocations & reasoning
-     [ Spark 1.3 LLM API (Developer Free Quota) ]
+     [ Meta MuseSpark 1.3 API (1M Context / Developer Free Quota) ]
 ```
 
 ### Why Do We Need an HTTP / WebSocket Reverse Proxy?
@@ -156,26 +156,29 @@ You can now open `https://ide.yourdomain.com` in your browser to access the Web 
 
 ---
 
-## Step 3: Plugging in Spark 1.3 Developer Free Quota
+## Step 3: Plugging in Meta MuseSpark 1.3 Developer Free Quota
 
 An agent workspace is only as capable as the models driving it.
 
-**Spark 1.3** is currently offering a generous **Developer Free Quota**. For developers running coding experiments, agentic evaluations, or local tool pipelines, this free tier eliminates the friction of racking up unexpected cloud model bills.
+Released in September 2026, **Meta's MuseSpark 1.3** is specifically engineered for long-horizon autonomous tasks and coding workflows:
+- **Agentic Resilience**: Handles multi-step planning within a single persistent thread, autonomously discovering missing context and invoking tools.
+- **Superior Efficiency**: Consumes ~25% fewer tokens and requires ~20% fewer tool invocations on coding benchmarks compared to Muse 1.2.
+- **1-Million Context Window**: Accommodates entire codebases, docs, and sprawling execution traces without truncation.
+- **Developer Free Quota**: Available across Meta Model API, Muse Code, and community model gateways, the free developer tier makes it easy to validate agents before incurring infrastructure costs.
 
-### 1. Obtain Your Spark 1.3 Credentials
-- Register in the developer portal and complete developer verification.
-- Create an application project and navigate to **Spark 1.3 Developer Edition**.
-- Claim the developer free quota tier and copy your `APIKey` and `APISecret` (or unified Bearer Token).
+### 1. Obtain Your MuseSpark 1.3 Credentials
+- Sign up on the developer portal (or your preferred Model API router).
+- Navigate to **MuseSpark 1.3** to claim your developer tier access and copy your `API_KEY`.
 
 ### 2. Configure Environment Variables
 Inside your workspace on the OpenCode server, store your credentials in a `.env` file or export them into your shell:
 
 ```bash
-# Spark 1.3 Model Configuration
-SPARK_API_VERSION=v1.3
-SPARK_API_KEY="your-spark-api-key-here"
-SPARK_API_SECRET="your-spark-api-secret-here"
-SPARK_BASE_URL="https://spark-api-open.xf-yun.com/v1"
+# Meta MuseSpark 1.3 Model Configuration
+LLM_PROVIDER="meta"
+LLM_MODEL="meta/muse-spark-1.3"
+MUSE_SPARK_API_KEY="your-musespark-api-key-here"
+MUSE_SPARK_BASE_URL="https://api.meta.ai/v1"
 ```
 
 Verify your setup by running a simple Python snippet directly in OpenCode's integrated terminal:
@@ -184,7 +187,8 @@ Verify your setup by running a simple Python snippet directly in OpenCode's inte
 import os
 import requests
 
-api_key = os.getenv("SPARK_API_KEY")
+api_key = os.getenv("MUSE_SPARK_API_KEY")
+base_url = os.getenv("MUSE_SPARK_BASE_URL", "https://api.meta.ai/v1")
 
 headers = {
     "Authorization": f"Bearer {api_key}",
@@ -192,14 +196,15 @@ headers = {
 }
 
 payload = {
-    "model": "spark-1.3",
+    "model": "meta/muse-spark-1.3",
     "messages": [
-        {"role": "user", "content": "Hello Spark 1.3! You are running inside OpenCode Web IDE."}
-    ]
+        {"role": "user", "content": "Hello MuseSpark 1.3! You are running inside our hosted OpenCode Web IDE. Please confirm your agentic capabilities."}
+    ],
+    "temperature": 0.2
 }
 
-response = requests.post("https://spark-api-open.xf-yun.com/v1/chat/completions", json=payload, headers=headers)
-print("Spark 1.3 Response:", response.json()["choices"][0]["message"]["content"])
+response = requests.post(f"{base_url}/chat/completions", json=payload, headers=headers)
+print("MuseSpark 1.3 Response:", response.json()["choices"][0]["message"]["content"])
 ```
 
 Seeing the response confirmed in your terminal verifies that your model pipeline is active.
@@ -221,10 +226,10 @@ Once configured, the real superpower is seamless mobility:
 
 ## Summary & Best Practices
 
-Combining **OpenCode + WebSocket Reverse Proxy + Spark 1.3 Free Quota** provides a modern, cost-efficient, 24/7 autonomous agent workbench.
+Combining **OpenCode + WebSocket Reverse Proxy + Meta MuseSpark 1.3 Free Quota** provides a modern, cost-efficient, 24/7 autonomous agent workbench.
 
 A few quick takeaways:
 - **Enforce Strong Authentication**: Because a Web IDE grants full terminal execution rights on your server, always protect it with a strong password or HTTP Basic Auth at the reverse proxy layer.
-- **Capitalize on Free Developer Quotas**: Take advantage of developer tiers like Spark 1.3 to prototype agents and iterate on system prompts before upgrading to paid tiers.
+- **Leverage the 1M Window Wisely**: While MuseSpark 1.3 handles 1M tokens with ease, good prompt hygiene and selective tool caching ensure you stay within your free developer quotas comfortably.
 
 Give it a spin on your server! If you run into any WebSocket connection quirks or proxy issues, feel free to reach out or connect on social platforms.

@@ -1,8 +1,8 @@
 ---
-title: "实战记录：远程部署 OpenCode Web IDE 与代理配置，接入 Spark 1.3 开发者免费额度"
-description: "总结 Agent Hosting 项目实战经验：如何搭建支持远程浏览器访问的 OpenCode Web IDE，配置 HTTP/WebSocket 反向代理，并接入 Spark 1.3 免费开发者额度，实现手机与电脑多端随时随地驱动 Agent 开发。"
+title: "实战记录：远程部署 OpenCode Web IDE 与代理配置，接入 Meta MuseSpark 1.3 开发者免费额度"
+description: "总结 Agent Hosting 项目实战经验：如何搭建支持远程浏览器访问的 OpenCode Web IDE，配置 HTTP/WebSocket 反向代理，并接入 Meta 最新发布的 MuseSpark 1.3 开发者免费额度，实现手机与电脑多端随时随地驱动 Agent 开发。"
 pubDate: 2026-09-26
-tags: ["ai", "agent", "opencode", "spark", "web-ide", "tutorial"]
+tags: ["ai", "agent", "opencode", "musespark", "meta", "web-ide", "tutorial"]
 draft: false
 ---
 
@@ -11,9 +11,9 @@ draft: false
 很多朋友在本地跑 Agent 时都有类似痛点：
 - 笔记本一关盖子，跑了半个小时的长任务直接断掉；
 - 外出时临时想看一眼 Agent 的进展或调个参数，手机或随身轻薄本上根本没有本地开发环境；
-- API Token 散落在各个设备上，环境不一致。
+- API Token 散落在各个设备上，环境配置频繁漂移。
 
-为了解决这个问题，我们为团队搭建了基于 **OpenCode** 的云端 Web IDE 方案，并通过 **HTTP / WebSocket 反向代理** 实现了安全的远程访问。更重要的是，现在 **Spark 1.3 (星火/Spark 开发者版)** 正好面向开发者提供了**免费额度 (Free Quota)**，接入后可以近乎零成本跑通整套 Agent 流程。
+为了解决这个问题，我们为团队搭建了基于 **OpenCode** 的云端 Web IDE 方案，并通过 **HTTP / WebSocket 反向代理** 实现了安全的远程访问。更关键的是，Meta 最新推出的 **MuseSpark 1.3 (Muse Spark 1.3)** 针对开发者社区开放了非常友好的 **Free Quota（开发者免费额度 / Contributor tier）**。MuseSpark 专为 Agentic 长期复杂任务打造，拥有 100 万超长上下文，相比上代减少了约 20% 的工具调用开销与 25% 的 Token 消耗，接入后能以极低成本甚至零成本流畅跑通整套自主编码 Agent 流程。
 
 今天这篇文章就把我们之前的实践经验梳理成教程，方便有类似需求的朋友在自己的 VPS 或服务器上快速搭建一套属于自己的云端 Agent 工作台。
 
@@ -35,7 +35,7 @@ draft: false
      └── OpenCode Web IDE 服务
                │
                ▼ 驱动 Agent 工具调用与执行
-     [ Spark 1.3 LLM API (开发者免费 Quota) ]
+     [ Meta MuseSpark 1.3 API (开发者免费 Quota / 1M Context) ]
 ```
 
 ### 为什么必须配置 HTTP / WebSocket 反向代理？
@@ -152,37 +152,39 @@ sudo nginx -t && sudo systemctl reload nginx
 
 ---
 
-## 第三步：接入 Spark 1.3 开发者免费 Quota
+## 第三步：接入 Meta MuseSpark 1.3 开发者免费 Quota
 
 在 OpenCode 中驱动 Agent，不可或缺的是底层的大语言模型。
 
-当前 **Spark 1.3** 针对开发者社区开放了非常友好的 **Free Quota（开发者免费额度）**。对于个人开发者、做 Agent 概念验证（PoC）或跑日常测试来说，这个额度足够日常高频使用，完全不需要担心一不留神跑出高额账单。
+Meta 在 2026 年 9 月推出的 **MuseSpark 1.3** 相比以往版本带来了质的飞跃：
+- **专为 Agent 优化**：在单一长线程中支持多步骤自主规划，能主动识别上下文漏洞并调用工具弥补；
+- **极高的执行效率**：代码生成任务中，比 1.2 版本减少了约 20% 的 Tool Calls 和 25% 的 Token 开销；
+- **100 万 Token 超大上下文**：跑大型代码库重构或读一整个 Repo 时无需担心 Context 溢出；
+- **开发者免费额度 (Free Quota)**：Meta 在 **Muse Code** 与 **Meta Model API**（以及 OpenRouter 等生态渠道）为开发者提供了 Free / Contributor Tier，非常适合搭建个人 Agent 实验场。
 
-### 1. 获取 Spark 1.3 API Key
-- 前往官方开放平台注册开发者账号并完成实名认证；
-- 进入控制台创建应用，找到 **Spark 1.3 Developer Edition**；
-- 领取专属的免费调用包（Free Quota），并复制你的 `APIKey` 与 `APISecret`（或统一 Bearer Token）。
+### 1. 获取 MuseSpark 1.3 API Key
+- 前往 Meta 开发者平台（或所使用的 Model API 聚合网关）申请 MuseSpark 1.3 凭据；
+- 获取你的 `MUSE_SPARK_API_KEY` 及对应的 Base URL。
 
 ### 2. 在 OpenCode 环境中注入模型配置
-在 OpenCode 所在服务器的工作区目录中，创建或编辑环境变量文件（如 `.env` 或在 Agent 框架的 `config.json` 中）：
+在 OpenCode 所在服务器的工作区目录中，创建环境变量文件（如 `.env` 或配置在 Agent 框架的 settings 中）：
 
 ```bash
-# Spark 1.3 模型配置
-SPARK_API_VERSION=v1.3
-SPARK_API_KEY="your-spark-api-key-here"
-SPARK_API_SECRET="your-spark-api-secret-here"
-SPARK_BASE_URL="https://spark-api-open.xf-yun.com/v1" # 开发者兼容接口
+# Meta MuseSpark 1.3 模型配置
+LLM_PROVIDER="meta"
+LLM_MODEL="meta/muse-spark-1.3"
+MUSE_SPARK_API_KEY="your-musespark-api-key-here"
+MUSE_SPARK_BASE_URL="https://api.meta.ai/v1" # 或兼容网关端点
 ```
 
-如果你的 Agent 工具依赖 OpenAI 兼容格式，可以通过官方提供的兼容端点或轻量转发层，把 Spark 1.3 映射为标准的 Chat Completion API。
-
-在 OpenCode 的终端里写一个简单的测试脚本验证调用：
+在 OpenCode 的终端里写一个简单的 Python 脚本，验证 MuseSpark 1.3 模型的连通性与工具调用响应：
 
 ```python
 import os
 import requests
 
-api_key = os.getenv("SPARK_API_KEY")
+api_key = os.getenv("MUSE_SPARK_API_KEY")
+base_url = os.getenv("MUSE_SPARK_BASE_URL", "https://api.meta.ai/v1")
 
 headers = {
     "Authorization": f"Bearer {api_key}",
@@ -190,14 +192,15 @@ headers = {
 }
 
 payload = {
-    "model": "spark-1.3",
+    "model": "meta/muse-spark-1.3",
     "messages": [
-        {"role": "user", "content": "Hello Spark 1.3! You are running inside OpenCode Web IDE."}
-    ]
+        {"role": "user", "content": "Hello MuseSpark 1.3! You are running inside our hosted OpenCode Web IDE. Please confirm your agentic capabilities."}
+    ],
+    "temperature": 0.2
 }
 
-response = requests.post("https://spark-api-open.xf-yun.com/v1/chat/completions", json=payload, headers=headers)
-print("Spark 1.3 Response:", response.json()["choices"][0]["message"]["content"])
+response = requests.post(f"{base_url}/chat/completions", json=payload, headers=headers)
+print("MuseSpark 1.3 Response:", response.json()["choices"][0]["message"]["content"])
 ```
 
 运行后看到返回，说明模型通道与 Agent 环境已经完全打通！
@@ -219,10 +222,10 @@ print("Spark 1.3 Response:", response.json()["choices"][0]["message"]["content"]
 
 ## 结语与注意事项
 
-通过 **云端 OpenCode + 反向代理 + Spark 1.3 免费额度** 的组合，我们以极低的成本获得了一个全天候属于自己的自主 Agent 实验台。
+通过 **云端 OpenCode + 反向代理 + Meta MuseSpark 1.3 免费额度** 的组合，我们以极低的成本获得了一个全天候属于自己的自主 Agent 实验台。
 
 最后提两个安全层面的小建议：
 - **务必加上访问认证**：Web IDE 拥有完整的服务器终端权限，公网访问务必在 OpenCode 内部设置密码，或者在 Nginx 层加上 `auth_basic`，谨防弱口令被扫；
-- **利用好免费 Quota**：当前 Spark 1.3 开发者版的免费额度非常适合跑原型测试与日常脚本，建议监控调用用量，合理调度。
+- **合理利用 1M 上下文与 Quota**：MuseSpark 1.3 的 1M Context 极度强大，但在免费额度下也建议做好上下文修剪与 Agent 单步超时控制。
 
-如果你也在探索 Agent Hosting 或云端研发环境，不妨动手试一试！如果在部署过程中遇到任何端口或 WebSocket 代理问题，欢迎在社交网络或评论区随时交流探讨。
+如果你也在探索 Agent Hosting 或云端研发环境，不妨动手试一试！如果在部署过程中遇到任何端口或 WebSocket 代理问题，欢迎随时交流探讨。
