@@ -139,7 +139,12 @@ const formattedDate = post.data.pubDate.toLocaleDateString(locale === 'zh' ? 'zh
         startOnLoad: false,
         theme: isDark ? 'dark' : 'neutral',
         fontFamily: 'inherit',
-        securityLevel: 'loose'
+        securityLevel: 'loose',
+        // Mermaid measures labels in a temp node under <body> (line-height 1.5), but the
+        // chart is displayed inside .prose (line-height 1.75), so multi-line labels overflow
+        // their boxes and get clipped. Pin line-height in the SVG's own scoped styles so
+        // measurement and display always agree.
+        themeCSS: '.label foreignObject div, .nodeLabel, .edgeLabel, .cluster-label { line-height: 1.5; }'
       });
 
       // Helper to refine Mermaid's SVG styles and rounded corners
