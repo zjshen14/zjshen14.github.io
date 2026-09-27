@@ -1,0 +1,83 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PostCard from '@/components/PostCard.astro';
+import { LOCALES, type Locale, uiStrings, getPostSlugParts } from '@/utils/i18n';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog', p => !p.data.draft);
+  const paths: any[] = [];
+
+  for (const locale of LOCALES) {
+    const localePosts = allPosts.filter(p => getPostSlugParts(p).locale === locale);
+    const tagMap = new Map<string, CollectionEntry<'blog'>[]>();
+
+    for (const post of localePosts) {
+      for (const tag of post.data.tags || []) {
+        const norm = tag.trim().toLowerCase();
+        if (!norm) continue;
+        if (!tagMap.has(norm)) {
+          tagMap.set(norm, []);
+        }
+        tagMap.get(norm)!.push(post);
+      }
+    }
+
+    for (const [tag, posts] of tagMap.entries()) {
+      paths.push({
+        params: { locale, tag },
+        props: {
+          tag,
+          posts: posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+        }
+      });
+    }
+  }
+
+  return paths;
+}
+
+interface Props {
+  tag: string;
+  posts: CollectionEntry<'blog'>[];
+}
+
+const { locale } = Astro.params as { locale: Locale; tag: string };
+const { tag, posts } = Astro.props;
+const t = uiStrings[locale];
+---
+
+<BaseLayout locale={locale} title={`#${tag} - ${t.navTags} - ${t.siteTitle}`}>
+  <div class="py-6">
+    <div class="mb-6">
+      <a
+        href={`/${locale}/tags/`}
+        class="inline-flex items-center text-sm font-medium text-zinc-500 hover:text-indigo-600 dark:text-zinc-400 dark:hover:text-indigo-400 transition-colors"
+      >
+        {t.backToAllTags}
+      </a>
+    </div>
+
+    <header class="mb-8">
+      <div class="inline-flex items-center px-3 py-1 rounded-lg text-sm font-semibold bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 mb-3">
+        #{tag}
+      </div>
+      <h1 class="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100">
+        {locale === 'zh' ? `包含标签 “#${tag}” 的文章` : `Articles tagged with “#${tag}”`}
+      </h1>
+      <p class="text-zinc-600 dark:text-zinc-400 mt-2">
+        {locale === 'zh' ? `共找到 ${posts.length} 篇相关文章` : `Found ${posts.length} ${posts.length === 1 ? 'post' : 'posts'}`}
+      </p>
+    </header>
+
+    {posts.length === 0 ? (
+      <p class="text-zinc-500 dark:text-zinc-400">{t.noPostsFound}</p>
+    ) : (
+      <div class="divide-y divide-zinc-200 dark:divide-zinc-800/80">
+        {posts.map(post => (
+          <PostCard post={post} locale={locale} />
+        ))}
+      </div>
+    )}
+  </div>
+</BaseLayout>

@@ -15,6 +15,12 @@ const posts = (await getCollection('blog', p => {
   const parts = getPostSlugParts(p);
   return parts.locale === locale && !p.data.draft;
 })).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const allTags = Array.from(
+  new Set(
+    posts.flatMap(p => (p.data.tags || []).map(tag => tag.trim().toLowerCase())).filter(Boolean)
+  )
+).sort();
 ---
 
 <BaseLayout locale={locale} title={t.navBlog}>
@@ -22,9 +28,32 @@ const posts = (await getCollection('blog', p => {
     <h1 class="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100 mb-2">
       {t.allPosts}
     </h1>
-    <p class="text-zinc-600 dark:text-zinc-400 mb-8">
+    <p class="text-zinc-600 dark:text-zinc-400 mb-6">
       {locale === 'en' ? "All engineering notes and articles." : "所有技术文章与工程笔记。"}
     </p>
+
+    <!-- Topic / Tag Filter Bar -->
+    {allTags.length > 0 && (
+      <div class="mb-8 flex flex-wrap items-center gap-2 pb-6 border-b border-zinc-200 dark:border-zinc-800">
+        <span class="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mr-1">
+          {t.tags}:
+        </span>
+        <a
+          href={`/${locale}/blog/`}
+          class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 transition-colors"
+        >
+          {locale === 'zh' ? '全部' : 'All'}
+        </a>
+        {allTags.map(tag => (
+          <a
+            href={`/${locale}/tags/${encodeURIComponent(tag)}/`}
+            class="px-2.5 py-1 rounded-lg text-xs font-medium bg-zinc-100 text-zinc-600 hover:bg-indigo-50 hover:text-indigo-600 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700/80 dark:hover:text-indigo-400 transition-colors"
+          >
+            #{tag}
+          </a>
+        ))}
+      </div>
+    )}
 
     {posts.length === 0 ? (
       <p class="text-zinc-500 dark:text-zinc-400">{t.noPostsFound}</p>

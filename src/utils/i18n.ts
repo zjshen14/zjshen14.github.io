@@ -34,6 +34,11 @@ export const uiStrings = {
     tableOfContents: "Table of Contents",
     backToBlog: "← Back to Blog",
     noPostsFound: "No posts found.",
+    taggedWith: "Tagged with",
+    taggedWithCount: "posts",
+    allTags: "All Tags",
+    browseByTopic: "Browse articles by topic and technology.",
+    backToAllTags: "← All Tags",
     footerText: "Built with Astro & hosted on GitHub Pages."
   },
   zh: {
@@ -64,6 +69,11 @@ export const uiStrings = {
     tableOfContents: "目录",
     backToBlog: "← 返回博客",
     noPostsFound: "暂无文章。",
+    taggedWith: "标签：",
+    taggedWithCount: "篇文章",
+    allTags: "所有标签",
+    browseByTopic: "按技术主题与分类浏览文章。",
+    backToAllTags: "← 所有标签",
     footerText: "基于 Astro 构建，由 GitHub Pages 托管。"
   }
 } as const;

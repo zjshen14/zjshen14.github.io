@@ -59,6 +59,19 @@ const formattedDate = post.data.pubDate.toLocaleDateString(locale === 'zh' ? 'zh
         <span>{readingTimeText}</span>
       </div>
 
+      {post.data.tags && post.data.tags.length > 0 && (
+        <div class="mt-4 flex flex-wrap gap-2">
+          {post.data.tags.map(tag => (
+            <a
+              href={`/${locale}/tags/${encodeURIComponent(tag.toLowerCase())}/`}
+              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-zinc-100 text-zinc-700 hover:bg-indigo-50 hover:text-indigo-600 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700/80 dark:hover:text-indigo-400 transition-colors"
+            >
+              #{tag}
+            </a>
+          ))}
+        </div>
+      )}
+
       <!-- Translation Banner -->
       <TranslationAlert translation={translation} currentLocale={locale} />
     </header>
