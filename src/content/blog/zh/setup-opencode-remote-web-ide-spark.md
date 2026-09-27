@@ -23,19 +23,20 @@ draft: false
 
 整个系统的核心拓扑非常直观：
 
-```text
-[ 笔记本 / 手机 / 平板 ] (Chrome/Safari 浏览器)
-           │
-           │ HTTPS / WSS (安全加密链路)
-           ▼
-[ 云服务器 / VPS ]
-     ├── Nginx / Caddy (HTTP & WebSocket 反向代理 + SSL 证书)
-     │         │
-     │         ▼ 反向代理至本地端口 (如 127.0.0.1:8080)
-     └── OpenCode Web IDE 服务
-               │
-               ▼ 驱动 Agent 工具调用与执行
-     [ Meta MuseSpark 1.3 API (开发者免费 Quota / 1M Context) ]
+```mermaid
+flowchart TD
+    Client["📱 客户端设备<br/>(笔记本 / 手机 / 平板 浏览器)"]
+    
+    subgraph CloudServer ["☁️ 云服务器 / VPS"]
+        Proxy["🛡️ 反向代理网关 (Nginx / Caddy)<br/>• 自动 HTTPS 证书加密<br/>• HTTP & WebSocket 协议升级"]
+        OpenCode["⚡ OpenCode Web IDE 宿主服务<br/>(本地隔离监听 127.0.0.1:8080)"]
+    end
+    
+    LLM["🧠 Meta MuseSpark 1.3<br/>(100万超大上下文 • 开发者免费 Quota)"]
+
+    Client -->|"HTTPS / WSS 安全加密链路"| Proxy
+    Proxy -->|"本地高速转发 (HTTP/WS)"| OpenCode
+    OpenCode -->|"驱动 Agent 工具调用与多步推理"| LLM
 ```
 
 ### 为什么必须配置 HTTP / WebSocket 反向代理？

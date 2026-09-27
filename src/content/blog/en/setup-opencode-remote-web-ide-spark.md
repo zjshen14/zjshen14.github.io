@@ -23,19 +23,20 @@ Here is the architectural overview and step-by-step blueprint so you can set up 
 
 The system architecture is lean and battle-tested:
 
-```text
-[ Laptop / Phone / Tablet ] (Any modern browser)
-           │
-           │ HTTPS / WSS (TLS encrypted)
-           ▼
-[ Cloud VPS / Dedicated Server ]
-     ├── Reverse Proxy (Nginx or Caddy with SSL + WebSocket support)
-     │         │
-     │         ▼ Local forwarding (127.0.0.1:8080)
-     └── OpenCode Web IDE Service
-               │
-               ▼ Tool invocations & reasoning
-     [ Meta MuseSpark 1.3 API (1M Context / Developer Free Quota) ]
+```mermaid
+flowchart TD
+    Client["📱 Client Devices<br/>(Laptop / Phone / Tablet Browser)"]
+    
+    subgraph CloudServer ["☁️ Cloud Server / VPS"]
+        Proxy["🛡️ Reverse Proxy Gateway (Nginx / Caddy)<br/>• Automated TLS / SSL Encryption<br/>• HTTP & WebSocket Protocol Upgrades"]
+        OpenCode["⚡ OpenCode Web IDE Host<br/>(Isolated locally at 127.0.0.1:8080)"]
+    end
+    
+    LLM["🧠 Meta MuseSpark 1.3<br/>(1M Context Window • Developer Free Quota)"]
+
+    Client -->|"HTTPS / WSS Encrypted Link"| Proxy
+    Proxy -->|"Local Forwarding (HTTP/WS)"| OpenCode
+    OpenCode -->|"Agent Tool Calling & Multi-Step Reasoning"| LLM
 ```
 
 ### Why Do We Need an HTTP / WebSocket Reverse Proxy?
