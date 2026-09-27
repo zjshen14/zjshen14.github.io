@@ -142,31 +142,18 @@ const formattedDate = post.data.pubDate.toLocaleDateString(locale === 'zh' ? 'zh
         securityLevel: 'loose'
       });
 
-      // Helper to fix Mermaid's subgraph title padding calculation bug
+      // Helper to refine Mermaid's SVG styles and rounded corners
       function postProcessSvg(svgHtml) {
         const temp = document.createElement('div');
         temp.innerHTML = svgHtml;
         const svg = temp.querySelector('svg');
         if (!svg) return svgHtml;
 
-        let addedHeight = 0;
+        // Apply clean rounded corners to all cluster subgraph boxes
         temp.querySelectorAll('.cluster rect').forEach(clusterRect => {
-          const h = parseFloat(clusterRect.getAttribute('height') || '0');
-          if (h > 0) {
-            clusterRect.setAttribute('height', (h + 30).toString());
-            clusterRect.setAttribute('rx', '12');
-            clusterRect.setAttribute('ry', '12');
-            addedHeight = Math.max(addedHeight, 30);
-          }
+          clusterRect.setAttribute('rx', '10');
+          clusterRect.setAttribute('ry', '10');
         });
-
-        if (addedHeight > 0) {
-          const vb = svg.getAttribute('viewBox')?.split(' ');
-          if (vb && vb.length === 4) {
-            const newVbH = parseFloat(vb[3]) + addedHeight;
-            svg.setAttribute('viewBox', `${vb[0]} ${vb[1]} ${vb[2]} ${newVbH}`);
-          }
-        }
 
         return temp.innerHTML;
       }
