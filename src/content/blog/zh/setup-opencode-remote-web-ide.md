@@ -28,15 +28,14 @@ flowchart TD
     Client["📱 客户端设备<br/>(笔记本 / 手机 / 平板 浏览器)"]
 
     subgraph NetworkAccess ["🌐 网络接入通道 (按需选择)"]
-        direction LR
-        LAN["🏠 场景 A：家庭局域网 / Tailscale<br/>• 零门槛：无需购买任何域名或公网 IP<br/>• 家中同一 WiFi 内直连 (192.168.x.x:8080)<br/>• 外网外出时可用 Tailscale 虚拟私网穿透"]
-        Proxy["☁️ 场景 B：云端 VPS / 公网反向代理<br/>• 适合拥有云服务器与独立域名的用户<br/>• Caddy / Nginx 自动 Let's Encrypt 证书<br/>• 统一标准 443 端口与安全鉴权"]
+        LAN["🏠 方案 A：家庭局域网 & Tailscale<br/>(局域网 WiFi 直连 / 虚拟内网 • 零成本免域名)"]
+        Proxy["☁️ 方案 B：云端 VPS & 反向代理<br/>(Caddy / Nginx • 自动 HTTPS 证书与标准端口)"]
     end
 
     OpenCode["⚡ OpenCode Web IDE 宿主服务<br/>(工作区代码 • 内置终端 • Agent 运行时)"]
     LLM["🧠 Meta MuseSpark 1.3<br/>(100万超大上下文 • 开发者免费 Quota)"]
 
-    Client -->|"局域网 WiFi 直连 / Tailscale"| LAN
+    Client -->|"局域网 WiFi / WireGuard"| LAN
     Client -->|"HTTPS / WSS 公网链路"| Proxy
     LAN --> OpenCode
     Proxy --> OpenCode

@@ -28,15 +28,14 @@ flowchart TD
     Client["📱 Client Devices<br/>(Laptop / Phone / Tablet Browser)"]
 
     subgraph NetworkAccess ["🌐 Network Access Layer (Choose Yours)"]
-        direction LR
-        LAN["🏠 Option A: Home LAN / Tailscale<br/>• Zero Cost: No domain or public IP required<br/>• Direct Wi-Fi connection (192.168.x.x:8080)<br/>• Or Tailscale mesh VPN for secure remote access"]
-        Proxy["☁️ Option B: Cloud VPS / Reverse Proxy<br/>• Ideal for users with cloud VPS & custom domain<br/>• Caddy / Nginx automated Let's Encrypt TLS<br/>• Standard HTTPS port 443 & access authentication"]
+        LAN["🏠 Option A: Home LAN & Tailscale<br/>(Local Wi-Fi / WireGuard Mesh • No Domain Needed)"]
+        Proxy["☁️ Option B: Cloud VPS & Reverse Proxy<br/>(Caddy / Nginx • Automated HTTPS & TLS)"]
     end
 
     OpenCode["⚡ OpenCode Web IDE Host<br/>(Workspace Code • Built-in Terminal • Agent Runtime)"]
     LLM["🧠 Meta MuseSpark 1.3<br/>(1M Context Window • Developer Free Quota)"]
 
-    Client -->|"Local Wi-Fi / Tailscale"| LAN
+    Client -->|"Direct Wi-Fi / Tailscale"| LAN
     Client -->|"HTTPS / WSS Public Link"| Proxy
     LAN --> OpenCode
     Proxy --> OpenCode

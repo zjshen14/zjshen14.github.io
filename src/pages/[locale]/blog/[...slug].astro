@@ -142,6 +142,35 @@ const formattedDate = post.data.pubDate.toLocaleDateString(locale === 'zh' ? 'zh
         securityLevel: 'loose'
       });
 
+      // Helper to fix Mermaid's subgraph title padding calculation bug
+      function postProcessSvg(svgHtml) {
+        const temp = document.createElement('div');
+        temp.innerHTML = svgHtml;
+        const svg = temp.querySelector('svg');
+        if (!svg) return svgHtml;
+
+        let addedHeight = 0;
+        temp.querySelectorAll('.cluster rect').forEach(clusterRect => {
+          const h = parseFloat(clusterRect.getAttribute('height') || '0');
+          if (h > 0) {
+            clusterRect.setAttribute('height', (h + 30).toString());
+            clusterRect.setAttribute('rx', '12');
+            clusterRect.setAttribute('ry', '12');
+            addedHeight = Math.max(addedHeight, 30);
+          }
+        });
+
+        if (addedHeight > 0) {
+          const vb = svg.getAttribute('viewBox')?.split(' ');
+          if (vb && vb.length === 4) {
+            const newVbH = parseFloat(vb[3]) + addedHeight;
+            svg.setAttribute('viewBox', `${vb[0]} ${vb[1]} ${vb[2]} ${newVbH}`);
+          }
+        }
+
+        return temp.innerHTML;
+      }
+
       // 1. Initial conversion of <pre> (Astro/Shiki code blocks) to interactive mermaid svg
       for (const pre of mermaidPres) {
         const codeEl = pre.querySelector('code') || pre;
@@ -149,12 +178,12 @@ const formattedDate = post.data.pubDate.toLocaleDateString(locale === 'zh' ? 'zh
         if (!rawCode) continue;
 
         const container = document.createElement('div');
-        container.className = 'mermaid-chart flex justify-center my-8 p-4 bg-zinc-100/70 dark:bg-zinc-900/70 rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-x-auto shadow-sm';
+        container.className = 'mermaid-chart not-prose flex justify-center my-8 p-4 bg-zinc-100/70 dark:bg-zinc-900/70 rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-x-auto shadow-sm';
         container.setAttribute('data-mermaid-src', rawCode);
         const id = 'mermaid-' + Math.random().toString(36).substring(2, 9);
         try {
           const { svg } = await mermaid.render(id, rawCode);
-          container.innerHTML = svg;
+          container.innerHTML = postProcessSvg(svg);
           pre.replaceWith(container);
         } catch (err) {
           console.error('Mermaid render error:', err);
@@ -168,7 +197,7 @@ const formattedDate = post.data.pubDate.toLocaleDateString(locale === 'zh' ? 'zh
         const id = 'mermaid-' + Math.random().toString(36).substring(2, 9);
         try {
           const { svg } = await mermaid.render(id, rawCode);
-          chart.innerHTML = svg;
+          chart.innerHTML = postProcessSvg(svg);
         } catch (err) {
           console.error('Mermaid re-render error:', err);
         }
