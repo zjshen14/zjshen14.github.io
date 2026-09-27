@@ -13,52 +13,59 @@ Running long-horizon agents locally has obvious bottlenecks:
 - While on the go, if you want to inspect agent progress or tweak prompts, you rarely have your full development toolchain installed on your mobile phone or lightweight tablet.
 - API keys, dependencies, and environment configurations quickly drift across multiple devices.
 
-To overcome this, we built a remote cloud setup around **OpenCode Web IDE**, secured with an **HTTP / WebSocket reverse proxy**. Even better, Meta's latest frontier agent model—**MuseSpark 1.3 (Muse Spark 1.3)**—offers a generous **Free Quota (Developer / Contributor Tier)**. Tailor-made for multi-step agentic execution with a massive **1-million-token context window**, MuseSpark 1.3 slashes token overhead by ~25% and tool calls by ~20% compared to previous generations, allowing you to run agent prototypes and coding workflows at virtually zero marginal cost.
+To solve this, we set up a hosted Web IDE around **OpenCode**, designed to run smoothly whether on a **cloud VPS or a local home workstation / Mac mini / homelab server**. More importantly, Meta's latest frontier agent model—**MuseSpark 1.3 (Muse Spark 1.3)**—offers a generous **Free Quota (Developer / Contributor Tier)**. Tailor-made for long-horizon multi-step agentic execution with a massive **1-million-token context window**, MuseSpark 1.3 cuts token consumption by ~25% and tool calls by ~20% compared to previous generations, making it feasible to run end-to-end coding agents at virtually zero cost.
 
-Here is the architectural overview and step-by-step blueprint so you can set up your own persistent agent playground on any VPS or cloud server.
+In this guide, we share our setup blueprint: **whether you own a custom domain or not, and whether you are connecting over your home Wi-Fi from the couch with your phone/laptop or hosting 24/7 on a cloud VPS**, you can quickly stand up a personal agent workbench.
 
 ---
 
 ## Architecture Overview
 
-The system architecture is lean and battle-tested:
+This architecture supports two practical connection topologies depending on your hardware and network setup:
 
 ```mermaid
 flowchart TD
     Client["📱 Client Devices<br/>(Laptop / Phone / Tablet Browser)"]
-    
-    subgraph CloudServer ["☁️ Cloud Server / VPS"]
-        Proxy["🛡️ Reverse Proxy Gateway (Nginx / Caddy)<br/>• Automated TLS / SSL Encryption<br/>• HTTP & WebSocket Protocol Upgrades"]
-        OpenCode["⚡ OpenCode Web IDE Host<br/>(Isolated locally at 127.0.0.1:8080)"]
+
+    subgraph NetworkAccess ["🌐 Network Access Layer (Choose Yours)"]
+        direction LR
+        LAN["🏠 Option A: Home LAN / Tailscale<br/>• Zero Cost: No domain or public IP required<br/>• Direct Wi-Fi connection (192.168.x.x:8080)<br/>• Or Tailscale mesh VPN for secure remote access"]
+        Proxy["☁️ Option B: Cloud VPS / Reverse Proxy<br/>• Ideal for users with cloud VPS & custom domain<br/>• Caddy / Nginx automated Let's Encrypt TLS<br/>• Standard HTTPS port 443 & access authentication"]
     end
-    
+
+    OpenCode["⚡ OpenCode Web IDE Host<br/>(Workspace Code • Built-in Terminal • Agent Runtime)"]
     LLM["🧠 Meta MuseSpark 1.3<br/>(1M Context Window • Developer Free Quota)"]
 
-    Client -->|"HTTPS / WSS Encrypted Link"| Proxy
-    Proxy -->|"Local Forwarding (HTTP/WS)"| OpenCode
+    Client -->|"Local Wi-Fi / Tailscale"| LAN
+    Client -->|"HTTPS / WSS Public Link"| Proxy
+    LAN --> OpenCode
+    Proxy --> OpenCode
     OpenCode -->|"Agent Tool Calling & Multi-Step Reasoning"| LLM
 ```
 
-### Why Do We Need an HTTP / WebSocket Reverse Proxy?
+### Why Care About HTTP / WebSocket Capabilities?
 Running a modern Web IDE in the browser requires more than simple static HTTP request handling:
-1. **Persistent WebSocket Streams**: The interactive terminal, Language Server Protocol (LSP) diagnostics, and real-time agent output streams rely entirely on WebSocket connections. Without proper proxy upgrade headers, browser terminals fail with instant connection drops.
-2. **TLS / HTTPS Encryption**: Exposing code and session tokens over raw HTTP is a severe security hazard. Furthermore, modern browser features (such as the asynchronous Clipboard API and Service Workers) are strictly blocked on non-secure origins.
-3. **Single Gatekeeper**: Keeping OpenCode bound exclusively to `127.0.0.1` ensures that no raw internal ports are reachable directly from the internet.
+1. **Persistent WebSocket Streams**: The interactive terminal, Language Server Protocol (LSP) diagnostics, and real-time agent output streams rely entirely on WebSocket connections. Without proper protocol upgrades, browser terminals fail with instant connection drops.
+2. **Multi-Device Mobility**: Once reachable, whether you are on your laptop in your home office or on your phone/tablet lounging on the couch, all devices seamlessly connect to the same workspace and ongoing agent session.
 
 ---
 
-## Step 1: Launch OpenCode on the Server
+## Step 1: Launch OpenCode on Your Host
 
-On your Linux server (Ubuntu, Debian, or similar), install and run OpenCode.
+Install and start OpenCode on your target machine (your Linux/macOS/Windows WSL2 desktop, or a cloud VPS).
 
-Ensure OpenCode binds only to **`127.0.0.1`**:
+### 1. Select the Host Binding Address
+- **Home LAN / Multi-device Access**: Bind to `0.0.0.0` so other devices on your home network can reach it:
+  ```bash
+  opencode serve --host 0.0.0.0 --port 8080 --workspace /path/to/your/workspace
+  ```
+- **Cloud VPS Behind a Local Reverse Proxy**: Bind exclusively to `127.0.0.1` so that traffic must route through your frontend proxy:
+  ```bash
+  opencode serve --host 127.0.0.1 --port 8080 --workspace /home/ubuntu/workspace
+  ```
 
-```bash
-# Start OpenCode bound to localhost on port 8080
-opencode serve --host 127.0.0.1 --port 8080 --workspace /home/ubuntu/workspace
-```
-
-To ensure it runs continuously in the background and recovers gracefully from server reboots, create a **systemd** service:
+### 2. Configure a Background Daemon (Linux systemd Example)
+To ensure the IDE survives terminal disconnects or system reboots, create a simple **systemd** service:
 
 ```ini
 # /etc/systemd/system/opencode.service
@@ -70,7 +77,7 @@ After=network.target
 Type=simple
 User=ubuntu
 WorkingDirectory=/home/ubuntu/workspace
-ExecStart=/usr/local/bin/opencode serve --host 127.0.0.1 --port 8080
+ExecStart=/usr/local/bin/opencode serve --host 0.0.0.0 --port 8080
 Restart=always
 RestartSec=5
 Environment=NODE_ENV=production
@@ -88,43 +95,64 @@ sudo systemctl status opencode
 
 ---
 
-## Step 2: Configure the Reverse Proxy (HTTP & WebSocket)
+## Step 2: Network Access Setup (Choose What Fits You)
 
-We need a reverse proxy to terminate SSL certificates and route traffic to OpenCode. Two great choices are **Caddy** (zero-config automated TLS) and **Nginx** (industry standard with granular controls).
+**Not everyone owns a custom public domain, and you do not need one to get started.** A home local area network (LAN) is often the most practical and enjoyable setup. Pick one of the two approaches below:
 
-### Option A: Using Caddy (Recommended for Simplicity)
-Caddy automatically provisions and renews Let's Encrypt certificates without external cron jobs:
+### Approach A: Home LAN Direct Access (Zero Cost, No Domain Required)
 
+If you have a powerful desktop or Mac mini in your home office and want to connect from your laptop, iPad, or phone on the couch or in bed:
+
+1. **Find Your Host's Local IP**:
+   - On Linux / macOS, run `ifconfig` or `ip route` (e.g., `192.168.1.100`);
+   - Or use its local mDNS hostname (e.g., `macmini.local` or `homelab.local`).
+2. **Open in Any Device Browser**:
+   - Connect your phone or laptop to the same home Wi-Fi;
+   - Navigate to:
+     ```text
+     http://192.168.1.100:8080
+     # or
+     http://homelab.local:8080
+     ```
+   - Done! Zero domain costs, sub-millisecond latency, and completely isolated inside your private router firewall.
+
+> [!TIP]
+> **Want Remote Access Away from Home Without Buying a Domain? Use Tailscale!**  
+> If you want to connect to your home OpenCode instance while traveling without buying a domain or setting up router port forwarding, **Tailscale** is the gold standard (free for personal use):  
+> Run `tailscale up` on your home computer, and install the Tailscale app on your phone and laptop. Tailscale creates an end-to-end encrypted WireGuard mesh and gives your machine a static private IP (e.g., `100.x.y.z`). From any cellular network or coffee shop Wi-Fi, open `http://100.x.y.z:8080` to securely access your home IDE.
+
+---
+
+### Approach B: Cloud VPS + Reverse Proxy (For Users with a Domain)
+
+If you rent a cloud VPS and already own a domain (e.g., `ide.example.com`), configuring a reverse proxy provides automatic SSL certificates and standard HTTPS port 443 access:
+
+#### Option 1: Using Caddy (Recommended for Zero-Config Automated HTTPS)
 ```text
 # /etc/caddy/Caddyfile
-ide.yourdomain.com {
+ide.example.com {
     reverse_proxy 127.0.0.1:8080
 }
 ```
 
-Reload Caddy:
-```bash
-sudo systemctl reload caddy
-```
+Reload Caddy with `sudo systemctl reload caddy`, and Let's Encrypt certificates are provisioned automatically.
 
-### Option B: Using Nginx (Standard Production Setup)
-If your server already runs Nginx, configure the virtual host as follows:
-
+#### Option 2: Using Nginx (Standard Production Setup)
 ```nginx
 # /etc/nginx/sites-available/opencode.conf
 server {
     listen 80;
-    server_name ide.yourdomain.com;
+    server_name ide.example.com;
     return 301 https://$host$request_uri;
 }
 
 server {
     listen 443 ssl http2;
-    server_name ide.yourdomain.com;
+    server_name ide.example.com;
 
     # SSL Certificate Paths
-    ssl_certificate /etc/letsencrypt/live/ide.yourdomain.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/ide.yourdomain.com/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/ide.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/ide.example.com/privkey.pem;
 
     # Accommodate large asset uploads and long-running agent tasks
     client_max_body_size 100M;
@@ -152,8 +180,7 @@ Validate and reload Nginx:
 ```bash
 sudo nginx -t && sudo systemctl reload nginx
 ```
-
-You can now open `https://ide.yourdomain.com` in your browser to access the Web IDE securely.
+You can now open `https://ide.example.com` in your browser.
 
 ---
 
@@ -214,23 +241,23 @@ Seeing the response confirmed in your terminal verifies that your model pipeline
 
 ## Step 4: Multi-Device Workflow: Phone + Laptop Synergy
 
-Once configured, the real superpower is seamless mobility:
+Once configured, the real superpower is seamless mobility across screens:
 
-1. **Primary Workspace (Laptop)**:
-   Open `https://ide.yourdomain.com` in Chrome or Safari. You get full code editing, syntax highlighting, git staging, and diff inspection just like a native desktop IDE.
-2. **Headless Agent Runs (Server-Side)**:
-   Launch background agents, test suites, or documentation scrapers inside the server terminal. Shut your laptop lid and go to sleep—the agent continues executing uninterrupted.
-3. **Mobile Inspections (Phone / Tablet)**:
-   While commuting, open the same URL on your smartphone. You can review git logs, read generated code, or send quick follow-up prompts without needing a laptop bag.
+1. **Primary Workspace (Laptop Desk Setup)**:
+   Open the IDE in Chrome or Safari (either via LAN `http://192.168.1.100:8080` or your cloud URL). You get full code editing, LSP diagnostics, git staging, and diff inspection just like a native desktop IDE. Because all heavy compilation and LLM reasoning run on the host machine, your laptop runs silently, produces zero fan noise, and maintains all-day battery life.
+2. **Headless Agent Runs (Host-Side Execution)**:
+   Launch background agents, extensive test suites, or documentation scrapers inside the integrated terminal. Shut your laptop lid and step away—the host continues executing uninterrupted.
+3. **Couch & Bedside Check-Ins (Phone / Tablet)**:
+   Lounging on the couch or in bed with only your phone or iPad? As long as you are connected to the same home Wi-Fi (or via Tailscale), you can open the Web IDE in Safari in seconds. You can inspect test artifacts, monitor agent output, or type a quick follow-up prompt: *"Fix the failing unit tests from the last run and re-execute."*
 
 ---
 
 ## Summary & Best Practices
 
-Combining **OpenCode + WebSocket Reverse Proxy + Meta MuseSpark 1.3 Free Quota** provides a modern, cost-efficient, 24/7 autonomous agent workbench.
+Combining **Your Host Machine (Home Desktop / Homelab / Cloud VPS) + Flexible Network Layer (Home LAN / Tailscale / Reverse Proxy) + Meta MuseSpark 1.3 Free Quota** provides an accessible, zero-friction autonomous agent workbench.
 
 A few quick takeaways:
-- **Enforce Strong Authentication**: Because a Web IDE grants full terminal execution rights on your server, always protect it with a strong password or HTTP Basic Auth at the reverse proxy layer.
-- **Leverage the 1M Window Wisely**: While MuseSpark 1.3 handles 1M tokens with ease, good prompt hygiene and selective tool caching ensure you stay within your free developer quotas comfortably.
+- **Authentication & Network Boundaries**: If you are strictly running within a trusted home LAN, you are protected by your router firewall. However, if exposed to the public internet or running on a cloud VPS, **always configure authentication** (either within OpenCode or via Nginx `auth_basic`) to protect terminal access.
+- **Leverage the 1M Window Wisely**: While MuseSpark 1.3 handles 1M tokens with ease, prompt hygiene and selective tool caching ensure you stay within developer free tiers comfortably.
 
-Give it a spin on your server! If you run into any WebSocket connection quirks or proxy issues, feel free to reach out or connect on social platforms.
+You do not need to buy a domain or pay for expensive cloud servers to begin experimenting. Fire up an old desktop or home Mac, launch OpenCode on your local network, and experience the freedom of multi-device agent development today! Feel free to reach out with any thoughts or questions.

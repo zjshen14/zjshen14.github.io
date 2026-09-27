@@ -13,52 +13,60 @@ draft: false
 - 外出时临时想看一眼 Agent 的进展或调个参数，手机或随身轻薄本上根本没有本地开发环境；
 - API Token 散落在各个设备上，环境配置频繁漂移。
 
-为了解决这个问题，我们为团队搭建了基于 **OpenCode** 的云端 Web IDE 方案，并通过 **HTTP / WebSocket 反向代理** 实现了安全的远程访问。更关键的是，Meta 最新推出的 **MuseSpark 1.3 (Muse Spark 1.3)** 针对开发者社区开放了非常友好的 **Free Quota（开发者免费额度 / Contributor tier）**。MuseSpark 专为 Agentic 长期复杂任务打造，拥有 100 万超长上下文，相比上代减少了约 20% 的工具调用开销与 25% 的 Token 消耗，接入后能以极低成本甚至零成本流畅跑通整套自主编码 Agent 流程。
+为了解决这个问题，我们搭建了基于 **OpenCode** 的 Web IDE 方案，让它不仅能在云端服务器上运行，也可以直接部署在**家里的台式机、Mac mini 或 Homelab 主机**上。更关键的是，Meta 最新推出的 **MuseSpark 1.3 (Muse Spark 1.3)** 针对开发者社区开放了非常友好的 **Free Quota（开发者免费额度 / Contributor tier）**。MuseSpark 专为 Agentic 长期复杂任务打造，拥有 100 万超长上下文，相比上代减少了约 20% 的工具调用开销与 25% 的 Token 消耗，接入后能以极低成本甚至零成本流畅跑通整套自主编码 Agent 流程。
 
-今天这篇文章就把我们之前的实践经验梳理成教程，方便有类似需求的朋友在自己的 VPS 或服务器上快速搭建一套属于自己的云端 Agent 工作台。
+今天这篇文章就把我们的实践经验梳理成教程：**无论你手头是否有公网域名，无论是在家里局域网躺在沙发上用手机/笔记本协同，还是在云端 VPS 上全天候托管**，都能快速落地一套属于自己的 Agent 工作台。
 
 ---
 
 ## 整体架构设计
 
-整个系统的核心拓扑非常直观：
+这套方案支持两种典型的接入形态，你可以根据自己的设备条件灵活选择：
 
 ```mermaid
 flowchart TD
     Client["📱 客户端设备<br/>(笔记本 / 手机 / 平板 浏览器)"]
-    
-    subgraph CloudServer ["☁️ 云服务器 / VPS"]
-        Proxy["🛡️ 反向代理网关 (Nginx / Caddy)<br/>• 自动 HTTPS 证书加密<br/>• HTTP & WebSocket 协议升级"]
-        OpenCode["⚡ OpenCode Web IDE 宿主服务<br/>(本地隔离监听 127.0.0.1:8080)"]
+
+    subgraph NetworkAccess ["🌐 网络接入通道 (按需选择)"]
+        direction LR
+        LAN["🏠 场景 A：家庭局域网 / Tailscale<br/>• 零门槛：无需购买任何域名或公网 IP<br/>• 家中同一 WiFi 内直连 (192.168.x.x:8080)<br/>• 外网外出时可用 Tailscale 虚拟私网穿透"]
+        Proxy["☁️ 场景 B：云端 VPS / 公网反向代理<br/>• 适合拥有云服务器与独立域名的用户<br/>• Caddy / Nginx 自动 Let's Encrypt 证书<br/>• 统一标准 443 端口与安全鉴权"]
     end
-    
+
+    OpenCode["⚡ OpenCode Web IDE 宿主服务<br/>(工作区代码 • 内置终端 • Agent 运行时)"]
     LLM["🧠 Meta MuseSpark 1.3<br/>(100万超大上下文 • 开发者免费 Quota)"]
 
-    Client -->|"HTTPS / WSS 安全加密链路"| Proxy
-    Proxy -->|"本地高速转发 (HTTP/WS)"| OpenCode
+    Client -->|"局域网 WiFi 直连 / Tailscale"| LAN
+    Client -->|"HTTPS / WSS 公网链路"| Proxy
+    LAN --> OpenCode
+    Proxy --> OpenCode
     OpenCode -->|"驱动 Agent 工具调用与多步推理"| LLM
 ```
 
-### 为什么必须配置 HTTP / WebSocket 反向代理？
-OpenCode 这类 Web IDE 在浏览器中运行时，绝不仅仅是加载几个静态页面：
-1. **持久 WebSocket 通信**：网页内置终端（Terminal）、代码语言服务（LSP）和 Agent 的实时流式输出，全部重度依赖 WebSocket 连接。如果只是简单的 HTTP 转发，终端会直接报 `Connection failed`。
-2. **HTTPS / WSS 加密**：公网环境下明文传输代码和 Cookie 极度危险，同时现代浏览器的很多特性（如剪贴板 API、Service Worker）也强制要求 HTTPS。
-3. **统一入口与安全认证**：避免在防火墙上暴露乱七八糟的内部端口，可以通过代理层附加 HTTP Basic Auth 或 IP 白名单。
+### 为什么关注 HTTP / WebSocket 支持？
+OpenCode 这类 Web IDE 在浏览器中运行时，绝不仅仅是加载几个静态 HTML/JS 页面：
+1. **持久 WebSocket 通信**：网页内置终端（Terminal）、代码语言服务（LSP）和 Agent 的实时流式输出，全部重度依赖 WebSocket 连接。如果网络链路未正确升级协议，终端会直接报 `Connection failed`。
+2. **移动端协同**：只要网络打通，不管是坐在书房的笔记本，还是躺在客厅沙发上的 iPhone/iPad，都能随时接入同一个工作区和同一个执行中的 Agent 任务。
 
 ---
 
-## 第一步：在服务器上启动 OpenCode
+## 第一步：启动 OpenCode 服务
 
-首先在你的 Linux 服务器（Ubuntu / Debian / CentOS 均可）上安装并配置 OpenCode。
+首先在你的宿主机（家里的 Linux/Mac/Windows WSL2，或者云端 VPS）上安装并启动 OpenCode。
 
-以常规 Node/Python 或二进制安装为例，建议让 OpenCode 仅监听在 **`127.0.0.1`**（避免未授权直接暴露给公网）：
+### 1. 监听地址的选择
+启动时根据你的访问方式选择监听绑定地址：
+- **家庭局域网多设备访问**：绑定到 `0.0.0.0`，这样局域网内的手机、平板和笔记本才能连上：
+  ```bash
+  opencode serve --host 0.0.0.0 --port 8080 --workspace /path/to/your/workspace
+  ```
+- **云服务器（前置反向代理）**：如果前面有 Nginx/Caddy 网关挡着，建议仅监听本地 `127.0.0.1` 保证安全：
+  ```bash
+  opencode serve --host 127.0.0.1 --port 8080 --workspace /home/ubuntu/workspace
+  ```
 
-```bash
-# 启动 OpenCode 并绑定到本地 8080 端口，设置工作区目录
-opencode serve --host 127.0.0.1 --port 8080 --workspace /home/ubuntu/workspace
-```
-
-为了保证服务器重启或终端断开后服务依然存活，推荐编写一个简单的 **systemd** 服务文件：
+### 2. 守护进程配置（以 Linux systemd 为例）
+为了保证终端关闭或主机重启后服务依然常驻，可以配置一个简单的 **systemd** 服务：
 
 ```ini
 # /etc/systemd/system/opencode.service
@@ -70,7 +78,7 @@ After=network.target
 Type=simple
 User=ubuntu
 WorkingDirectory=/home/ubuntu/workspace
-ExecStart=/usr/local/bin/opencode serve --host 127.0.0.1 --port 8080
+ExecStart=/usr/local/bin/opencode serve --host 0.0.0.0 --port 8080
 Restart=always
 RestartSec=5
 Environment=NODE_ENV=production
@@ -88,41 +96,65 @@ sudo systemctl status opencode
 
 ---
 
-## 第二步：配置 HTTP / WebSocket 反向代理
+## 第二步：网络连接与访问配置（按需选择）
 
-接下来我们需要配置一个反向代理，把公网的 HTTPS 请求安全转发给后端的 OpenCode 服务。这里推荐两种常见方式：**Caddy**（极简免维护）和 **Nginx**（传统高定制）。
+**并不是每个人都需要去专门买一个公网域名**。现实中最常见的其实是家庭局域网或者虚拟局域网。以下两种路径任选其一：
 
-### 方案 A：使用 Caddy（最简单，自带自动 HTTPS）
-如果你不想手动申请和续签 Let's Encrypt 证书，Caddy 是最佳选择：
+### 方案 A：家庭局域网直连（无需域名，最常用、零成本）
 
+如果你只是想在家里工作，利用书房的主机当性能服务器，人在客厅或卧室用轻薄本、手机随手连：
+
+1. **查看主机的局域网 IP**：
+   - Linux / macOS：终端执行 `ifconfig` 或 `ip route`（通常为 `192.168.1.xxx` 或 `192.168.31.xxx`）；
+   - 或者使用 mDNS 主机名（比如你的 Mac 叫 `mini.local` 或主机叫 `homelab.local`）。
+2. **手机/笔记本直接打开**：
+   - 确保设备连在同一个家里的 WiFi 下；
+   - 在手机 Safari、平板或笔记本 Chrome 里直接输入：
+     ```text
+     http://192.168.1.100:8080
+     # 或
+     http://homelab.local:8080
+     ```
+   - 搞定！没有任何域名或证书开销，内网毫秒级延迟，纯本地网络极其安全。
+
+> [!TIP]
+> **没域名又想在外网连回家里？神器 Tailscale**  
+> 如果你想外出时也能访问家里的 OpenCode，但家里没有公网 IP 也没有购买域名，最优雅的解法是使用 **Tailscale**（全免费）：  
+> 在家里主机上运行 `tailscale up`，手机和笔记本也装上 Tailscale App。Tailscale 会利用 WireGuard 建立端到端加密的虚拟私网，并给主机分配一个内网 IP（例如 `100.x.y.z`）。在外面连上手机流量，直接访问 `http://100.x.y.z:8080`，随时随地安全直达家里的 IDE！
+
+---
+
+### 方案 B：云端 VPS + 反向代理（拥有云服务器与独立域名）
+
+如果你在阿里云、腾讯云、AWS 等租了公网 VPS，并拥有自己的独立域名（例如 `ide.example.com`），那么配置前置反向代理能够带来自动化 HTTPS 证书与更标准的安全管理：
+
+#### 选项 1：使用 Caddy（极简，自带自动申请与续签 HTTPS）
 ```text
 # /etc/caddy/Caddyfile
-ide.yourdomain.com {
+ide.example.com {
     reverse_proxy 127.0.0.1:8080
 }
 ```
-保存后执行 `sudo systemctl reload caddy`，Caddy 会自动帮你搞定 SSL 证书并完整透传 WebSocket。
+保存后执行 `sudo systemctl reload caddy`，Caddy 会自动通过 Let's Encrypt 签发 SSL 证书并完整透传 WebSocket。
 
-### 方案 B：使用 Nginx（经典方案，支持高级鉴权）
-如果你的服务器已经有现成的 Nginx，可以添加如下 Server 块：
-
+#### 选项 2：使用 Nginx（传统经典方案，支持复杂定制）
 ```nginx
 # /etc/nginx/sites-available/opencode.conf
 server {
     listen 80;
-    server_name ide.yourdomain.com;
+    server_name ide.example.com;
     return 301 https://$host$request_uri;
 }
 
 server {
     listen 443 ssl http2;
-    server_name ide.yourdomain.com;
+    server_name ide.example.com;
 
     # SSL 证书路径（可使用 certbot 生成）
-    ssl_certificate /etc/letsencrypt/live/ide.yourdomain.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/ide.yourdomain.com/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/ide.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/ide.example.com/privkey.pem;
 
-    # 关键：开启大文件上传与超时时间调整，避免长耗时 Agent 任务中断
+    # 关键：调整超时时间与请求体上限，避免耗时 Agent 任务中断
     client_max_body_size 100M;
     proxy_read_timeout 86400s;
     proxy_send_timeout 86400s;
@@ -130,7 +162,7 @@ server {
     location / {
         proxy_pass http://127.0.0.1:8080;
 
-        # 核心：必须配置以下三行以支持 WebSocket 终端连接
+        # 核心：必须配置以下三行以支持 WebSocket 终端与实时流式传输
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
@@ -148,8 +180,7 @@ server {
 ```bash
 sudo nginx -t && sudo systemctl reload nginx
 ```
-
-此时，你就可以在浏览器中直接通过 `https://ide.yourdomain.com` 访问到完整流畅的 Web IDE 界面了。
+此时通过配置好的域名 `https://ide.example.com` 即可直接访问。
 
 ---
 
@@ -212,21 +243,21 @@ print("MuseSpark 1.3 Response:", response.json()["choices"][0]["message"]["conte
 
 搭建完毕后，最爽的当属工作流的跨设备自由度：
 
-1. **主力开发场景（Laptop）**：
-   在笔记本浏览器里打开 `https://ide.yourdomain.com`，敲代码、调试语法高亮、看 Diff，体验与本地桌面版 VS Code / IDE 几乎没有任何区别。
-2. **挂机与后台任务（Server Native）**：
-   让 Agent 自动检索文档、跑爬虫或重构大文件时，直接把命令扔在 IDE 内置的终端里。关掉笔记本盖子走人，服务器后台依然全速运行。
-3. **移动端碎片监控（Phone / Tablet）**：
-   出门在外时，只需掏出手机打开 Safari / Chrome，直接就能看到 Agent 跑出来的中间结果，甚至能用手机软键盘补上一条 Prompt：“*帮我把刚刚跑完的测试 log 总结一下*”。
+1. **主力开发场景（Laptop 工作台）**：
+   在轻薄笔记本浏览器里直接打开 IDE（局域网 `http://192.168.1.100:8080` 或云端域名），敲代码、调试语法高亮、看 Git Diff，由于实际负载全部跑在后台主机上，笔记本风扇不转、电池能续航一整天，体验与本地桌面版 VS Code / IDE 几乎没有任何区别。
+2. **挂机与长时间后台任务（Host Native）**：
+   让 Agent 自动检索文档、跑爬虫或重构大文件时，直接把命令扔在 IDE 内置的终端里。合上笔记本盖子走人，主机依然在全速后台运算。
+3. **客厅沙发 / 床头碎片协同（Phone / Tablet）**：
+   晚上躺在沙发或床上时，手边只有手机或 iPad，连上家里同一个 WiFi 就能秒开 Web IDE。不仅能随时盯一眼后台跑出来的中间产物和测试日志，还能用手机软键盘补上一条 Prompt 推进下一步任务：“*帮我把刚才跑挂了的单元测试修一下并重新执行*”。出门在外时，配合 Tailscale 依然可以随时掏出手机接入。
 
 ---
 
 ## 结语与注意事项
 
-通过 **云端 OpenCode + 反向代理 + Meta MuseSpark 1.3 免费额度** 的组合，我们以极低的成本获得了一个全天候属于自己的自主 Agent 实验台。
+通过 **宿主环境（家庭主机/云端 VPS）+ 网络通道（局域网/Tailscale/反向代理）+ Meta MuseSpark 1.3 免费额度** 的组合，我们以极低的门槛获得了属于自己的自主 Agent 实验台。
 
-最后提两个安全层面的小建议：
-- **务必加上访问认证**：Web IDE 拥有完整的服务器终端权限，公网访问务必在 OpenCode 内部设置密码，或者在 Nginx 层加上 `auth_basic`，谨防弱口令被扫；
+最后提两个安全层面的实用建议：
+- **家庭局域网与公网的权限隔离**：如果只是在家庭局域网内使用，处于路由器防火墙保护下相对安全；但如果映射到公网或部署在 VPS 上，**务必在 OpenCode 内部设置强密码**，或在 Nginx 代理层加上 `auth_basic`，谨防终端权限被恶意扫描；
 - **合理利用 1M 上下文与 Quota**：MuseSpark 1.3 的 1M Context 极度强大，但在免费额度下也建议做好上下文修剪与 Agent 单步超时控制。
 
-如果你也在探索 Agent Hosting 或云端研发环境，不妨动手试一试！如果在部署过程中遇到任何端口或 WebSocket 代理问题，欢迎随时交流探讨。
+如果你也在探索 Agent Hosting 或多设备无缝协同开发，完全不需要等待买域名或租高配云机，先用家里的闲置电脑跑起来，立刻就能享受多端自由协同的快乐！如果在配置过程中遇到任何问题，欢迎随时交流探讨。
