@@ -77,7 +77,11 @@ const formattedDate = post.data.pubDate.toLocaleDateString(locale === 'zh' ? 'zh
     function addCopyButtons() {
       const codeBlocks = document.querySelectorAll('pre');
       codeBlocks.forEach(block => {
-        if (block.querySelector('code.language-mermaid') || block.classList.contains('mermaid')) return;
+        if (
+          block.getAttribute('data-language') === 'mermaid' ||
+          block.classList.contains('mermaid') ||
+          block.querySelector('code.language-mermaid')
+        ) return;
         if (block.querySelector('.copy-code-btn')) return;
         block.style.position = 'relative';
         const button = document.createElement('button');
@@ -100,9 +104,20 @@ const formattedDate = post.data.pubDate.toLocaleDateString(locale === 'zh' ? 'zh
   <!-- Dynamic Client-side Mermaid Diagram Rendering with Theme Support -->
   <script is:inline type="module">
     async function renderMermaid() {
-      const mermaidCodeElements = document.querySelectorAll('pre code.language-mermaid');
+      const candidatePres = document.querySelectorAll('pre');
+      const mermaidPres = [];
+      candidatePres.forEach(p => {
+        if (
+          p.getAttribute('data-language') === 'mermaid' ||
+          p.classList.contains('mermaid') ||
+          p.querySelector('code.language-mermaid')
+        ) {
+          mermaidPres.push(p);
+        }
+      });
+
       const existingCharts = document.querySelectorAll('.mermaid-chart');
-      if (mermaidCodeElements.length === 0 && existingCharts.length === 0) return;
+      if (mermaidPres.length === 0 && existingCharts.length === 0) return;
 
       const { default: mermaid } = await import('https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs');
       const isDark = document.documentElement.classList.contains('dark');
@@ -114,11 +129,12 @@ const formattedDate = post.data.pubDate.toLocaleDateString(locale === 'zh' ? 'zh
         securityLevel: 'loose'
       });
 
-      // 1. Initial conversion of <pre><code class="language-mermaid"> to interactive div
-      for (const codeEl of mermaidCodeElements) {
-        const pre = codeEl.closest('pre');
-        if (!pre) continue;
-        const rawCode = codeEl.textContent || '';
+      // 1. Initial conversion of <pre> (Astro/Shiki code blocks) to interactive mermaid svg
+      for (const pre of mermaidPres) {
+        const codeEl = pre.querySelector('code') || pre;
+        const rawCode = (codeEl.textContent || '').trim();
+        if (!rawCode) continue;
+
         const container = document.createElement('div');
         container.className = 'mermaid-chart flex justify-center my-8 p-4 bg-zinc-100/70 dark:bg-zinc-900/70 rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-x-auto shadow-sm';
         container.setAttribute('data-mermaid-src', rawCode);
