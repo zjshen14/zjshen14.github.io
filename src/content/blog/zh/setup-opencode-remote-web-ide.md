@@ -13,7 +13,7 @@ draft: false
 - 外出时临时想看一眼 Agent 的进展或调个参数，手机或随身轻薄本上根本没有本地开发环境；
 - API Token 散落在各个设备上，环境配置频繁漂移。
 
-为了解决这个问题，我们搭建了基于 **OpenCode** 的 Web IDE 方案，让它不仅能在云端服务器上运行，也可以直接部署在**家里的台式机、Mac mini 或 Homelab 主机**上。更关键的是，Meta 最新推出的 **MuseSpark 1.3 (Muse Spark 1.3)** 针对开发者社区开放了非常友好的 **Free Quota（开发者免费额度 / Contributor tier）**。MuseSpark 专为 Agentic 长期复杂任务打造，拥有 100 万超长上下文，相比上代减少了约 20% 的工具调用开销与 25% 的 Token 消耗，接入后能以极低成本甚至零成本流畅跑通整套自主编码 Agent 流程。
+为了解决这个问题，我们搭建了基于 **OpenCode** 的 Web IDE 方案，让它不仅能在云端服务器上运行，也可以直接部署在**家里的台式机、Mac mini 或 Homelab 主机**上。更关键的是，Meta 最新推出的 **MuseSpark 1.3 (Muse Spark 1.3)** 目前在 OpenCode 上**限时免费**（Muse Spark 1.3 Contributor Free），不用申请任何 API Key，打开就能用。MuseSpark 专为 Agentic 长期复杂任务打造，拥有 100 万超长上下文，相比上代减少了约 20% 的工具调用开销与 25% 的 Token 消耗，接入后能以极低成本甚至零成本流畅跑通整套自主编码 Agent 流程。
 
 今天这篇文章就把我们的实践经验梳理成教程：**无论你手头是否有公网域名，无论是在家里局域网躺在沙发上用手机/笔记本协同，还是在云端 VPS 上全天候托管**，都能快速落地一套属于自己的 Agent 工作台。
 
@@ -53,19 +53,37 @@ OpenCode 这类 Web IDE 在浏览器中运行时，绝不仅仅是加载几个�
 
 首先在你的宿主机（家里的 Linux/Mac/Windows WSL2，或者云端 VPS）上安装并启动 OpenCode。
 
+> ⚠️ **先设密码，再开放访问**：OpenCode Web 界面可以直接在宿主机上执行任意 Shell 命令，谁能打开这个页面，谁就拿到了你机器的终端权限。无论局域网还是公网，都请通过 `OPENCODE_SERVER_PASSWORD` 环境变量开启 HTTP Basic 认证（用户名默认为 `opencode`，可用 `OPENCODE_SERVER_USERNAME` 修改）。
+
 ### 1. 监听地址的选择
-启动时根据你的访问方式选择监听绑定地址：
+`opencode web` 会启动带浏览器界面的服务，并以**当前目录**作为工作区（注意：`opencode serve` 只启动无界面的 API 服务，不是我们要的 Web IDE）。先进入项目目录，再根据访问方式选择监听地址：
 - **家庭局域网多设备访问**：绑定到 `0.0.0.0`，这样局域网内的手机、平板和笔记本才能连上：
   ```bash
-  opencode serve --host 0.0.0.0 --port 8080 --workspace /path/to/your/workspace
+  cd /path/to/your/workspace
+  export OPENCODE_SERVER_PASSWORD='换成你的强密码'
+  opencode web --hostname 0.0.0.0 --port 8080
   ```
-- **云服务器（前置反向代理）**：如果前面有 Nginx/Caddy 网关挡着，建议仅监听本地 `127.0.0.1` 保证安全：
+  启动后 OpenCode 会同时打印本机地址和局域网访问地址（如 `http://192.168.1.100:8080`）。
+- **云服务器（前置反向代理）**：如果前面有 Nginx/Caddy 网关挡着，建议仅监听本地 `127.0.0.1`，让所有流量都必须经过代理：
   ```bash
-  opencode serve --host 127.0.0.1 --port 8080 --workspace /home/ubuntu/workspace
+  cd /home/ubuntu/workspace
+  export OPENCODE_SERVER_PASSWORD='换成你的强密码'
+  opencode web --hostname 127.0.0.1 --port 8080
   ```
 
 ### 2. 守护进程配置（以 Linux systemd 为例）
-为了保证终端关闭或主机重启后服务依然常驻，可以配置一个简单的 **systemd** 服务：
+为了保证终端关闭或主机重启后服务依然常驻，可以配置一个简单的 **systemd** 服务。
+
+先把密钥放进一个只有 root 可读的环境文件，避免明文写在所有用户都能读到的 unit 文件里（如果第三步选择使用自己的 Meta API Key，也放在这里）：
+
+```bash
+sudo tee /etc/opencode.env >/dev/null <<'EOF'
+OPENCODE_SERVER_PASSWORD=换成你的强密码
+EOF
+sudo chmod 600 /etc/opencode.env
+```
+
+然后创建服务文件：
 
 ```ini
 # /etc/systemd/system/opencode.service
@@ -77,10 +95,12 @@ After=network.target
 Type=simple
 User=ubuntu
 WorkingDirectory=/home/ubuntu/workspace
-ExecStart=/usr/local/bin/opencode serve --host 0.0.0.0 --port 8080
+EnvironmentFile=/etc/opencode.env
+# 云服务器 + 反向代理：保持 127.0.0.1；家庭局域网直连：改为 0.0.0.0
+# opencode 的实际路径可用 `which opencode` 确认
+ExecStart=/usr/local/bin/opencode web --hostname 127.0.0.1 --port 8080
 Restart=always
 RestartSec=5
-Environment=NODE_ENV=production
 
 [Install]
 WantedBy=multi-user.target
@@ -114,10 +134,10 @@ sudo systemctl status opencode
      # 或
      http://homelab.local:8080
      ```
-   - 搞定！没有任何域名或证书开销，内网毫秒级延迟，纯本地网络极其安全。
+   - 浏览器会弹出登录框，输入用户名 `opencode` 和第一步设置的密码即可进入；
+   - 搞定！没有任何域名或证书开销，内网毫秒级延迟，流量不出家门。
 
-> [!TIP]
-> **没域名又想在外网连回家里？神器 Tailscale**  
+> 💡 **没域名又想在外网连回家里？神器 Tailscale**  
 > 如果你想外出时也能访问家里的 OpenCode，但家里没有公网 IP 也没有购买域名，最优雅的解法是使用 **Tailscale**（全免费）：  
 > 在家里主机上运行 `tailscale up`，手机和笔记本也装上 Tailscale App。Tailscale 会利用 WireGuard 建立端到端加密的虚拟私网，并给主机分配一个内网 IP（例如 `100.x.y.z`）。在外面连上手机流量，直接访问 `http://100.x.y.z:8080`，随时随地安全直达家里的 IDE！
 
@@ -179,7 +199,9 @@ server {
 ```bash
 sudo nginx -t && sudo systemctl reload nginx
 ```
-此时通过配置好的域名 `https://ide.example.com` 即可直接访问。
+此时通过配置好的域名 `https://ide.example.com` 即可直接访问，浏览器会弹出 OpenCode 的登录框。
+
+> ⚠️ 反向代理本身**不做任何身份验证**，它只是把公网流量转发给 OpenCode。务必确认第一步的 `OPENCODE_SERVER_PASSWORD` 已生效（直接访问时应弹出登录框），否则等于把一台服务器的终端公开到了互联网上。
 
 ---
 
@@ -191,50 +213,45 @@ Meta 在 2026 年 9 月推出的 **MuseSpark 1.3** 相比以往版本带来了�
 - **专为 Agent 优化**：在单一长线程中支持多步骤自主规划，能主动识别上下文漏洞并调用工具弥补；
 - **极高的执行效率**：代码生成任务中，比 1.2 版本减少了约 20% 的 Tool Calls 和 25% 的 Token 开销；
 - **100 万 Token 超大上下文**：跑大型代码库重构或读一整个 Repo 时无需担心 Context 溢出；
-- **开发者免费额度 (Free Quota)**：Meta 在 **Muse Code** 与 **Meta Model API**（以及 OpenRouter 等生态渠道）为开发者提供了 Free / Contributor Tier，非常适合搭建个人 Agent 实验场。
+- **免费使用渠道**：OpenCode 自带的模型服务 **OpenCode Zen** 限时免费提供 **Muse Spark 1.3 Contributor Free**，在 OpenCode 里**无需注册、无需任何 API Key** 就能直接选用。
 
-### 1. 获取 MuseSpark 1.3 API Key
-- 前往 Meta 开发者平台（或所使用的 Model API 聚合网关）申请 MuseSpark 1.3 凭据；
-- 获取你的 `MUSE_SPARK_API_KEY` 及对应的 Base URL。
+> ⚠️ **免费的代价**：Contributor Free 属于 Meta 的 Contributor（贡献者）计划，你的 Prompt 和模型输出**会被授权给 Meta 用于训练后续模型**。适合个人实验和开源项目，不要把公司代码、密钥或隐私数据交给它。另外它是**限时免费**，具体政策以 [OpenCode Zen 文档](https://opencode.ai/docs/zen/) 为准。
 
-### 2. 在 OpenCode 环境中注入模型配置
-在 OpenCode 所在服务器的工作区目录中，创建环境变量文件（如 `.env` 或配置在 Agent 框架的 settings 中）：
+### 1. 零配置：直接选用免费模型（推荐）
+OpenCode 在没有配置任何 Key 的情况下，会自动加载 OpenCode Zen 中的免费模型，所以这一步其实**什么都不用配**：
+
+1. 打开 Web IDE，在模型选择器中（或在对话框输入 `/models`）选择 **Muse Spark 1.3 Contributor Free**；
+2. 发一条消息，比如让 Agent 读一下工作区里的某个文件并总结。能正常回复并调用工具，就说明模型与 Agent 环境已经打通。
+
+如果希望每次启动都默认使用它，可以在工作区根目录（或全局配置 `~/.config/opencode/opencode.json`）中写入：
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "opencode/muse-spark-1.3-contributor-free"
+}
+```
+
+也可以在终端确认模型已经可用：
 
 ```bash
-# Meta MuseSpark 1.3 模型配置
-LLM_PROVIDER="meta"
-LLM_MODEL="meta/muse-spark-1.3"
-MUSE_SPARK_API_KEY="your-musespark-api-key-here"
-MUSE_SPARK_BASE_URL="https://api.meta.ai/v1" # 或兼容网关端点
+opencode models | grep muse-spark
 ```
 
-在 OpenCode 的终端里写一个简单的 Python 脚本，验证 MuseSpark 1.3 模型的连通性与工具调用响应：
+### 2. 进阶：使用自己的 Meta API Key
+如果你不希望数据被用于训练，或者需要更稳定的调用额度，可以在 [Meta 开发者平台](https://dev.meta.ai/) 申请 API Key。OpenCode 内置了 `meta` Provider，不需要手写任何 Provider 配置，可选模型有：
 
-```python
-import os
-import requests
+- `meta/muse-spark-1.3`：标准版，每百万 Token 输入 $1.25 / 输出 $4.25，数据不用于训练；
+- `meta/muse-spark-1.3-contributor`：Meta 官方 Contributor 折扣价，每百万 Token 输入 $0.10 / 输出 $0.20，同样授权 Meta 使用数据训练。
 
-api_key = os.getenv("MUSE_SPARK_API_KEY")
-base_url = os.getenv("MUSE_SPARK_BASE_URL", "https://api.meta.ai/v1")
+把 Key 追加到第一步创建的 `/etc/opencode.env`，然后重启服务：
 
-headers = {
-    "Authorization": f"Bearer {api_key}",
-    "Content-Type": "application/json"
-}
-
-payload = {
-    "model": "meta/muse-spark-1.3",
-    "messages": [
-        {"role": "user", "content": "Hello MuseSpark 1.3! You are running inside our hosted OpenCode Web IDE. Please confirm your agentic capabilities."}
-    ],
-    "temperature": 0.2
-}
-
-response = requests.post(f"{base_url}/chat/completions", json=payload, headers=headers)
-print("MuseSpark 1.3 Response:", response.json()["choices"][0]["message"]["content"])
+```bash
+echo 'META_MODEL_API_KEY=your-meta-api-key' | sudo tee -a /etc/opencode.env >/dev/null
+sudo systemctl restart opencode
 ```
 
-运行后看到返回，说明模型通道与 Agent 环境已经完全打通！
+之后在模型选择器中选择 `meta/muse-spark-1.3` 即可。
 
 ---
 
@@ -256,7 +273,7 @@ print("MuseSpark 1.3 Response:", response.json()["choices"][0]["message"]["conte
 通过 **宿主环境（家庭主机/云端 VPS）+ 网络通道（局域网/Tailscale/反向代理）+ Meta MuseSpark 1.3 免费额度** 的组合，我们以极低的门槛获得了属于自己的自主 Agent 实验台。
 
 最后提两个安全层面的实用建议：
-- **家庭局域网与公网的权限隔离**：如果只是在家庭局域网内使用，处于路由器防火墙保护下相对安全；但如果映射到公网或部署在 VPS 上，**务必在 OpenCode 内部设置强密码**，或在 Nginx 代理层加上 `auth_basic`，谨防终端权限被恶意扫描；
+- **始终开启密码认证**：Web IDE 等同于一个远程终端。即使只在家庭局域网内使用，也建议保留 `OPENCODE_SERVER_PASSWORD`（同一 WiFi 下的其他设备、访客都能扫到你的端口）；映射到公网或部署在 VPS 上时更是必需项，还可以在 Nginx 层额外加上 IP 白名单（`allow` / `deny`），谨防终端权限被恶意扫描；
 - **合理利用 1M 上下文与 Quota**：MuseSpark 1.3 的 1M Context 极度强大，但在免费额度下也建议做好上下文修剪与 Agent 单步超时控制。
 
 如果你也在探索 Agent Hosting 或多设备无缝协同开发，完全不需要等待买域名或租高配云机，先用家里的闲置电脑跑起来，立刻就能享受多端自由协同的快乐！如果在配置过程中遇到任何问题，欢迎随时交流探讨。

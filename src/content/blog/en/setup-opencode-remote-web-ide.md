@@ -13,7 +13,7 @@ Running long-horizon agents locally has obvious bottlenecks:
 - While on the go, if you want to inspect agent progress or tweak prompts, you rarely have your full development toolchain installed on your mobile phone or lightweight tablet.
 - API keys, dependencies, and environment configurations quickly drift across multiple devices.
 
-To solve this, we set up a hosted Web IDE around **OpenCode**, designed to run smoothly whether on a **cloud VPS or a local home workstation / Mac mini / homelab server**. More importantly, Meta's latest frontier agent model—**MuseSpark 1.3 (Muse Spark 1.3)**—offers a generous **Free Quota (Developer / Contributor Tier)**. Tailor-made for long-horizon multi-step agentic execution with a massive **1-million-token context window**, MuseSpark 1.3 cuts token consumption by ~25% and tool calls by ~20% compared to previous generations, making it feasible to run end-to-end coding agents at virtually zero cost.
+To solve this, we set up a hosted Web IDE around **OpenCode**, designed to run smoothly whether on a **cloud VPS or a local home workstation / Mac mini / homelab server**. More importantly, Meta's latest frontier agent model—**MuseSpark 1.3 (Muse Spark 1.3)**—is currently **free on OpenCode for a limited time** (Muse Spark 1.3 Contributor Free), with no API key required. Tailor-made for long-horizon multi-step agentic execution with a massive **1-million-token context window**, MuseSpark 1.3 cuts token consumption by ~25% and tool calls by ~20% compared to previous generations, making it feasible to run end-to-end coding agents at virtually zero cost.
 
 In this guide, we share our setup blueprint: **whether you own a custom domain or not, and whether you are connecting over your home Wi-Fi from the couch with your phone/laptop or hosting 24/7 on a cloud VPS**, you can quickly stand up a personal agent workbench.
 
@@ -53,18 +53,37 @@ Running a modern Web IDE in the browser requires more than simple static HTTP re
 
 Install and start OpenCode on your target machine (your Linux/macOS/Windows WSL2 desktop, or a cloud VPS).
 
+> ⚠️ **Set a password before exposing anything**: the OpenCode web UI can run arbitrary shell commands on the host, so anyone who can open the page effectively has a terminal on your machine. Whether on a LAN or the public internet, enable HTTP Basic auth with the `OPENCODE_SERVER_PASSWORD` environment variable (username defaults to `opencode`; change it with `OPENCODE_SERVER_USERNAME`).
+
 ### 1. Select the Host Binding Address
+`opencode web` starts the server with the browser UI and uses the **current directory** as the workspace (note: `opencode serve` starts a headless API server only, not the Web IDE). `cd` into your project first, then pick a bind address:
 - **Home LAN / Multi-device Access**: Bind to `0.0.0.0` so other devices on your home network can reach it:
   ```bash
-  opencode serve --host 0.0.0.0 --port 8080 --workspace /path/to/your/workspace
+  cd /path/to/your/workspace
+  export OPENCODE_SERVER_PASSWORD='use-a-strong-password'
+  opencode web --hostname 0.0.0.0 --port 8080
   ```
+  On startup OpenCode prints both the local URL and the network URL (e.g., `http://192.168.1.100:8080`).
 - **Cloud VPS Behind a Local Reverse Proxy**: Bind exclusively to `127.0.0.1` so that traffic must route through your frontend proxy:
   ```bash
-  opencode serve --host 127.0.0.1 --port 8080 --workspace /home/ubuntu/workspace
+  cd /home/ubuntu/workspace
+  export OPENCODE_SERVER_PASSWORD='use-a-strong-password'
+  opencode web --hostname 127.0.0.1 --port 8080
   ```
 
 ### 2. Configure a Background Daemon (Linux systemd Example)
-To ensure the IDE survives terminal disconnects or system reboots, create a simple **systemd** service:
+To ensure the IDE survives terminal disconnects or system reboots, create a simple **systemd** service.
+
+First, put secrets in a root-only environment file instead of the world-readable unit file (if you bring your own Meta API key in Step 3, it goes here too):
+
+```bash
+sudo tee /etc/opencode.env >/dev/null <<'EOF'
+OPENCODE_SERVER_PASSWORD=use-a-strong-password
+EOF
+sudo chmod 600 /etc/opencode.env
+```
+
+Then create the service:
 
 ```ini
 # /etc/systemd/system/opencode.service
@@ -76,10 +95,12 @@ After=network.target
 Type=simple
 User=ubuntu
 WorkingDirectory=/home/ubuntu/workspace
-ExecStart=/usr/local/bin/opencode serve --host 0.0.0.0 --port 8080
+EnvironmentFile=/etc/opencode.env
+# Cloud VPS + reverse proxy: keep 127.0.0.1; home LAN direct access: change to 0.0.0.0
+# Check the actual binary path with `which opencode`
+ExecStart=/usr/local/bin/opencode web --hostname 127.0.0.1 --port 8080
 Restart=always
 RestartSec=5
-Environment=NODE_ENV=production
 
 [Install]
 WantedBy=multi-user.target
@@ -113,10 +134,10 @@ If you have a powerful desktop or Mac mini in your home office and want to conne
      # or
      http://homelab.local:8080
      ```
-   - Done! Zero domain costs, sub-millisecond latency, and completely isolated inside your private router firewall.
+   - Your browser will show a login prompt: enter username `opencode` and the password from Step 1;
+   - Done! Zero domain costs, sub-millisecond latency, and traffic never leaves your home network.
 
-> [!TIP]
-> **Want Remote Access Away from Home Without Buying a Domain? Use Tailscale!**  
+> 💡 **Want Remote Access Away from Home Without Buying a Domain? Use Tailscale!**  
 > If you want to connect to your home OpenCode instance while traveling without buying a domain or setting up router port forwarding, **Tailscale** is the gold standard (free for personal use):  
 > Run `tailscale up` on your home computer, and install the Tailscale app on your phone and laptop. Tailscale creates an end-to-end encrypted WireGuard mesh and gives your machine a static private IP (e.g., `100.x.y.z`). From any cellular network or coffee shop Wi-Fi, open `http://100.x.y.z:8080` to securely access your home IDE.
 
@@ -179,7 +200,9 @@ Validate and reload Nginx:
 ```bash
 sudo nginx -t && sudo systemctl reload nginx
 ```
-You can now open `https://ide.example.com` in your browser.
+You can now open `https://ide.example.com` in your browser, where OpenCode's login prompt will appear.
+
+> ⚠️ The reverse proxy **does not authenticate anyone**; it simply forwards public traffic to OpenCode. Make sure `OPENCODE_SERVER_PASSWORD` from Step 1 is in effect (you should get a login prompt), otherwise you have published a server terminal to the internet.
 
 ---
 
@@ -191,50 +214,45 @@ Released in September 2026, **Meta's MuseSpark 1.3** is specifically engineered 
 - **Agentic Resilience**: Handles multi-step planning within a single persistent thread, autonomously discovering missing context and invoking tools.
 - **Superior Efficiency**: Consumes ~25% fewer tokens and requires ~20% fewer tool invocations on coding benchmarks compared to Muse 1.2.
 - **1-Million Context Window**: Accommodates entire codebases, docs, and sprawling execution traces without truncation.
-- **Developer Free Quota**: Available across Meta Model API, Muse Code, and community model gateways, the free developer tier makes it easy to validate agents before incurring infrastructure costs.
+- **How to Use It for Free**: **OpenCode Zen**, OpenCode's built-in model service, offers **Muse Spark 1.3 Contributor Free** at no cost for a limited time. Inside OpenCode it works **with no sign-up and no API key**.
 
-### 1. Obtain Your MuseSpark 1.3 Credentials
-- Sign up on the developer portal (or your preferred Model API router).
-- Navigate to **MuseSpark 1.3** to claim your developer tier access and copy your `API_KEY`.
+> ⚠️ **The catch**: Contributor Free is part of Meta's Contributor program. You grant Meta **permission to use your prompts and completions to train future models**. It's great for personal experiments and open-source work, but don't feed it company code, secrets, or private data. It is also **free for a limited time**; check the [OpenCode Zen docs](https://opencode.ai/docs/zen/) for the current terms.
 
-### 2. Configure Environment Variables
-Inside your workspace on the OpenCode server, store your credentials in a `.env` file or export them into your shell:
+### 1. Zero Config: Pick the Free Model (Recommended)
+When no API key is configured, OpenCode automatically loads the free models from OpenCode Zen, so there is **nothing to set up**:
+
+1. Open the Web IDE and pick **Muse Spark 1.3 Contributor Free** in the model selector (or type `/models` in the chat box);
+2. Send a message, e.g. ask the agent to read and summarize a file in your workspace. A proper reply with a tool call means the model and agent environment are connected.
+
+To make it the default on every start, put this in your workspace root (or the global config at `~/.config/opencode/opencode.json`):
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "opencode/muse-spark-1.3-contributor-free"
+}
+```
+
+You can also confirm the model is available from a terminal:
 
 ```bash
-# Meta MuseSpark 1.3 Model Configuration
-LLM_PROVIDER="meta"
-LLM_MODEL="meta/muse-spark-1.3"
-MUSE_SPARK_API_KEY="your-musespark-api-key-here"
-MUSE_SPARK_BASE_URL="https://api.meta.ai/v1"
+opencode models | grep muse-spark
 ```
 
-Verify your setup by running a simple Python snippet directly in OpenCode's integrated terminal:
+### 2. Advanced: Bring Your Own Meta API Key
+If you don't want your data used for training, or you need steadier capacity, get an API key from the [Meta developer platform](https://dev.meta.ai/). OpenCode ships a built-in `meta` provider, so no custom provider config is needed. The models are:
 
-```python
-import os
-import requests
+- `meta/muse-spark-1.3`: standard tier, $1.25 input / $4.25 output per 1M tokens; data is not used for training;
+- `meta/muse-spark-1.3-contributor`: Meta's official Contributor discount, $0.10 input / $0.20 output per 1M tokens; also grants Meta training rights.
 
-api_key = os.getenv("MUSE_SPARK_API_KEY")
-base_url = os.getenv("MUSE_SPARK_BASE_URL", "https://api.meta.ai/v1")
+Append the key to the `/etc/opencode.env` file from Step 1 and restart the service:
 
-headers = {
-    "Authorization": f"Bearer {api_key}",
-    "Content-Type": "application/json"
-}
-
-payload = {
-    "model": "meta/muse-spark-1.3",
-    "messages": [
-        {"role": "user", "content": "Hello MuseSpark 1.3! You are running inside our hosted OpenCode Web IDE. Please confirm your agentic capabilities."}
-    ],
-    "temperature": 0.2
-}
-
-response = requests.post(f"{base_url}/chat/completions", json=payload, headers=headers)
-print("MuseSpark 1.3 Response:", response.json()["choices"][0]["message"]["content"])
+```bash
+echo 'META_MODEL_API_KEY=your-meta-api-key' | sudo tee -a /etc/opencode.env >/dev/null
+sudo systemctl restart opencode
 ```
 
-Seeing the response confirmed in your terminal verifies that your model pipeline is active.
+Then select `meta/muse-spark-1.3` in the model selector.
 
 ---
 
@@ -256,7 +274,7 @@ Once configured, the real superpower is seamless mobility across screens:
 Combining **Your Host Machine (Home Desktop / Homelab / Cloud VPS) + Flexible Network Layer (Home LAN / Tailscale / Reverse Proxy) + Meta MuseSpark 1.3 Free Quota** provides an accessible, zero-friction autonomous agent workbench.
 
 A few quick takeaways:
-- **Authentication & Network Boundaries**: If you are strictly running within a trusted home LAN, you are protected by your router firewall. However, if exposed to the public internet or running on a cloud VPS, **always configure authentication** (either within OpenCode or via Nginx `auth_basic`) to protect terminal access.
+- **Always Keep Authentication On**: A Web IDE is effectively a remote terminal. Even on a home LAN, keep `OPENCODE_SERVER_PASSWORD` set (guests and every other device on the same Wi-Fi can reach your port). On the public internet or a cloud VPS it is mandatory, and you can add an Nginx IP allowlist (`allow` / `deny`) on top to guard against scanners.
 - **Leverage the 1M Window Wisely**: While MuseSpark 1.3 handles 1M tokens with ease, prompt hygiene and selective tool caching ensure you stay within developer free tiers comfortably.
 
 You do not need to buy a domain or pay for expensive cloud servers to begin experimenting. Fire up an old desktop or home Mac, launch OpenCode on your local network, and experience the freedom of multi-device agent development today! Feel free to reach out with any thoughts or questions.
