@@ -4,6 +4,7 @@ description: "A practical guide from our agent hosting project: how to self-host
 pubDate: 2026-09-26
 tags: ["ai", "agent", "opencode", "musespark", "meta", "web-ide", "tutorial"]
 draft: false
+ogImage: "/og/setup-opencode-remote-web-ide-en.png"
 ---
 
 In our recent **Agent Hosting** project, we encountered a universal developer dilemma: **How can we give autonomous AI agents a dedicated, 24/7 environment that doesn't depend on a single local laptop, while remaining instantly accessible from any browser on any device?**

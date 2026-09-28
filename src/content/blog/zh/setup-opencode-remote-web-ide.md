@@ -4,6 +4,7 @@ description: "总结 Agent Hosting 项目实战经验：如何搭建支持远程
 pubDate: 2026-09-26
 tags: ["ai", "agent", "opencode", "musespark", "meta", "web-ide", "tutorial"]
 draft: false
+ogImage: "/og/setup-opencode-remote-web-ide-zh.png"
 ---
 
 在最近的 **Agent Hosting** 项目中，我们遇到了一个非常典型的场景：如何让自主 AI Agent 拥有一个 **7×24 小时常驻、不依赖单台本地机器、且能随时从任何设备打开浏览器进行操作与监控的 Web IDE 环境**？
