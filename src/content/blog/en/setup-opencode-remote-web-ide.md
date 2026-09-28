@@ -2,6 +2,7 @@
 title: "Remote Agent Hosting: Setting Up OpenCode Web IDE with HTTP Proxy & Meta MuseSpark 1.3 Free Quota"
 description: "A practical guide from our agent hosting project: how to self-host OpenCode Web IDE with reverse proxy and WebSockets, leverage Meta's MuseSpark 1.3 developer free quota, and achieve seamless multi-device coding from laptop to phone."
 pubDate: 2026-09-26
+updatedDate: 2026-09-27
 tags: ["ai", "agent", "opencode", "musespark", "meta", "web-ide", "tutorial"]
 draft: false
 ogImage: "/og/setup-opencode-remote-web-ide-en.png"

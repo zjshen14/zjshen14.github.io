@@ -16,7 +16,8 @@ const { text: readingTimeText } = getReadingTime(post.body, locale);
 const formattedDate = post.data.pubDate.toLocaleDateString(locale === 'zh' ? 'zh-CN' : 'en-US', {
   year: 'numeric',
   month: 'short',
-  day: 'numeric'
+  day: 'numeric',
+  timeZone: 'UTC'
 });
 ---
 

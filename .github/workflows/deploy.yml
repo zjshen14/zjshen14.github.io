@@ -48,3 +48,24 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  # Tell Bing (and other IndexNow engines) the site changed, so pages are recrawled
+  # within hours instead of weeks. The key file lives at public/<key>.txt.
+  indexnow:
+    runs-on: ubuntu-latest
+    needs: deploy
+    continue-on-error: true
+    env:
+      SITE: https://zjshen14.github.io
+      INDEXNOW_KEY: b7e4c19a3f6d42e8a05c9d7713f2e6ab
+    steps:
+      - name: Submit sitemap URLs to IndexNow
+        run: |
+          urls=$(curl -fsSL "$SITE/sitemap-0.xml" | grep -o '<loc>[^<]*</loc>' | sed -e 's/<loc>//' -e 's/<\/loc>//')
+          [ -n "$urls" ] || { echo "No URLs found in sitemap"; exit 1; }
+          payload=$(jq -n --arg host "${SITE#https://}" --arg key "$INDEXNOW_KEY" \
+            --arg loc "$SITE/$INDEXNOW_KEY.txt" --arg urls "$urls" \
+            '{host: $host, key: $key, keyLocation: $loc, urlList: ($urls | split("\n") | map(select(length > 0)))}')
+          echo "$payload" | jq '.urlList | length' | xargs echo "Submitting URLs:"
+          curl -sS -o /dev/null -w "IndexNow HTTP %{http_code}\n" -X POST "https://api.indexnow.org/indexnow" \
+            -H "Content-Type: application/json; charset=utf-8" -d "$payload"

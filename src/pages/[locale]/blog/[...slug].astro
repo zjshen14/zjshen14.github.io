@@ -26,11 +26,16 @@ const { Content } = await post.render();
 const translation = getPostTranslation(post, allPosts);
 const { text: readingTimeText } = getReadingTime(post.body, locale);
 
-const formattedDate = post.data.pubDate.toLocaleDateString(locale === 'zh' ? 'zh-CN' : 'en-US', {
+// Frontmatter dates are parsed as UTC midnight; format in UTC so they don't shift a day
+// in timezones west of UTC (the build machine's local time).
+const formatDate = (date: Date) => date.toLocaleDateString(locale === 'zh' ? 'zh-CN' : 'en-US', {
   year: 'numeric',
   month: 'long',
-  day: 'numeric'
+  day: 'numeric',
+  timeZone: 'UTC'
 });
+const formattedDate = formatDate(post.data.pubDate);
+const formattedUpdatedDate = post.data.updatedDate && formatDate(post.data.updatedDate);
 ---
 
 <BaseLayout
@@ -41,6 +46,11 @@ const formattedDate = post.data.pubDate.toLocaleDateString(locale === 'zh' ? 'zh
   ogImage={post.data.ogImage}
   alternateUrl={translation?.url}
   alternateLang={translation?.locale}
+  article={{
+    publishedTime: post.data.pubDate,
+    modifiedTime: post.data.updatedDate,
+    tags: post.data.tags
+  }}
 >
   <article class="py-6">
     <!-- Back to blog -->
@@ -55,6 +65,12 @@ const formattedDate = post.data.pubDate.toLocaleDateString(locale === 'zh' ? 'zh
       </h1>
       <div class="mt-4 flex flex-wrap items-center gap-3 text-sm text-zinc-500 dark:text-zinc-400">
         <time datetime={post.data.pubDate.toISOString()}>{formattedDate}</time>
+        {post.data.updatedDate && (
+          <>
+            <span>•</span>
+            <span>{t.updatedOn} <time datetime={post.data.updatedDate.toISOString()}>{formattedUpdatedDate}</time></span>
+          </>
+        )}
         <span>•</span>
         <span>{readingTimeText}</span>
       </div>
