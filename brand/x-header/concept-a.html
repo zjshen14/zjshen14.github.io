@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=1500, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Latent silk — concept A</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1500px; height: 500px; overflow: hidden; background: #070b10; }
+  canvas { display: block; width: 1500px; height: 500px; }
+</style>
+<canvas aria-label="An abstract folded latent manifold, woven from fine icy blue and muted jade filaments in a dark field." role="img"></canvas>
+<script>
+'use strict';
+(() => {
+  const W = 1500, H = 500, TAU = Math.PI * 2;
+  const canvas = document.querySelector('canvas');
+  const scale = Math.max(1, window.devicePixelRatio || 1);
+  canvas.width = Math.round(W * scale);
+  canvas.height = Math.round(H * scale);
+  const ctx = canvas.getContext('2d', { alpha: false });
+  ctx.scale(scale, scale);
+  // Fixed seed: no time, animation, external assets, or network requests.
+  let seed = 260927;
+  const random = () => {
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t ^= t + Math.imul(t ^ t >>> 7, 61 | t);
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+  const mix = (a, b, t) => a + (b - a) * t;
+  const clamp = (x, lo = 0, hi = 1) => Math.min(hi, Math.max(lo, x));
+  function glow(x, y, rx, ry, color, opacity) {
+    ctx.save(); ctx.translate(x, y); ctx.scale(rx, ry);
+    const g = ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
+    g.addColorStop(0, `rgba(${color},${opacity})`);
+    g.addColorStop(0.5, `rgba(${color},${opacity * 0.3})`);
+    g.addColorStop(1, `rgba(${color},0)`);
+    ctx.fillStyle = g; ctx.fillRect(-1, -1, 2, 2); ctx.restore();
+  }
+  ctx.fillStyle = '#070b10'; ctx.fillRect(0, 0, W, H);
+  glow(1025, 257, 520, 286, '30,71,84', 0.17);
+  glow(680, 185, 370, 230, '34,45,70', 0.1);
+
+  // A continuous two-dimensional sheet, folded through three dimensions.
+  // Parallel curves trace local neighborhoods rather than graph connections.
+  function surface(u, v) {
+    const angle = u * TAU;
+    const phase = angle * 1.5 + 0.40;
+    const width = 74 + 16 * Math.sin(angle - 0.6);
+    const offset = v * width;
+    const radial = offset * Math.cos(phase);
+    let x = (230 + 36 * Math.cos(angle * 3 + 0.5) + radial) * Math.cos(angle);
+    let y = (111 + 15 * Math.cos(angle * 3 + 0.5) + radial * 0.83) * Math.sin(angle);
+    let z = 51 * Math.sin(angle * 3 - 0.55) + offset * Math.sin(phase);
+    // Bias the inner fold, keeping the form intentionally asymmetrical.
+    y += 24 * Math.cos(angle + 0.5) + 8 * Math.sin(angle * 3);
+    x += 26 * Math.sin(angle * 2);
+    const tilt = -0.10;
+    const xx = x * Math.cos(tilt) - y * Math.sin(tilt);
+    const yy = x * Math.sin(tilt) + y * Math.cos(tilt);
+    // Rotate the view and its depth together, so intersecting folds occlude correctly.
+    const viewY = yy * .92 - z * .392;
+    const viewZ = yy * .392 + z * .92;
+    return { x: 970 + xx * 1.28, y: 252 + viewY * .83, z: viewZ };
+  }
+
+  // A small software depth buffer keeps the sheet seamless at every crossing.
+  // Lighting is derived from the surface normal; the filament texture follows v.
+  const pixelW = canvas.width, pixelH = canvas.height;
+  const frame = ctx.getImageData(0,0,pixelW,pixelH);
+  const depthBuffer = new Float32Array(pixelW*pixelH).fill(-Infinity);
+  const slices = 620, rows = 144, vertices = [];
+  function vertex(u,v) {
+    const p = surface(u,v), pu = surface(u+.00001,v), pv = surface(u,v+.00001);
+    const ax=pu.x-p.x, ay=pu.y-p.y, az=pu.z-p.z;
+    const bx=pv.x-p.x, by=pv.y-p.y, bz=pv.z-p.z;
+    let nx=ay*bz-az*by, ny=az*bx-ax*bz, nz=ax*by-ay*bx;
+    const length=Math.hypot(nx,ny,nz);
+    const orientation=nz<0 ? -1 : 1;
+    nx=nx/length*orientation; ny=ny/length*orientation; nz=nz/length*orientation;
+    const key=Math.max(0,nx*-.24+ny*-.61+nz*.75);
+    const fill=Math.max(0,nx*.76+ny*.42+nz*.50);
+    const rim=Math.pow(1-nz,3);
+    const sheen=Math.pow(Math.max(0,nx*-.14+ny*-.35+nz*.926),18);
+    const light=.13+key*.62+fill*.15+rim*.16+sheen*.27;
+    const mint=.5+.5*Math.sin(u*TAU-.5);
+    const c=[mix(156,155,mint),mix(178,223,mint),mix(239,206,mint)].map(n=>n*light);
+    return {x:p.x*scale,y:p.y*scale,z:p.z,u,v,c};
+  }
+  for(let i=0;i<=slices;i++) {
+    for(let j=0;j<=rows;j++) vertices.push(vertex(i/slices,-1+2*j/rows));
+  }
+  function triangle(a,b,c) {
+    const x0=Math.max(0,Math.floor(Math.min(a.x,b.x,c.x)));
+    const x1=Math.min(pixelW-1,Math.ceil(Math.max(a.x,b.x,c.x)));
+    const y0=Math.max(0,Math.floor(Math.min(a.y,b.y,c.y)));
+    const y1=Math.min(pixelH-1,Math.ceil(Math.max(a.y,b.y,c.y)));
+    const denominator=(b.y-c.y)*(a.x-c.x)+(c.x-b.x)*(a.y-c.y);
+    if(Math.abs(denominator)<1e-8) return;
+    const dvx=((b.y-c.y)*a.v+(c.y-a.y)*b.v+(a.y-b.y)*c.v)/denominator;
+    const dvy=((c.x-b.x)*a.v+(a.x-c.x)*b.v+(b.x-a.x)*c.v)/denominator;
+    const sinc=x=>Math.abs(x)<.0001?1:Math.sin(x)/x;
+    const fx=dvx*Math.PI*62*scale*.6, fy=dvy*Math.PI*62*scale*.6;
+    const filter1=sinc(fx)*sinc(fy), filter2=sinc(2*fx)*sinc(2*fy);
+    for(let y=y0;y<=y1;y++) for(let x=x0;x<=x1;x++) {
+      const px=x+.5, py=y+.5;
+      const wa=((b.y-c.y)*(px-c.x)+(c.x-b.x)*(py-c.y))/denominator;
+      const wb=((c.y-a.y)*(px-c.x)+(a.x-c.x)*(py-c.y))/denominator;
+      const wc=1-wa-wb;
+      if(wa<-.00001||wb<-.00001||wc<-.00001) continue;
+      const index=y*pixelW+x, z=wa*a.z+wb*b.z+wc*c.z;
+      if(z<depthBuffer[index]) continue;
+      depthBuffer[index]=z;
+      const v=wa*a.v+wb*b.v+wc*c.v;
+      const u=wa*a.u+wb*b.u+wc*c.u;
+      // Symmetric under v -> -v: the texture also closes across the twist.
+      // Integrate the thread pattern over the pixel footprint to suppress moiré.
+      const phase=v*Math.PI*62;
+      const fiber=.41+.59*(.375+.5*Math.cos(phase)*filter1+.125*Math.cos(phase*2)*filter2);
+      const warp=.986+.014*Math.cos(u*TAU*84);
+      const edge=.16*Math.pow(Math.abs(v),28);
+      const material=fiber*warp+edge;
+      for(let channel=0;channel<3;channel++) {
+        frame.data[index*4+channel]=(wa*a.c[channel]+wb*b.c[channel]+wc*c.c[channel])*material;
+      }
+    }
+  }
+  for(let i=0;i<slices;i++) for(let j=0;j<rows;j++) {
+    const index=i*(rows+1)+j;
+    const a=vertices[index], b=vertices[index+rows+1];
+    const c=vertices[index+rows+2], d=vertices[index+1];
+    triangle(a,b,c); triangle(a,c,d);
+  }
+  ctx.putImageData(frame,0,0);
+
+  // Restrained, seeded print grain; no point-stars or conspicuous highlights.
+  for (let i = 0; i < 23000; i++) {
+    const x = random()*W, y = random()*H;
+    ctx.fillStyle = `rgba(157,178,188,${random()*0.025})`;
+    ctx.fillRect(x,y,0.45,0.45);
+  }
+  document.documentElement.dataset.rendered = 'true';
+})();
+</script>
+</html>

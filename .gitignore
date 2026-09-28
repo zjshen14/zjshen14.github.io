@@ -17,3 +17,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+
+# brand/ render scratch
+__pycache__/
+brand/**/.render-*.log
+brand/**/.chrome-render-*/

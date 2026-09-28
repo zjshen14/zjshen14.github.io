@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=1500, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>From noise — concept B</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1500px; height: 500px; overflow: hidden; background: #0c0c0d; }
+  canvas { display: block; width: 1500px; height: 500px; }
+</style>
+<canvas aria-label="An abstract diffusion field: scattered bronze particles gradually resolve into a pleated ivory wave, against warm charcoal." role="img"></canvas>
+<script>
+'use strict';
+(() => {
+  const W = 1500, H = 500, TAU = Math.PI * 2;
+  const canvas = document.querySelector('canvas');
+  const scale = Math.max(1, window.devicePixelRatio || 1);
+  canvas.width = Math.round(W * scale); canvas.height = Math.round(H * scale);
+  const ctx = canvas.getContext('2d', { alpha: false });
+  ctx.scale(scale, scale);
+  let seed = 712903;
+  const random = () => {
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t ^= t + Math.imul(t ^ t >>> 7, 61 | t);
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+  const normal = () => Math.sqrt(-2 * Math.log(Math.max(random(), 1e-9))) * Math.cos(TAU * random());
+  const clamp = x => Math.min(1, Math.max(0,x));
+  const smooth = (a,b,x) => { const t = clamp((x-a)/(b-a)); return t*t*(3-2*t); };
+  function haze(x,y,rx,ry,c,a) {
+    ctx.save(); ctx.translate(x,y); ctx.scale(rx,ry);
+    const g = ctx.createRadialGradient(0,0,0,0,0,1);
+    g.addColorStop(0,`rgba(${c},${a})`); g.addColorStop(1,`rgba(${c},0)`);
+    ctx.fillStyle=g; ctx.fillRect(-1,-1,2,2); ctx.restore();
+  }
+  ctx.fillStyle = '#0c0c0d'; ctx.fillRect(0,0,W,H);
+  haze(1030,250,430,260,'81,58,39',0.11);
+
+  // A smooth target sheet. Uncertainty around it decays from left to right,
+  // making denoising visible as a change in spatial coherence.
+  function sheet(t,v) {
+    const x = 404 + t * 867;
+    const center = 249 - 25*Math.sin(t*TAU-0.6) - 32*Math.exp(-Math.pow((t-.69)/.18,2));
+    const envelope = 20 + 93*Math.pow(Math.sin(Math.PI*t),0.8);
+    const phase = t*5.65 - 1.1;
+    const fold = v * envelope;
+    const y = center + fold*Math.cos(phase) + 26*Math.sin(v*2.45+t*6.2)*Math.sin(Math.PI*t);
+    const z = fold*Math.sin(phase);
+    return {x:x + z*.53, y:y-z*.33, z};
+  }
+
+  // The emerging surface is built from individual samples, never filled polygons.
+  const points = [];
+  for (let i=0;i<190000;i++) {
+    const t = Math.pow(random(),0.76), v = random()*2-1;
+    const p = sheet(t,v);
+    const uncertainty = 49*Math.pow(1-smooth(.04,.91,t),2.2) + .20;
+    const x = p.x + normal()*uncertainty*1.65;
+    const y = p.y + normal()*uncertainty;
+    const edge = Math.pow(Math.abs(v),7);
+    const light = .39 + .34*smooth(.13,.92,t) + .20*(p.z/120+.5) + edge*.19;
+    const coherence = smooth(.12,.91,t);
+    const a = (.16 + coherence*.40)*(.6+random()*.4);
+    points.push({x,y,z:p.z,light,a,t,size:.36+random()*.43});
+  }
+  points.sort((a,b)=>a.z-b.z);
+  for (const p of points) {
+    const c=p.light;
+    const warmth = 1-smooth(.15,.94,p.t);
+    ctx.fillStyle=`rgba(${Math.round(240*c)},${Math.round((218-warmth*53)*c)},${Math.round((183-warmth*72)*c)},${p.a})`;
+    ctx.fillRect(p.x,p.y,p.size,p.size);
+  }
+
+  // Ordered trajectories become visible only after most noise has been removed.
+  // Small gaps retain the granular materiality of the sample field.
+  for (let row=0;row<236;row++) {
+    const v=-1+row/117.5;
+    const shift=random();
+    for(let step=0;step<140;step++) {
+      const t=.25+step/140*.75;
+      const next=t+.0050;
+      const p=sheet(t,v), q=sheet(Math.min(1,next),v);
+      const order=smooth(.27,.93,t);
+      const fade=1-smooth(.91,1,t);
+      const ridge=.45+.55*Math.pow(Math.abs(v),5);
+      const light=.16+order*.4;
+      if(random() > .52+order*.48) continue;
+      ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y);
+      ctx.strokeStyle=`rgba(221,205,172,${order*fade*ridge*light*(.65+shift*.35)})`;
+      ctx.lineWidth=.38; ctx.stroke();
+    }
+  }
+
+  // Outlying residual noise is local to the left of the resolving wave.
+  for(let i=0;i<8000;i++) {
+    const t=random(), x=285+t*670;
+    const y=230+normal()*(66-28*t);
+    const alpha=.17*Math.sin(Math.PI*t)*(1-smooth(300,395,y));
+    if(y<65||y>420) continue;
+    ctx.fillStyle=`rgba(174,133,87,${alpha})`;
+    ctx.fillRect(x,y,.45,.45);
+  }
+  // Seeded, very low-contrast texture without a uniform decorative star field.
+  for(let i=0;i<16000;i++) {
+    ctx.fillStyle=`rgba(190,169,141,${random()*.018})`;
+    ctx.fillRect(random()*W,random()*H,.45,.45);
+  }
+  document.documentElement.dataset.rendered = 'true';
+})();
+</script>
+</html>
