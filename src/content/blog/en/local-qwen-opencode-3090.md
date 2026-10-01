@@ -9,6 +9,8 @@ ogImage: "/og/local-qwen-opencode-3090-en.png"
 
 In the [previous post](/en/blog/setup-opencode-remote-web-ide/), we hosted OpenCode on a machine that stays running and connected to the same agent workspace from a laptop or phone. This time, we moved inference onto that machine too: **Qwen3.8-27B Q4_K_M on one RTX 3090 24GB**, exposed to OpenCode through a local API.
 
+This 3090 is a leftover from my Ethereum mining days. Running local models gives it a second life: the same card now powers a coding agent. That was part of the motivation for this experiment—finding out how far the hardware already on hand could take a local AI coding workflow.
+
 The question I cared about was whether this combination could finish useful coding work. Loading the model, chatting, and receiving a tool call are only the beginning.
 
 Our measured answer: **it can solve bounded coding tasks with clear acceptance criteria, but this configuration still needs independent tests and code review.** Three of four first-attempt candidate implementations passed all predefined independent checks. Only two completed editing, testing, and final handoff within eight minutes. We also recorded failures, a timeout, and defects that green tests missed.
