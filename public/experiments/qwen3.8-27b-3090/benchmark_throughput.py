@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """Measure the running local API; generated text is never executed."""
 import argparse
-import datetime as dt
-import hashlib
 import json
 import os
 from pathlib import Path
@@ -22,8 +20,7 @@ parser.add_argument("--short-repeats", type=int, default=3)
 parser.add_argument("--report-dir", type=Path, required=True)
 args = parser.parse_args()
 args.report_dir.mkdir(parents=True, exist_ok=False)
-report = {"started_at": dt.datetime.now().astimezone().isoformat(),
-          "base_url": args.base_url, "contexts_requested": args.contexts,
+report = {"contexts_requested": args.contexts,
           "output_limit": args.output_tokens, "tests": []}
 
 def request(route, body=None):
@@ -136,8 +133,7 @@ def measure(name, messages, limit, thinking=False, cache=True, tokenized=None):
              "elapsed_seconds": elapsed, "time_to_first_token_seconds": first-started,
              "completion_tokens_per_wall_second": usage["completion_tokens"]/elapsed,
              "finish_reason": finish, "visible_characters": len(message["content"]),
-             "reasoning_characters": reasoning_chars, "GPU_samples": samples,
-             "response_sha256": hashlib.sha256(message["content"].encode()).hexdigest()}
+             "reasoning_characters": reasoning_chars, "GPU_samples": samples}
     report["tests"].append(entry)
     save()
     print(json.dumps({"name": name, "input": usage["prompt_tokens"],
@@ -185,6 +181,5 @@ short = [x["timings"]["predicted_per_second"] for x in report["tests"]
 report["short_decode_summary"] = {"samples": len(short), "median_tokens_per_second":
     statistics.median(short), "minimum": min(short), "maximum": max(short)}
 report["health_after"] = request("/health")
-report["finished_at"] = dt.datetime.now().astimezone().isoformat()
 save()
 print("Throughput benchmark complete.", flush=True)

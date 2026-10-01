@@ -1,6 +1,4 @@
 {
-  "date_local": "2026-09-29",
-  "timezone": "America/Los_Angeles",
   "model": "local-qwen/qwen3.8-27b",
   "opencode_version": "2.0.20",
   "runtime": "llama.cpp b11146",

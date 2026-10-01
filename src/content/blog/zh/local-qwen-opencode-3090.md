@@ -13,7 +13,7 @@ ogImage: "/og/local-qwen-opencode-3090-zh.png"
 
 这轮实测的答案是：**可以完成有明确验收条件的小型代码任务，但当前配置还需要独立测试和代码审查。** 四个首次任务中，三个候选实现通过全部预设独立检查，只有两个在八分钟内完成修改、测试和最终交付。我们也记录了失败、超时，以及绿灯测试没有发现的问题。
 
-以下结果来自 **2026 年 9 月 29 日（America/Los_Angeles）** 的实际运行。吞吐量、上下文容量和代码质量分开报告；没有与其他模型做同条件对比。
+以下结果来自这套配置的实际运行。吞吐量、上下文容量和代码质量分开报告；没有与其他模型做同条件对比。
 
 ## 这次运行的硬件和配置
 
@@ -241,5 +241,5 @@ python3 benchmark_throughput.py --report-dir reports/throughput-new-run
 ## 配置、数据和复现材料
 
 - [配置与测量包 ZIP](/experiments/qwen3.8-27b-3090/reproduction-kit.zip)：下载校验、完整启动脚本、OpenCode 配置、吞吐量脚本和数据；不包含权重或编码任务完整夹具。
-- [实验说明](/experiments/qwen3.8-27b-3090/README.txt)、[吞吐量原始记录](/experiments/qwen3.8-27b-3090/throughput-results.json)、[代码任务汇总](/experiments/qwen3.8-27b-3090/coding-summary.json)。汇总已去除个人路径和会话标识，保留评分及审查探针。
+- [实验说明](/experiments/qwen3.8-27b-3090/README.txt)、[吞吐量测量记录](/experiments/qwen3.8-27b-3090/throughput-results.json)、[代码任务汇总](/experiments/qwen3.8-27b-3090/coding-summary.json)。附件已去除实验日期、绝对时间戳、时区、个人路径和会话标识，保留性能测量、评分及审查探针。
 - [Qwen 官方模型卡](https://huggingface.co/Qwen/Qwen3.8-27B)、[固定版本 llama-server 文档](https://github.com/ggml-org/llama.cpp/blob/b11146/tools/server/README.md)、[OpenCode Provider 文档](https://opencode.ai/docs/providers/)。上游文档用于解释安装与协议；本文的性能和代码结论来自附带的本机记录。

@@ -1,6 +1,4 @@
 {
-  "started_at": "2026-09-29T23:17:07.388310-07:00",
-  "base_url": "http://127.0.0.1:8080",
   "contexts_requested": [
     2048,
     16384,
@@ -103,8 +101,7 @@
           "utilization_percent": 97,
           "temperature_C": 71
         }
-      ],
-      "response_sha256": "5488a433d9f74005808d6790b72a3db7ae8288459d21249ec16c1ffde78613a2"
+      ]
     },
     {
       "name": "context_2048_cached_continuation",
@@ -165,8 +162,7 @@
           "utilization_percent": 97,
           "temperature_C": 73
         }
-      ],
-      "response_sha256": "6cb550c4ebcdc2356f34f272a31aae76e94170294491c1bf8b8d77f7b8134f60"
+      ]
     },
     {
       "name": "context_2048_cold_2",
@@ -262,8 +258,7 @@
           "utilization_percent": 98,
           "temperature_C": 75
         }
-      ],
-      "response_sha256": "ffe3bd4e7b316f1ea03475269d271d9b166280eb4a57af59269598e02afdafb3"
+      ]
     },
     {
       "name": "context_2048_cold_3",
@@ -359,8 +354,7 @@
           "utilization_percent": 94,
           "temperature_C": 79
         }
-      ],
-      "response_sha256": "2c900f36c41c8ed6297248af03591f0d2ded17af113c0fd71a1908ea2a6ec07e"
+      ]
     },
     {
       "name": "context_16384_cold_1",
@@ -505,8 +499,7 @@
           "utilization_percent": 98,
           "temperature_C": 80
         }
-      ],
-      "response_sha256": "df150d9cf72b3e1ae95f0732a1d5fa96c9667486afb1d810244907c169e76d0e"
+      ]
     },
     {
       "name": "context_16384_cached_continuation",
@@ -567,8 +560,7 @@
           "utilization_percent": 98,
           "temperature_C": 80
         }
-      ],
-      "response_sha256": "d5fb75cee43ad26211f16f05e31038f1d438a9835cb850bea85b7b56f8ac3a4b"
+      ]
     },
     {
       "name": "context_65536_cold_1",
@@ -958,8 +950,7 @@
           "utilization_percent": 99,
           "temperature_C": 81
         }
-      ],
-      "response_sha256": "701230f39a089d6c8d26cee4e1d88003e364c5d068e9e40695becdbf1eeb6607"
+      ]
     },
     {
       "name": "context_65536_cached_continuation",
@@ -1034,8 +1025,7 @@
           "utilization_percent": 98,
           "temperature_C": 83
         }
-      ],
-      "response_sha256": "d0d27a8cdcbdd88b6824e048afdef4a3de00777dd5f05b73670469483fe8b918"
+      ]
     },
     {
       "name": "context_120000_cold_1",
@@ -1789,8 +1779,7 @@
           "utilization_percent": 98,
           "temperature_C": 85
         }
-      ],
-      "response_sha256": "dc6f793ce5c93b7fe81ce6cb0ef75a701ae938a7951b01a285ae9e571819b32f"
+      ]
     },
     {
       "name": "context_120000_cached_continuation",
@@ -1872,8 +1861,7 @@
           "utilization_percent": 98,
           "temperature_C": 85
         }
-      ],
-      "response_sha256": "fcbc0cf5be70c30837ca92f641badc815b7bd85776d409c97356a46e51286610"
+      ]
     },
     {
       "name": "short_medium_thinking",
@@ -2018,8 +2006,7 @@
           "utilization_percent": 97,
           "temperature_C": 85
         }
-      ],
-      "response_sha256": "32378e6d874e759dad6ba095ee0bc396028a4cba4197a5067d0332aa2b46c656"
+      ]
     }
   ],
   "health_before": {
@@ -2049,6 +2036,5 @@
   },
   "health_after": {
     "status": "ok"
-  },
-  "finished_at": "2026-09-29T23:24:51.721034-07:00"
+  }
 }

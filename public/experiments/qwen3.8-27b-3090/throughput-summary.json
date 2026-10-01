@@ -84,8 +84,7 @@
     "completion_tokens_per_wall_second": 33.05217854327199,
     "finish_reason": "length",
     "visible_characters": 2283,
-    "reasoning_characters": 1036,
-    "response_sha256": "32378e6d874e759dad6ba095ee0bc396028a4cba4197a5067d0332aa2b46c656"
+    "reasoning_characters": 1036
   },
   "peak_GPU_used_MiB": 22162,
   "minimum_GPU_free_MiB": 1943,

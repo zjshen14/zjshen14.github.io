@@ -13,7 +13,7 @@ The question I cared about was whether this combination could finish useful codi
 
 Our measured answer: **it can solve bounded coding tasks with clear acceptance criteria, but this configuration still needs independent tests and code review.** Three of four first-attempt candidate implementations passed all predefined independent checks. Only two completed editing, testing, and final handoff within eight minutes. We also recorded failures, a timeout, and defects that green tests missed.
 
-These runs took place on **September 29, 2026, in America/Los_Angeles**. Capacity, throughput, and coding quality are reported separately. We did not run a controlled comparison against another model.
+These results come from actual runs of this configuration. Capacity, throughput, and coding quality are reported separately. We did not run a controlled comparison against another model.
 
 ## Hardware and settings
 
@@ -241,5 +241,5 @@ This machine now has a useful local environment for coding experiments. The next
 ## Configuration, data, and reproduction materials
 
 - [Configuration and measurement ZIP](/experiments/qwen3.8-27b-3090/reproduction-kit.zip): verified downloads, full launcher, OpenCode configuration, throughput script, and data. It includes neither weights nor the complete coding-task fixtures.
-- [Experiment notes](/experiments/qwen3.8-27b-3090/README.txt), [raw throughput records](/experiments/qwen3.8-27b-3090/throughput-results.json), and [coding summary](/experiments/qwen3.8-27b-3090/coding-summary.json). Personal paths and session identifiers were removed from summaries; scores and review probes are retained.
+- [Experiment notes](/experiments/qwen3.8-27b-3090/README.txt), [throughput measurements](/experiments/qwen3.8-27b-3090/throughput-results.json), and [coding summary](/experiments/qwen3.8-27b-3090/coding-summary.json). Experiment dates, absolute timestamps, timezones, personal paths, and session identifiers were removed from attachments; measurements, scores, and review probes are retained.
 - [Official Qwen model card](https://huggingface.co/Qwen/Qwen3.8-27B), [pinned llama-server documentation](https://github.com/ggml-org/llama.cpp/blob/b11146/tools/server/README.md), and [OpenCode provider documentation](https://opencode.ai/docs/providers/). Upstream sources describe installation and protocols; performance and coding claims come from the attached local records.

@@ -1,6 +1,5 @@
 Local Qwen3.8-27B + OpenCode experiment
 ======================================
-Measured September 29, 2026, America/Los_Angeles.
 Hardware: RTX 3090 24GB, Ryzen 7 5800X, 64GB RAM, Ubuntu.
 Runtime: llama.cpp b11146, CUDA 12.8; Q4_K_M weights; q8_0 K/V;
 131072-token capacity, one slot, flash attention, batch 512/microbatch 256.
@@ -27,7 +26,8 @@ For Web access use another port (e.g. 4096) and set a strong server password.
 Throughput reproduction (Python 3 standard library, idle model server):
   python3 benchmark_throughput.py --report-dir reports/new-run
 The output directory must not already exist. This is the original timing
-script with only GPU-name metadata changed to identify the actual card.
+script with GPU-name metadata changed to identify the actual card and
+absolute timestamps, endpoint metadata and response fingerprints omitted.
 No generated text is executed. Model loading and multi-user batching are
 outside scope. Temperature 0/seed 1234; main tests disable thinking.
 Fresh requests disable prefix reuse and generate 512 tokens. Continuations
@@ -37,13 +37,15 @@ Generation uses server decode timing. First-token time uses the HTTP client.
 GPU samples include desktop use and are taken every two seconds.
 
 Data:
-  throughput-results.json -- original raw API timing records and GPU samples
+  throughput-results.json -- API timing records and GPU samples
   throughput-summary.json -- original timing summary
   coding-summary.json -- first attempts and separate thinking-off diagnostic
   buildplan-termination.json -- response-budget exhaustion evidence
   download-manifest.json -- pinned URLs, byte sizes, SHA-256 checksums
-Personal filesystem paths and session identifiers were removed from the
-coding and download summaries. Scores, test counts and review probes remain.
+Experiment dates, absolute timestamps, timezones, personal filesystem paths,
+session identifiers and unnecessary response fingerprints were removed.
+Archive entry timestamps are fixed and do not reflect the experiment or
+packaging time. Scores, durations, test counts and review probes remain.
 
 Coding checks were prepared before each attempt, outside the agent workspace.
 Four first attempts: 31/40 independent test methods, three fully green
