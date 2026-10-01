@@ -17,6 +17,16 @@ The results make me want to keep using it: **bounded fixes and small features wi
 
 I'll start with the measured results, then walk through reproduction. To get straight to the setup, jump to [deployment](#reproduce-the-local-coding-setup).
 
+## Why Qwen3.8-27B
+
+Interest in the local-model community put it on my shortlist. Qwen3.8-27B is a prominent local coding candidate, with results that make it worth trying: the [official model card](https://huggingface.co/Qwen/Qwen3.8-27B#text-performance) reports **61.7 on SWE-bench Pro** and **73.0 on Terminal Bench 2.1**. Software fixes and terminal-agent tasks are close to what I want OpenCode to do. These are Qwen's reported results under each benchmark's evaluation setup, and they gave me a reason to test it first.
+
+The hardware fit mattered just as much. **The 27B Q4_K_M weights occupy about 16.8GB**, fitting entirely into the 3090's 24GB VRAM in our configuration with room for KV cache and runtime buffers. For this old card, the balance of capability, memory use, and speed matters more than chasing a larger parameter count.
+
+Its agent focus also matches the workflow: reading code, calling tools, and revising changes after test feedback. The [official introduction](https://github.com/QwenLM/Qwen3.8#introduction) highlights coding, multi-step agent execution, and adjustable thinking. Serving it through llama.cpp's local API makes those capabilities available to OpenCode.
+
+That combination made it a promising starting point. Published benchmarks help select a candidate; **what its Q4 version can accomplish on this card still needs validation with our own tasks.** The measurements below address that question.
+
 ## What the old card does now
 
 OpenCode owns the workspace and tools: reading files, editing code, running shell commands, and executing tests. llama-server handles inference, connected through a local API.
@@ -288,4 +298,4 @@ Then try a bounded task of your own and validate it with independent tests and r
 
 - [Configuration and measurement ZIP](/experiments/qwen3.8-27b-3090/reproduction-kit.zip): verified downloads, full launcher, OpenCode configuration, throughput script, and data. It includes neither weights nor the complete coding-task fixtures.
 - [Experiment notes](/experiments/qwen3.8-27b-3090/README.txt), [throughput measurements](/experiments/qwen3.8-27b-3090/throughput-results.json), and [coding summary](/experiments/qwen3.8-27b-3090/coding-summary.json). Experiment dates, absolute timestamps, timezones, personal paths, and session identifiers were removed from attachments; measurements, scores, and review probes are retained.
-- [Official Qwen model card](https://huggingface.co/Qwen/Qwen3.8-27B), [pinned llama-server documentation](https://github.com/ggml-org/llama.cpp/blob/b11146/tools/server/README.md), and [OpenCode provider documentation](https://opencode.ai/docs/providers/). Upstream sources describe installation and protocols; performance and coding claims come from the attached local records.
+- [Official Qwen model card](https://huggingface.co/Qwen/Qwen3.8-27B), [pinned llama-server documentation](https://github.com/ggml-org/llama.cpp/blob/b11146/tools/server/README.md), and [OpenCode provider documentation](https://opencode.ai/docs/providers/). Upstream sources provide selection context, reported benchmarks, and deployment guidance; this host's performance and four-task coding results come from the attached experiment records.

@@ -17,6 +17,16 @@ ogImage: "/og/local-qwen-opencode-3090-zh.png"
 
 下面先讲它实际跑得怎么样，再讲怎样复现。如果想直接动手，可以跳到[部署部分](#复现这套本地编码环境)。
 
+## 为什么选 Qwen3.8-27B
+
+选它的起点，是它在本地模型圈里的热度。Qwen3.8-27B 是本地编码中很受关注的候选之一，也有成绩支撑这种期待：[官方模型卡](https://huggingface.co/Qwen/Qwen3.8-27B#text-performance)报告了 **SWE-bench Pro 61.7** 和 **Terminal Bench 2.1 73.0** 的成绩。前者涉及软件修复，后者涉及终端中的 Agent 任务，和我想用 OpenCode 做的事情比较接近。它们是官方在各自评测配置下报告的结果，让我愿意优先试它。
+
+更实际的理由，是它和手上的硬件匹配。**27B 的 Q4_K_M 权重约 16.8GB**，在这次配置下能完整放进 3090 的 24GB 显存，并给 KV cache 和运行缓冲区留出空间。对这张旧卡来说，模型能力、显存占用和速度之间的平衡，比一味追更大的参数量更有用。
+
+它的 Agent 定位也符合这次需求：我们要让模型读代码、调用工具、根据测试反馈继续修改。[官方介绍](https://github.com/QwenLM/Qwen3.8#introduction)强调了编码、多步 Agent 执行和可调 thinking；这套部署又能通过 llama.cpp 的本地 API 接入 OpenCode，方便把这些能力放进实际工作流。
+
+因此，我把它当作一个“口碑值得关注、硬件也跑得动”的起点。官方榜单的成绩能帮助选候选模型，**Q4 量化后在这张卡上究竟能做多少事，还要看自己的任务和验证结果。** 下面的实测就是为这个问题准备的。
+
 ## 这张旧卡，现在负责什么
 
 这套组合里，OpenCode 负责工作区和工具：读文件、修改代码、执行 Shell、运行测试。llama-server 负责模型推理，两者通过本机 API 连接。
@@ -288,4 +298,4 @@ python3 benchmark_throughput.py --report-dir reports/throughput-new-run
 
 - [配置与测量包 ZIP](/experiments/qwen3.8-27b-3090/reproduction-kit.zip)：下载校验、完整启动脚本、OpenCode 配置、吞吐量脚本和数据；不包含权重或编码任务完整夹具。
 - [实验说明](/experiments/qwen3.8-27b-3090/README.txt)、[吞吐量测量记录](/experiments/qwen3.8-27b-3090/throughput-results.json)、[代码任务汇总](/experiments/qwen3.8-27b-3090/coding-summary.json)。附件已去除实验日期、绝对时间戳、时区、个人路径和会话标识，保留性能测量、评分及审查探针。
-- [Qwen 官方模型卡](https://huggingface.co/Qwen/Qwen3.8-27B)、[固定版本 llama-server 文档](https://github.com/ggml-org/llama.cpp/blob/b11146/tools/server/README.md)、[OpenCode Provider 文档](https://opencode.ai/docs/providers/)。上游文档用于解释安装与协议；本文的性能和代码结论来自附带的本机记录。
+- [Qwen 官方模型卡](https://huggingface.co/Qwen/Qwen3.8-27B)、[固定版本 llama-server 文档](https://github.com/ggml-org/llama.cpp/blob/b11146/tools/server/README.md)、[OpenCode Provider 文档](https://opencode.ai/docs/providers/)。上游资料提供选型背景、官方评测和部署说明；本文的本机性能及四个代码任务结论来自附带的实验记录。
