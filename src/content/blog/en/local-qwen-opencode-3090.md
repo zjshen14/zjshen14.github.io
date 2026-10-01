@@ -15,21 +15,21 @@ We loaded **Qwen3.8-27B Q4_K_M** into the 3090's **24GB of VRAM**, served it thr
 
 The results make me want to keep using it: **bounded fixes and small features with clear acceptance criteria can produce useful patches.** Exhausted output budgets, a timeout, and defects missed by tests also showed why independent validation still matters.
 
-I'll start with the measured results, then walk through reproduction. To get straight to the setup, jump to [deployment](#reproduce-the-local-coding-setup).
+I'll explain the model choice and its connection to OpenCode, then share the measured results and lessons from using it. Full setup instructions follow later; to get straight to them, jump to [deployment](#reproduce-the-local-coding-setup).
 
 ## Why Qwen3.8-27B
 
-Interest in the local-model community put it on my shortlist. Qwen3.8-27B is a prominent local coding candidate, with results that make it worth trying: the [official model card](https://huggingface.co/Qwen/Qwen3.8-27B#text-performance) reports **61.7 on SWE-bench Pro** and **73.0 on Terminal Bench 2.1**. Software fixes and terminal-agent tasks are close to what I want OpenCode to do. These are Qwen's reported results under each benchmark's evaluation setup, and they gave me a reason to test it first.
+Qwen3.8-27B is a prominent local coding candidate, with results that make it worth trying: the [official model card](https://huggingface.co/Qwen/Qwen3.8-27B#text-performance) reports **61.7 on SWE-bench Pro** and **73.0 on Terminal Bench 2.1**. Software fixes and terminal-agent tasks are close to what I want OpenCode to do. These reported results gave me a reason to test it first.
 
 The hardware fit mattered just as much. **The 27B Q4_K_M weights occupy about 16.8GB**, fitting entirely into the 3090's 24GB VRAM in our configuration with room for KV cache and runtime buffers. For this old card, the balance of capability, memory use, and speed matters more than chasing a larger parameter count.
 
-Its agent focus also matches the workflow: reading code, calling tools, and revising changes after test feedback. The [official introduction](https://github.com/QwenLM/Qwen3.8#introduction) highlights coding, multi-step agent execution, and adjustable thinking. Serving it through llama.cpp's local API makes those capabilities available to OpenCode.
+Its agent focus also matches the workflow: reading code, calling tools, and revising changes after test feedback. The [official introduction](https://github.com/QwenLM/Qwen3.8#introduction) highlights coding, multi-step agent execution, and adjustable thinking, making this workflow a useful place to test those capabilities.
 
-That combination made it a promising starting point. Published benchmarks help select a candidate; **what its Q4 version can accomplish on this card still needs validation with our own tasks.** The measurements below address that question.
+Those three considerations made it the starting point for this experiment. **What its Q4 version can accomplish on this card still needs validation with our own tasks.**
 
 ## What the old card does now
 
-OpenCode owns the workspace and tools: reading files, editing code, running shell commands, and executing tests. llama-server handles inference, connected through a local API.
+With the model chosen, the next step is connecting it to a workflow that can operate on a repository. OpenCode owns the workspace and tools: reading files, editing code, running shell commands, and executing tests. llama-server handles inference, connected through a local API.
 
 ```mermaid
 flowchart TD
@@ -88,7 +88,7 @@ Download the [measurement records](/experiments/qwen3.8-27b-3090/throughput-resu
 
 ## The real test: four small coding projects
 
-We prepared four small Python repositories: an expiring cache, a CSV ledger, an incremental build planner, and SQLite transfers. Each had a written acceptance contract, a fresh session, and an eight-minute deadline.
+After measuring speed and capacity, we checked whether the setup could complete code changes. We prepared four small Python repositories: an expiring cache, a CSV ledger, an incremental build planner, and SQLite transfers. Each had a written acceptance contract, a fresh session, and an eight-minute deadline.
 
 To check more than the agent's own tests, we prepared ten independent test methods per task, kept them outside its workspace, and never fed their results back to the model.
 
