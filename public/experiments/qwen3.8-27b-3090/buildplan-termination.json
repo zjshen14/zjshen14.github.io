@@ -1,0 +1,18 @@
+{
+  "finish": "length",
+  "tokens": {
+    "input": 231,
+    "output": 8192,
+    "reasoning": 0,
+    "cache": {
+      "read": 4754,
+      "write": 0
+    }
+  },
+  "content_types": [
+    "reasoning"
+  ],
+  "code_edited": false,
+  "context_limit": 131072,
+  "output_limit": 8192
+}

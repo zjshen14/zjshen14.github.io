@@ -1,0 +1,184 @@
+{
+  "date_local": "2026-09-29",
+  "timezone": "America/Los_Angeles",
+  "model": "local-qwen/qwen3.8-27b",
+  "opencode_version": "2.0.20",
+  "runtime": "llama.cpp b11146",
+  "weights": "Q4_K_M",
+  "context_tokens": 131072,
+  "output_tokens_per_request": 8192,
+  "baseline_thinking": "medium",
+  "hardware": "RTX 3090 24GB; Ryzen 7 5800X; 64GB RAM",
+  "results": [
+    {
+      "task": "cache",
+      "diagnostic_only": false,
+      "baseline_heldout_passed": 0,
+      "candidate_heldout_passed": 10,
+      "heldout_total": 10,
+      "public_and_agent_test_count": 26,
+      "agent_added_tests": 23,
+      "public_and_agent_tests_pass": true,
+      "elapsed_seconds": 187.29,
+      "timing_basis": "prompt-file timestamp to final event; process exit timing unavailable",
+      "timed_out": false,
+      "exit_code": null,
+      "tool_counts": {
+        "read": 4,
+        "shell": 3,
+        "glob": 1,
+        "write": 2
+      },
+      "tool_error_count": 1,
+      "protected_files_unchanged": true,
+      "has_code_patch": true
+    },
+    {
+      "task": "ledger",
+      "diagnostic_only": false,
+      "baseline_heldout_passed": 1,
+      "candidate_heldout_passed": 10,
+      "heldout_total": 10,
+      "public_and_agent_test_count": 43,
+      "agent_added_tests": 40,
+      "public_and_agent_tests_pass": true,
+      "elapsed_seconds": 344.05,
+      "timing_basis": "prompt-file timestamp to final event; process exit timing unavailable",
+      "timed_out": false,
+      "exit_code": null,
+      "tool_counts": {
+        "read": 9,
+        "shell": 5,
+        "write": 4,
+        "edit": 3
+      },
+      "tool_error_count": 1,
+      "protected_files_unchanged": true,
+      "has_code_patch": true,
+      "post_run_review_probes": [
+        {
+          "probe": "large_exact_amount",
+          "expected": "123456789012345678901234567890.13",
+          "actual": "1.234567890123456789012345679E+29",
+          "passed": false
+        },
+        {
+          "probe": "exact_header_names",
+          "expected": "reject padded header",
+          "accepted": true,
+          "passed": false
+        },
+        {
+          "probe": "read_time_io_error",
+          "expected_exit": 2,
+          "actual_exit": null,
+          "escaped": "OSError: simulated read failure",
+          "stdout": "",
+          "stderr": "",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "task": "buildplan",
+      "diagnostic_only": false,
+      "baseline_heldout_passed": 1,
+      "candidate_heldout_passed": 1,
+      "heldout_total": 10,
+      "public_and_agent_test_count": 3,
+      "agent_added_tests": 0,
+      "public_and_agent_tests_pass": false,
+      "elapsed_seconds": 238.01,
+      "timing_basis": "process elapsed time",
+      "timed_out": false,
+      "exit_code": 0,
+      "tool_counts": {
+        "read": 9,
+        "shell": 1
+      },
+      "tool_error_count": 1,
+      "protected_files_unchanged": true,
+      "has_code_patch": false
+    },
+    {
+      "task": "wallet",
+      "diagnostic_only": false,
+      "baseline_heldout_passed": 1,
+      "candidate_heldout_passed": 10,
+      "heldout_total": 10,
+      "public_and_agent_test_count": 14,
+      "agent_added_tests": 11,
+      "public_and_agent_tests_pass": true,
+      "elapsed_seconds": 480.14,
+      "timing_basis": "process elapsed time",
+      "timed_out": true,
+      "exit_code": 130,
+      "tool_counts": {
+        "read": 8,
+        "shell": 4,
+        "write": 2,
+        "edit": 1
+      },
+      "tool_error_count": 1,
+      "protected_files_unchanged": true,
+      "has_code_patch": true,
+      "post_run_review_probes": [
+        {
+          "probe": "destination_integer_overflow",
+          "before": [
+            [
+              "A",
+              100,
+              "integer"
+            ],
+            [
+              "B",
+              9223372036854775807,
+              "integer"
+            ]
+          ],
+          "after": [
+            [
+              "A",
+              98,
+              "integer"
+            ],
+            [
+              "B",
+              9.223372036854776e+18,
+              "real"
+            ]
+          ],
+          "error": null,
+          "in_transaction": false,
+          "transfer_count": 1,
+          "passed": false
+        }
+      ]
+    },
+    {
+      "task": "buildplan_no_thinking",
+      "diagnostic_only": true,
+      "baseline_heldout_passed": 1,
+      "candidate_heldout_passed": 9,
+      "heldout_total": 10,
+      "public_and_agent_test_count": 47,
+      "agent_added_tests": 44,
+      "public_and_agent_tests_pass": true,
+      "elapsed_seconds": 340.02,
+      "timing_basis": "process elapsed time",
+      "timed_out": false,
+      "exit_code": 0,
+      "tool_counts": {
+        "read": 11,
+        "shell": 13,
+        "write": 6,
+        "execute": 2,
+        "edit": 4
+      },
+      "tool_error_count": 4,
+      "protected_files_unchanged": true,
+      "has_code_patch": true
+    }
+  ]
+}

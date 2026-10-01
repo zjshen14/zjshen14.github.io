@@ -39,6 +39,8 @@ PAGES = {  # output path (relative to public/) -> page
  'og-default.png': page('DevLog · 研发手记', 'Notes on AI agents,<br>dev tools &amp; building', 'Hands-on write-ups in English and 中文', ['AI', 'Agents', 'Crypto', 'Investing']),
  'og/setup-opencode-remote-web-ide-en.png': page('DevLog · Tutorial', 'Self-host OpenCode Web IDE', 'Drive a coding agent from your laptop or phone, with Muse Spark 1.3 free on OpenCode', ['Home LAN', 'Tailscale', 'Caddy / Nginx', '1M context']),
  'og/setup-opencode-remote-web-ide-zh.png': page('研发手记 · 实战教程', '自建 OpenCode Web IDE', '手机、笔记本随时驱动编码 Agent，免费接入 Muse Spark 1.3', ['家庭局域网', 'Tailscale', 'Caddy / Nginx', '100 万上下文']),
+ 'og/local-qwen-opencode-3090-en.png': page('DevLog · Local AI Lab', 'One RTX 3090.<br>A local coding agent.', 'Qwen3.8-27B + OpenCode: deployment, throughput & coding results', ['24GB VRAM', 'Q4_K_M', '128K capacity']),
+ 'og/local-qwen-opencode-3090-zh.png': page('研发手记 · 本地 AI 实验', '一张 RTX 3090<br>跑本地编码 Agent', 'Qwen3.8-27B + OpenCode：部署、吞吐量与代码任务实测', ['24GB 显存', 'Q4_K_M', '128K 容量']),
 }
 
 def render(out_rel, page_html):

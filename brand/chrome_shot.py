@@ -1,13 +1,15 @@
-"""Screenshot a local HTML file with headless Chrome (macOS).
+"""Screenshot a local HTML file with headless Chrome.
 
 Chrome on macOS can keep its app loop alive after capturing, especially when a
 regular Chrome window is open, so wait for the "bytes written" log line and then
 kill the isolated process group instead of waiting for Chrome to exit.
 """
-import os, signal, subprocess, tempfile, time
+import os, shutil, signal, subprocess, tempfile, time
 from pathlib import Path
 
-CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+CHROME = (os.environ.get('CHROME_BIN') or shutil.which('google-chrome')
+          or shutil.which('chromium') or shutil.which('chromium-browser')
+          or '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome')
 
 
 def screenshot(html_path, out_path, width, height, scale=1, timeout=50):

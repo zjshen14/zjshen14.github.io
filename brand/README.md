@@ -24,4 +24,4 @@ Source files for images used outside the site's own pages. This folder is not pa
 2. Run `python3 brand/og-images/og_templates.py`. PNGs are written to `public/`.
 3. Set `ogImage: "/og/<slug>-en.png"` in the post's frontmatter.
 
-`chrome_shot.py` is the shared headless-Chrome screenshot helper (macOS, requires Google Chrome).
+`chrome_shot.py` is the shared headless-Chrome screenshot helper (macOS or Linux, requires Google Chrome or Chromium; override its path with `CHROME_BIN`).

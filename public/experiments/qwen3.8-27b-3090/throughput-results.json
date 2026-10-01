@@ -1,0 +1,2054 @@
+{
+  "started_at": "2026-09-29T23:17:07.388310-07:00",
+  "base_url": "http://127.0.0.1:8080",
+  "contexts_requested": [
+    2048,
+    16384,
+    65536,
+    120000
+  ],
+  "output_limit": 512,
+  "tests": [
+    {
+      "name": "context_2048_cold_1",
+      "thinking_enabled": false,
+      "cache_prompt": false,
+      "tokenized_prompt_tokens": 2075,
+      "usage": {
+        "completion_tokens": 512,
+        "prompt_tokens": 2075,
+        "total_tokens": 2587,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 2075,
+        "prompt_ms": 2074.662,
+        "prompt_per_token_ms": 0.9998371084337349,
+        "prompt_per_second": 1000.1629181042504,
+        "predicted_n": 512,
+        "predicted_ms": 14046.323,
+        "predicted_per_token_ms": 27.487911937377692,
+        "predicted_per_second": 36.37962760788001
+      },
+      "elapsed_seconds": 17.42335863003973,
+      "time_to_first_token_seconds": 3.3769569769501686,
+      "completion_tokens_per_wall_second": 29.38583833757846,
+      "finish_reason": "length",
+      "visible_characters": 1622,
+      "reasoning_characters": 0,
+      "GPU_samples": [
+        {
+          "seconds": 0.03,
+          "used_MiB": 21798,
+          "free_MiB": 2307,
+          "utilization_percent": 57,
+          "temperature_C": 53
+        },
+        {
+          "seconds": 2.06,
+          "used_MiB": 21793,
+          "free_MiB": 2312,
+          "utilization_percent": 99,
+          "temperature_C": 64
+        },
+        {
+          "seconds": 4.09,
+          "used_MiB": 21794,
+          "free_MiB": 2311,
+          "utilization_percent": 98,
+          "temperature_C": 67
+        },
+        {
+          "seconds": 6.12,
+          "used_MiB": 21791,
+          "free_MiB": 2313,
+          "utilization_percent": 98,
+          "temperature_C": 68
+        },
+        {
+          "seconds": 8.15,
+          "used_MiB": 21791,
+          "free_MiB": 2314,
+          "utilization_percent": 98,
+          "temperature_C": 68
+        },
+        {
+          "seconds": 10.17,
+          "used_MiB": 21789,
+          "free_MiB": 2316,
+          "utilization_percent": 94,
+          "temperature_C": 69
+        },
+        {
+          "seconds": 12.2,
+          "used_MiB": 21788,
+          "free_MiB": 2317,
+          "utilization_percent": 97,
+          "temperature_C": 70
+        },
+        {
+          "seconds": 14.23,
+          "used_MiB": 21787,
+          "free_MiB": 2317,
+          "utilization_percent": 97,
+          "temperature_C": 71
+        },
+        {
+          "seconds": 16.26,
+          "used_MiB": 21789,
+          "free_MiB": 2316,
+          "utilization_percent": 97,
+          "temperature_C": 71
+        }
+      ],
+      "response_sha256": "5488a433d9f74005808d6790b72a3db7ae8288459d21249ec16c1ffde78613a2"
+    },
+    {
+      "name": "context_2048_cached_continuation",
+      "thinking_enabled": false,
+      "cache_prompt": true,
+      "tokenized_prompt_tokens": null,
+      "usage": {
+        "completion_tokens": 256,
+        "prompt_tokens": 2614,
+        "total_tokens": 2870,
+        "prompt_tokens_details": {
+          "cached_tokens": 2586
+        }
+      },
+      "timings": {
+        "cache_n": 2586,
+        "prompt_n": 28,
+        "prompt_ms": 420.865,
+        "prompt_per_token_ms": 15.030892857142858,
+        "prompt_per_second": 66.5296472740665,
+        "predicted_n": 256,
+        "predicted_ms": 6956.26,
+        "predicted_per_token_ms": 27.27945098039216,
+        "predicted_per_second": 36.65762924330028
+      },
+      "elapsed_seconds": 7.383682899060659,
+      "time_to_first_token_seconds": 0.4573598930146545,
+      "completion_tokens_per_wall_second": 34.6710447211334,
+      "finish_reason": "length",
+      "visible_characters": 751,
+      "reasoning_characters": 0,
+      "GPU_samples": [
+        {
+          "seconds": 0.03,
+          "used_MiB": 21788,
+          "free_MiB": 2316,
+          "utilization_percent": 98,
+          "temperature_C": 72
+        },
+        {
+          "seconds": 2.06,
+          "used_MiB": 21786,
+          "free_MiB": 2318,
+          "utilization_percent": 98,
+          "temperature_C": 71
+        },
+        {
+          "seconds": 4.09,
+          "used_MiB": 21789,
+          "free_MiB": 2316,
+          "utilization_percent": 98,
+          "temperature_C": 72
+        },
+        {
+          "seconds": 6.12,
+          "used_MiB": 21788,
+          "free_MiB": 2317,
+          "utilization_percent": 97,
+          "temperature_C": 73
+        }
+      ],
+      "response_sha256": "6cb550c4ebcdc2356f34f272a31aae76e94170294491c1bf8b8d77f7b8134f60"
+    },
+    {
+      "name": "context_2048_cold_2",
+      "thinking_enabled": false,
+      "cache_prompt": false,
+      "tokenized_prompt_tokens": 2073,
+      "usage": {
+        "completion_tokens": 512,
+        "prompt_tokens": 2073,
+        "total_tokens": 2585,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 2073,
+        "prompt_ms": 2075.036,
+        "prompt_per_token_ms": 1.0009821514712978,
+        "prompt_per_second": 999.01881220374,
+        "predicted_n": 512,
+        "predicted_ms": 14176.901,
+        "predicted_per_token_ms": 27.743446183953033,
+        "predicted_per_second": 36.04454880513026
+      },
+      "elapsed_seconds": 16.927381927962415,
+      "time_to_first_token_seconds": 2.750372417969629,
+      "completion_tokens_per_wall_second": 30.246851059361106,
+      "finish_reason": "length",
+      "visible_characters": 1609,
+      "reasoning_characters": 0,
+      "GPU_samples": [
+        {
+          "seconds": 0.03,
+          "used_MiB": 21788,
+          "free_MiB": 2317,
+          "utilization_percent": 98,
+          "temperature_C": 73
+        },
+        {
+          "seconds": 2.05,
+          "used_MiB": 21787,
+          "free_MiB": 2318,
+          "utilization_percent": 100,
+          "temperature_C": 73
+        },
+        {
+          "seconds": 4.08,
+          "used_MiB": 21790,
+          "free_MiB": 2314,
+          "utilization_percent": 98,
+          "temperature_C": 73
+        },
+        {
+          "seconds": 6.11,
+          "used_MiB": 21790,
+          "free_MiB": 2314,
+          "utilization_percent": 98,
+          "temperature_C": 73
+        },
+        {
+          "seconds": 8.14,
+          "used_MiB": 21789,
+          "free_MiB": 2316,
+          "utilization_percent": 97,
+          "temperature_C": 74
+        },
+        {
+          "seconds": 10.17,
+          "used_MiB": 21788,
+          "free_MiB": 2317,
+          "utilization_percent": 97,
+          "temperature_C": 74
+        },
+        {
+          "seconds": 12.2,
+          "used_MiB": 21801,
+          "free_MiB": 2304,
+          "utilization_percent": 98,
+          "temperature_C": 74
+        },
+        {
+          "seconds": 14.23,
+          "used_MiB": 21803,
+          "free_MiB": 2302,
+          "utilization_percent": 99,
+          "temperature_C": 75
+        },
+        {
+          "seconds": 16.26,
+          "used_MiB": 21816,
+          "free_MiB": 2289,
+          "utilization_percent": 98,
+          "temperature_C": 75
+        }
+      ],
+      "response_sha256": "ffe3bd4e7b316f1ea03475269d271d9b166280eb4a57af59269598e02afdafb3"
+    },
+    {
+      "name": "context_2048_cold_3",
+      "thinking_enabled": false,
+      "cache_prompt": false,
+      "tokenized_prompt_tokens": 2072,
+      "usage": {
+        "completion_tokens": 512,
+        "prompt_tokens": 2072,
+        "total_tokens": 2584,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 2072,
+        "prompt_ms": 2112.565,
+        "prompt_per_token_ms": 1.0195777027027026,
+        "prompt_per_second": 980.7982239599728,
+        "predicted_n": 512,
+        "predicted_ms": 13950.493,
+        "predicted_per_token_ms": 27.30037769080235,
+        "predicted_per_second": 36.62952986679395
+      },
+      "elapsed_seconds": 16.552599248010665,
+      "time_to_first_token_seconds": 2.602048796019517,
+      "completion_tokens_per_wall_second": 30.931697936294416,
+      "finish_reason": "length",
+      "visible_characters": 1634,
+      "reasoning_characters": 0,
+      "GPU_samples": [
+        {
+          "seconds": 0.03,
+          "used_MiB": 21849,
+          "free_MiB": 2256,
+          "utilization_percent": 97,
+          "temperature_C": 76
+        },
+        {
+          "seconds": 2.06,
+          "used_MiB": 22126,
+          "free_MiB": 1979,
+          "utilization_percent": 100,
+          "temperature_C": 77
+        },
+        {
+          "seconds": 4.08,
+          "used_MiB": 22053,
+          "free_MiB": 2052,
+          "utilization_percent": 98,
+          "temperature_C": 77
+        },
+        {
+          "seconds": 6.11,
+          "used_MiB": 22017,
+          "free_MiB": 2088,
+          "utilization_percent": 98,
+          "temperature_C": 77
+        },
+        {
+          "seconds": 8.14,
+          "used_MiB": 21991,
+          "free_MiB": 2114,
+          "utilization_percent": 98,
+          "temperature_C": 77
+        },
+        {
+          "seconds": 10.17,
+          "used_MiB": 21954,
+          "free_MiB": 2150,
+          "utilization_percent": 98,
+          "temperature_C": 77
+        },
+        {
+          "seconds": 12.2,
+          "used_MiB": 21961,
+          "free_MiB": 2143,
+          "utilization_percent": 98,
+          "temperature_C": 78
+        },
+        {
+          "seconds": 14.23,
+          "used_MiB": 22133,
+          "free_MiB": 1971,
+          "utilization_percent": 97,
+          "temperature_C": 78
+        },
+        {
+          "seconds": 16.26,
+          "used_MiB": 22071,
+          "free_MiB": 2033,
+          "utilization_percent": 94,
+          "temperature_C": 79
+        }
+      ],
+      "response_sha256": "2c900f36c41c8ed6297248af03591f0d2ded17af113c0fd71a1908ea2a6ec07e"
+    },
+    {
+      "name": "context_16384_cold_1",
+      "thinking_enabled": false,
+      "cache_prompt": false,
+      "tokenized_prompt_tokens": 16378,
+      "usage": {
+        "completion_tokens": 512,
+        "prompt_tokens": 16378,
+        "total_tokens": 16890,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 16378,
+        "prompt_ms": 16466.146,
+        "prompt_per_token_ms": 1.0053819758212237,
+        "prompt_per_second": 994.6468347845331,
+        "predicted_n": 512,
+        "predicted_ms": 15238.395,
+        "predicted_per_token_ms": 29.82073385518591,
+        "predicted_per_second": 33.533715328943764
+      },
+      "elapsed_seconds": 32.23722146707587,
+      "time_to_first_token_seconds": 16.998604929074645,
+      "completion_tokens_per_wall_second": 15.882262077794442,
+      "finish_reason": "length",
+      "visible_characters": 1633,
+      "reasoning_characters": 0,
+      "GPU_samples": [
+        {
+          "seconds": 0.02,
+          "used_MiB": 22041,
+          "free_MiB": 2064,
+          "utilization_percent": 98,
+          "temperature_C": 79
+        },
+        {
+          "seconds": 2.05,
+          "used_MiB": 22052,
+          "free_MiB": 2053,
+          "utilization_percent": 99,
+          "temperature_C": 80
+        },
+        {
+          "seconds": 4.08,
+          "used_MiB": 22059,
+          "free_MiB": 2045,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 6.11,
+          "used_MiB": 22040,
+          "free_MiB": 2065,
+          "utilization_percent": 99,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 8.14,
+          "used_MiB": 22020,
+          "free_MiB": 2085,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 10.17,
+          "used_MiB": 22074,
+          "free_MiB": 2031,
+          "utilization_percent": 100,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 12.19,
+          "used_MiB": 22054,
+          "free_MiB": 2051,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 14.22,
+          "used_MiB": 22042,
+          "free_MiB": 2063,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 16.25,
+          "used_MiB": 22028,
+          "free_MiB": 2077,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 18.28,
+          "used_MiB": 21973,
+          "free_MiB": 2131,
+          "utilization_percent": 98,
+          "temperature_C": 81
+        },
+        {
+          "seconds": 20.3,
+          "used_MiB": 21969,
+          "free_MiB": 2135,
+          "utilization_percent": 97,
+          "temperature_C": 81
+        },
+        {
+          "seconds": 22.33,
+          "used_MiB": 21969,
+          "free_MiB": 2135,
+          "utilization_percent": 99,
+          "temperature_C": 81
+        },
+        {
+          "seconds": 24.36,
+          "used_MiB": 21970,
+          "free_MiB": 2135,
+          "utilization_percent": 98,
+          "temperature_C": 80
+        },
+        {
+          "seconds": 26.39,
+          "used_MiB": 21970,
+          "free_MiB": 2135,
+          "utilization_percent": 97,
+          "temperature_C": 80
+        },
+        {
+          "seconds": 28.42,
+          "used_MiB": 21996,
+          "free_MiB": 2109,
+          "utilization_percent": 98,
+          "temperature_C": 80
+        },
+        {
+          "seconds": 30.44,
+          "used_MiB": 21977,
+          "free_MiB": 2127,
+          "utilization_percent": 98,
+          "temperature_C": 80
+        }
+      ],
+      "response_sha256": "df150d9cf72b3e1ae95f0732a1d5fa96c9667486afb1d810244907c169e76d0e"
+    },
+    {
+      "name": "context_16384_cached_continuation",
+      "thinking_enabled": false,
+      "cache_prompt": true,
+      "tokenized_prompt_tokens": null,
+      "usage": {
+        "completion_tokens": 256,
+        "prompt_tokens": 16917,
+        "total_tokens": 17173,
+        "prompt_tokens_details": {
+          "cached_tokens": 16889
+        }
+      },
+      "timings": {
+        "cache_n": 16889,
+        "prompt_n": 28,
+        "prompt_ms": 451.378,
+        "prompt_per_token_ms": 16.120642857142858,
+        "prompt_per_second": 62.032265639884976,
+        "predicted_n": 256,
+        "predicted_ms": 7619.764,
+        "predicted_per_token_ms": 29.881427450980393,
+        "predicted_per_second": 33.465603396640624
+      },
+      "elapsed_seconds": 8.08647560805548,
+      "time_to_first_token_seconds": 0.4664963580435142,
+      "completion_tokens_per_wall_second": 31.657796598679067,
+      "finish_reason": "length",
+      "visible_characters": 772,
+      "reasoning_characters": 0,
+      "GPU_samples": [
+        {
+          "seconds": 0.03,
+          "used_MiB": 21969,
+          "free_MiB": 2136,
+          "utilization_percent": 98,
+          "temperature_C": 80
+        },
+        {
+          "seconds": 2.06,
+          "used_MiB": 21964,
+          "free_MiB": 2141,
+          "utilization_percent": 97,
+          "temperature_C": 80
+        },
+        {
+          "seconds": 4.09,
+          "used_MiB": 21990,
+          "free_MiB": 2115,
+          "utilization_percent": 98,
+          "temperature_C": 80
+        },
+        {
+          "seconds": 6.12,
+          "used_MiB": 21993,
+          "free_MiB": 2112,
+          "utilization_percent": 98,
+          "temperature_C": 80
+        }
+      ],
+      "response_sha256": "d5fb75cee43ad26211f16f05e31038f1d438a9835cb850bea85b7b56f8ac3a4b"
+    },
+    {
+      "name": "context_65536_cold_1",
+      "thinking_enabled": false,
+      "cache_prompt": false,
+      "tokenized_prompt_tokens": 65537,
+      "usage": {
+        "completion_tokens": 512,
+        "prompt_tokens": 65537,
+        "total_tokens": 66049,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 65537,
+        "prompt_ms": 82468.235,
+        "prompt_per_token_ms": 1.2583462013824251,
+        "prompt_per_second": 794.693860005613,
+        "predicted_n": 512,
+        "predicted_ms": 19745.079,
+        "predicted_per_token_ms": 38.640076320939336,
+        "predicted_per_second": 25.879866066881775
+      },
+      "elapsed_seconds": 103.15393233997747,
+      "time_to_first_token_seconds": 83.40790103399195,
+      "completion_tokens_per_wall_second": 4.963455957379664,
+      "finish_reason": "length",
+      "visible_characters": 1204,
+      "reasoning_characters": 0,
+      "GPU_samples": [
+        {
+          "seconds": 0.03,
+          "used_MiB": 22003,
+          "free_MiB": 2102,
+          "utilization_percent": 25,
+          "temperature_C": 77
+        },
+        {
+          "seconds": 2.05,
+          "used_MiB": 21992,
+          "free_MiB": 2113,
+          "utilization_percent": 100,
+          "temperature_C": 79
+        },
+        {
+          "seconds": 4.08,
+          "used_MiB": 21974,
+          "free_MiB": 2131,
+          "utilization_percent": 99,
+          "temperature_C": 81
+        },
+        {
+          "seconds": 6.11,
+          "used_MiB": 21983,
+          "free_MiB": 2121,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 8.16,
+          "used_MiB": 21993,
+          "free_MiB": 2112,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 10.19,
+          "used_MiB": 22040,
+          "free_MiB": 2064,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 12.22,
+          "used_MiB": 22021,
+          "free_MiB": 2084,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 14.25,
+          "used_MiB": 22026,
+          "free_MiB": 2079,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 16.27,
+          "used_MiB": 22005,
+          "free_MiB": 2100,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 18.3,
+          "used_MiB": 22017,
+          "free_MiB": 2087,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 20.33,
+          "used_MiB": 22075,
+          "free_MiB": 2030,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 22.36,
+          "used_MiB": 22040,
+          "free_MiB": 2064,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 24.39,
+          "used_MiB": 21958,
+          "free_MiB": 2147,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 26.42,
+          "used_MiB": 21901,
+          "free_MiB": 2203,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 28.45,
+          "used_MiB": 21889,
+          "free_MiB": 2216,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 30.48,
+          "used_MiB": 21911,
+          "free_MiB": 2194,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 32.51,
+          "used_MiB": 21884,
+          "free_MiB": 2220,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 34.54,
+          "used_MiB": 21870,
+          "free_MiB": 2235,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 36.57,
+          "used_MiB": 21863,
+          "free_MiB": 2242,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 38.6,
+          "used_MiB": 21859,
+          "free_MiB": 2246,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 40.62,
+          "used_MiB": 21849,
+          "free_MiB": 2256,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 42.65,
+          "used_MiB": 21858,
+          "free_MiB": 2247,
+          "utilization_percent": 100,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 44.68,
+          "used_MiB": 21875,
+          "free_MiB": 2229,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 46.71,
+          "used_MiB": 21956,
+          "free_MiB": 2148,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 48.74,
+          "used_MiB": 21964,
+          "free_MiB": 2141,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 50.77,
+          "used_MiB": 21955,
+          "free_MiB": 2150,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 52.8,
+          "used_MiB": 21898,
+          "free_MiB": 2207,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 54.83,
+          "used_MiB": 21918,
+          "free_MiB": 2187,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 56.85,
+          "used_MiB": 21903,
+          "free_MiB": 2201,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 58.88,
+          "used_MiB": 21900,
+          "free_MiB": 2204,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 60.91,
+          "used_MiB": 21843,
+          "free_MiB": 2262,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 62.94,
+          "used_MiB": 21854,
+          "free_MiB": 2250,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 64.97,
+          "used_MiB": 21831,
+          "free_MiB": 2274,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 67.0,
+          "used_MiB": 21839,
+          "free_MiB": 2265,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 69.03,
+          "used_MiB": 21858,
+          "free_MiB": 2247,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 71.06,
+          "used_MiB": 21869,
+          "free_MiB": 2236,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 73.09,
+          "used_MiB": 21855,
+          "free_MiB": 2250,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 75.12,
+          "used_MiB": 21893,
+          "free_MiB": 2211,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 77.15,
+          "used_MiB": 22083,
+          "free_MiB": 2022,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 79.17,
+          "used_MiB": 22083,
+          "free_MiB": 2021,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 81.2,
+          "used_MiB": 22011,
+          "free_MiB": 2094,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 83.23,
+          "used_MiB": 22020,
+          "free_MiB": 2084,
+          "utilization_percent": 94,
+          "temperature_C": 81
+        },
+        {
+          "seconds": 85.26,
+          "used_MiB": 22021,
+          "free_MiB": 2084,
+          "utilization_percent": 98,
+          "temperature_C": 81
+        },
+        {
+          "seconds": 87.29,
+          "used_MiB": 22025,
+          "free_MiB": 2079,
+          "utilization_percent": 98,
+          "temperature_C": 81
+        },
+        {
+          "seconds": 89.32,
+          "used_MiB": 22031,
+          "free_MiB": 2073,
+          "utilization_percent": 97,
+          "temperature_C": 81
+        },
+        {
+          "seconds": 91.34,
+          "used_MiB": 22029,
+          "free_MiB": 2076,
+          "utilization_percent": 97,
+          "temperature_C": 81
+        },
+        {
+          "seconds": 93.37,
+          "used_MiB": 22026,
+          "free_MiB": 2079,
+          "utilization_percent": 98,
+          "temperature_C": 80
+        },
+        {
+          "seconds": 95.4,
+          "used_MiB": 22012,
+          "free_MiB": 2093,
+          "utilization_percent": 98,
+          "temperature_C": 80
+        },
+        {
+          "seconds": 97.43,
+          "used_MiB": 22012,
+          "free_MiB": 2092,
+          "utilization_percent": 99,
+          "temperature_C": 81
+        },
+        {
+          "seconds": 99.46,
+          "used_MiB": 22013,
+          "free_MiB": 2091,
+          "utilization_percent": 99,
+          "temperature_C": 81
+        },
+        {
+          "seconds": 101.49,
+          "used_MiB": 21862,
+          "free_MiB": 2243,
+          "utilization_percent": 99,
+          "temperature_C": 81
+        }
+      ],
+      "response_sha256": "701230f39a089d6c8d26cee4e1d88003e364c5d068e9e40695becdbf1eeb6607"
+    },
+    {
+      "name": "context_65536_cached_continuation",
+      "thinking_enabled": false,
+      "cache_prompt": true,
+      "tokenized_prompt_tokens": null,
+      "usage": {
+        "completion_tokens": 256,
+        "prompt_tokens": 66076,
+        "total_tokens": 66332,
+        "prompt_tokens_details": {
+          "cached_tokens": 66048
+        }
+      },
+      "timings": {
+        "cache_n": 66048,
+        "prompt_n": 28,
+        "prompt_ms": 459.329,
+        "prompt_per_token_ms": 16.40460714285714,
+        "prompt_per_second": 60.95848509456185,
+        "predicted_n": 256,
+        "predicted_ms": 9995.322,
+        "predicted_per_token_ms": 39.19734117647059,
+        "predicted_per_second": 25.511934482951126
+      },
+      "elapsed_seconds": 10.50526424695272,
+      "time_to_first_token_seconds": 0.5091393489856273,
+      "completion_tokens_per_wall_second": 24.368734948695685,
+      "finish_reason": "length",
+      "visible_characters": 661,
+      "reasoning_characters": 0,
+      "GPU_samples": [
+        {
+          "seconds": 0.03,
+          "used_MiB": 21873,
+          "free_MiB": 2232,
+          "utilization_percent": 98,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 2.06,
+          "used_MiB": 21860,
+          "free_MiB": 2245,
+          "utilization_percent": 98,
+          "temperature_C": 81
+        },
+        {
+          "seconds": 4.09,
+          "used_MiB": 21842,
+          "free_MiB": 2262,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 6.11,
+          "used_MiB": 21846,
+          "free_MiB": 2258,
+          "utilization_percent": 97,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 8.15,
+          "used_MiB": 21883,
+          "free_MiB": 2222,
+          "utilization_percent": 98,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 10.17,
+          "used_MiB": 21932,
+          "free_MiB": 2173,
+          "utilization_percent": 98,
+          "temperature_C": 83
+        }
+      ],
+      "response_sha256": "d0d27a8cdcbdd88b6824e048afdef4a3de00777dd5f05b73670469483fe8b918"
+    },
+    {
+      "name": "context_120000_cold_1",
+      "thinking_enabled": false,
+      "cache_prompt": false,
+      "tokenized_prompt_tokens": 120011,
+      "usage": {
+        "completion_tokens": 512,
+        "prompt_tokens": 120011,
+        "total_tokens": 120523,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 120011,
+        "prompt_ms": 182928.057,
+        "prompt_per_token_ms": 1.5242607510978161,
+        "prompt_per_second": 656.0557301496948,
+        "predicted_n": 512,
+        "predicted_ms": 24487.475,
+        "predicted_per_token_ms": 47.92069471624266,
+        "predicted_per_second": 20.867810993171
+      },
+      "elapsed_seconds": 207.49673672404606,
+      "time_to_first_token_seconds": 183.00754455802962,
+      "completion_tokens_per_wall_second": 2.4675086851169072,
+      "finish_reason": "length",
+      "visible_characters": 1365,
+      "reasoning_characters": 0,
+      "GPU_samples": [
+        {
+          "seconds": 0.03,
+          "used_MiB": 21928,
+          "free_MiB": 2176,
+          "utilization_percent": 97,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 2.05,
+          "used_MiB": 21929,
+          "free_MiB": 2176,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 4.08,
+          "used_MiB": 21913,
+          "free_MiB": 2192,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 6.11,
+          "used_MiB": 21902,
+          "free_MiB": 2203,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 8.14,
+          "used_MiB": 21908,
+          "free_MiB": 2196,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 10.17,
+          "used_MiB": 21952,
+          "free_MiB": 2153,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 12.19,
+          "used_MiB": 21957,
+          "free_MiB": 2148,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 14.22,
+          "used_MiB": 21952,
+          "free_MiB": 2152,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 16.25,
+          "used_MiB": 22035,
+          "free_MiB": 2070,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 18.28,
+          "used_MiB": 22037,
+          "free_MiB": 2067,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 20.31,
+          "used_MiB": 22031,
+          "free_MiB": 2074,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 22.33,
+          "used_MiB": 21968,
+          "free_MiB": 2137,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 24.36,
+          "used_MiB": 21965,
+          "free_MiB": 2140,
+          "utilization_percent": 100,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 26.39,
+          "used_MiB": 21953,
+          "free_MiB": 2152,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 28.42,
+          "used_MiB": 21953,
+          "free_MiB": 2152,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 30.44,
+          "used_MiB": 21991,
+          "free_MiB": 2114,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 32.47,
+          "used_MiB": 21984,
+          "free_MiB": 2120,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 34.5,
+          "used_MiB": 21962,
+          "free_MiB": 2143,
+          "utilization_percent": 100,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 36.53,
+          "used_MiB": 21924,
+          "free_MiB": 2180,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 38.56,
+          "used_MiB": 21917,
+          "free_MiB": 2188,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 40.58,
+          "used_MiB": 21948,
+          "free_MiB": 2157,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 42.61,
+          "used_MiB": 21956,
+          "free_MiB": 2149,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 44.64,
+          "used_MiB": 21938,
+          "free_MiB": 2166,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 46.67,
+          "used_MiB": 21922,
+          "free_MiB": 2182,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 48.69,
+          "used_MiB": 21923,
+          "free_MiB": 2181,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 50.72,
+          "used_MiB": 21927,
+          "free_MiB": 2178,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 52.75,
+          "used_MiB": 21926,
+          "free_MiB": 2179,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 54.78,
+          "used_MiB": 21938,
+          "free_MiB": 2167,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 56.81,
+          "used_MiB": 21915,
+          "free_MiB": 2190,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 58.84,
+          "used_MiB": 21900,
+          "free_MiB": 2205,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 60.86,
+          "used_MiB": 21911,
+          "free_MiB": 2194,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 62.89,
+          "used_MiB": 21908,
+          "free_MiB": 2197,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 64.92,
+          "used_MiB": 21930,
+          "free_MiB": 2175,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 66.95,
+          "used_MiB": 21942,
+          "free_MiB": 2162,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 68.98,
+          "used_MiB": 21920,
+          "free_MiB": 2185,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 71.0,
+          "used_MiB": 21912,
+          "free_MiB": 2193,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 73.03,
+          "used_MiB": 21904,
+          "free_MiB": 2201,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 75.06,
+          "used_MiB": 21903,
+          "free_MiB": 2202,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 77.09,
+          "used_MiB": 21885,
+          "free_MiB": 2220,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 79.12,
+          "used_MiB": 21897,
+          "free_MiB": 2208,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 81.14,
+          "used_MiB": 21888,
+          "free_MiB": 2217,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 83.17,
+          "used_MiB": 21897,
+          "free_MiB": 2208,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 85.2,
+          "used_MiB": 21883,
+          "free_MiB": 2221,
+          "utilization_percent": 100,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 87.23,
+          "used_MiB": 21892,
+          "free_MiB": 2212,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 89.26,
+          "used_MiB": 21888,
+          "free_MiB": 2216,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 91.28,
+          "used_MiB": 21903,
+          "free_MiB": 2202,
+          "utilization_percent": 100,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 93.31,
+          "used_MiB": 21903,
+          "free_MiB": 2202,
+          "utilization_percent": 100,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 95.34,
+          "used_MiB": 21902,
+          "free_MiB": 2203,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 97.37,
+          "used_MiB": 21893,
+          "free_MiB": 2212,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 99.4,
+          "used_MiB": 21897,
+          "free_MiB": 2208,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 101.42,
+          "used_MiB": 21897,
+          "free_MiB": 2208,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 103.45,
+          "used_MiB": 21903,
+          "free_MiB": 2202,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 105.48,
+          "used_MiB": 21906,
+          "free_MiB": 2199,
+          "utilization_percent": 100,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 107.51,
+          "used_MiB": 21920,
+          "free_MiB": 2184,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 109.54,
+          "used_MiB": 21905,
+          "free_MiB": 2200,
+          "utilization_percent": 100,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 111.56,
+          "used_MiB": 21911,
+          "free_MiB": 2194,
+          "utilization_percent": 99,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 113.59,
+          "used_MiB": 21893,
+          "free_MiB": 2212,
+          "utilization_percent": 100,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 115.62,
+          "used_MiB": 21897,
+          "free_MiB": 2208,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 117.65,
+          "used_MiB": 21898,
+          "free_MiB": 2207,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 119.68,
+          "used_MiB": 21893,
+          "free_MiB": 2212,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 121.71,
+          "used_MiB": 21901,
+          "free_MiB": 2203,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 123.73,
+          "used_MiB": 21900,
+          "free_MiB": 2204,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 125.76,
+          "used_MiB": 21901,
+          "free_MiB": 2203,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 127.79,
+          "used_MiB": 21901,
+          "free_MiB": 2204,
+          "utilization_percent": 100,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 129.82,
+          "used_MiB": 21901,
+          "free_MiB": 2204,
+          "utilization_percent": 100,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 131.85,
+          "used_MiB": 21901,
+          "free_MiB": 2204,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 133.87,
+          "used_MiB": 21901,
+          "free_MiB": 2204,
+          "utilization_percent": 100,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 135.9,
+          "used_MiB": 21901,
+          "free_MiB": 2203,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 137.93,
+          "used_MiB": 21901,
+          "free_MiB": 2204,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 139.96,
+          "used_MiB": 21901,
+          "free_MiB": 2204,
+          "utilization_percent": 100,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 141.99,
+          "used_MiB": 21902,
+          "free_MiB": 2202,
+          "utilization_percent": 100,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 144.02,
+          "used_MiB": 21914,
+          "free_MiB": 2190,
+          "utilization_percent": 100,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 146.04,
+          "used_MiB": 21934,
+          "free_MiB": 2170,
+          "utilization_percent": 100,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 148.13,
+          "used_MiB": 21891,
+          "free_MiB": 2214,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 150.16,
+          "used_MiB": 21849,
+          "free_MiB": 2256,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 152.19,
+          "used_MiB": 21863,
+          "free_MiB": 2242,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 154.23,
+          "used_MiB": 21880,
+          "free_MiB": 2225,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 156.25,
+          "used_MiB": 21869,
+          "free_MiB": 2236,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 158.28,
+          "used_MiB": 21891,
+          "free_MiB": 2214,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 160.31,
+          "used_MiB": 22081,
+          "free_MiB": 2024,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 162.34,
+          "used_MiB": 22070,
+          "free_MiB": 2035,
+          "utilization_percent": 99,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 164.37,
+          "used_MiB": 22050,
+          "free_MiB": 2055,
+          "utilization_percent": 100,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 166.4,
+          "used_MiB": 21906,
+          "free_MiB": 2199,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 168.43,
+          "used_MiB": 21894,
+          "free_MiB": 2211,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 170.46,
+          "used_MiB": 21927,
+          "free_MiB": 2178,
+          "utilization_percent": 100,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 172.49,
+          "used_MiB": 21930,
+          "free_MiB": 2174,
+          "utilization_percent": 100,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 174.52,
+          "used_MiB": 21958,
+          "free_MiB": 2147,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 176.55,
+          "used_MiB": 21919,
+          "free_MiB": 2186,
+          "utilization_percent": 100,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 178.58,
+          "used_MiB": 21892,
+          "free_MiB": 2213,
+          "utilization_percent": 100,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 180.61,
+          "used_MiB": 21908,
+          "free_MiB": 2196,
+          "utilization_percent": 100,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 182.63,
+          "used_MiB": 21901,
+          "free_MiB": 2204,
+          "utilization_percent": 99,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 184.66,
+          "used_MiB": 21876,
+          "free_MiB": 2229,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 186.69,
+          "used_MiB": 21843,
+          "free_MiB": 2262,
+          "utilization_percent": 98,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 188.72,
+          "used_MiB": 21848,
+          "free_MiB": 2256,
+          "utilization_percent": 98,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 190.75,
+          "used_MiB": 21920,
+          "free_MiB": 2185,
+          "utilization_percent": 99,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 192.78,
+          "used_MiB": 21924,
+          "free_MiB": 2181,
+          "utilization_percent": 98,
+          "temperature_C": 82
+        },
+        {
+          "seconds": 194.8,
+          "used_MiB": 21921,
+          "free_MiB": 2183,
+          "utilization_percent": 98,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 196.83,
+          "used_MiB": 21885,
+          "free_MiB": 2220,
+          "utilization_percent": 98,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 198.86,
+          "used_MiB": 21877,
+          "free_MiB": 2228,
+          "utilization_percent": 98,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 200.89,
+          "used_MiB": 21870,
+          "free_MiB": 2235,
+          "utilization_percent": 98,
+          "temperature_C": 84
+        },
+        {
+          "seconds": 202.91,
+          "used_MiB": 21863,
+          "free_MiB": 2242,
+          "utilization_percent": 98,
+          "temperature_C": 84
+        },
+        {
+          "seconds": 204.94,
+          "used_MiB": 21948,
+          "free_MiB": 2156,
+          "utilization_percent": 98,
+          "temperature_C": 85
+        },
+        {
+          "seconds": 206.97,
+          "used_MiB": 21906,
+          "free_MiB": 2198,
+          "utilization_percent": 98,
+          "temperature_C": 85
+        }
+      ],
+      "response_sha256": "dc6f793ce5c93b7fe81ce6cb0ef75a701ae938a7951b01a285ae9e571819b32f"
+    },
+    {
+      "name": "context_120000_cached_continuation",
+      "thinking_enabled": false,
+      "cache_prompt": true,
+      "tokenized_prompt_tokens": null,
+      "usage": {
+        "completion_tokens": 256,
+        "prompt_tokens": 120549,
+        "total_tokens": 120805,
+        "prompt_tokens_details": {
+          "cached_tokens": 120522
+        }
+      },
+      "timings": {
+        "cache_n": 120522,
+        "prompt_n": 27,
+        "prompt_ms": 541.853,
+        "prompt_per_token_ms": 20.068629629629626,
+        "prompt_per_second": 49.82901266579682,
+        "predicted_n": 256,
+        "predicted_ms": 12542.772,
+        "predicted_per_token_ms": 49.18734117647059,
+        "predicted_per_second": 20.330434133698674
+      },
+      "elapsed_seconds": 13.172835331060924,
+      "time_to_first_token_seconds": 0.6284205929841846,
+      "completion_tokens_per_wall_second": 19.43393305740064,
+      "finish_reason": "length",
+      "visible_characters": 573,
+      "reasoning_characters": 0,
+      "GPU_samples": [
+        {
+          "seconds": 0.03,
+          "used_MiB": 21907,
+          "free_MiB": 2198,
+          "utilization_percent": 98,
+          "temperature_C": 85
+        },
+        {
+          "seconds": 2.06,
+          "used_MiB": 21885,
+          "free_MiB": 2220,
+          "utilization_percent": 98,
+          "temperature_C": 84
+        },
+        {
+          "seconds": 4.08,
+          "used_MiB": 21890,
+          "free_MiB": 2214,
+          "utilization_percent": 98,
+          "temperature_C": 84
+        },
+        {
+          "seconds": 6.11,
+          "used_MiB": 21882,
+          "free_MiB": 2223,
+          "utilization_percent": 98,
+          "temperature_C": 85
+        },
+        {
+          "seconds": 8.14,
+          "used_MiB": 21902,
+          "free_MiB": 2203,
+          "utilization_percent": 98,
+          "temperature_C": 85
+        },
+        {
+          "seconds": 10.17,
+          "used_MiB": 21925,
+          "free_MiB": 2180,
+          "utilization_percent": 98,
+          "temperature_C": 85
+        },
+        {
+          "seconds": 12.2,
+          "used_MiB": 21960,
+          "free_MiB": 2144,
+          "utilization_percent": 98,
+          "temperature_C": 85
+        }
+      ],
+      "response_sha256": "fcbc0cf5be70c30837ca92f641badc815b7bd85776d409c97356a46e51286610"
+    },
+    {
+      "name": "short_medium_thinking",
+      "thinking_enabled": true,
+      "cache_prompt": false,
+      "tokenized_prompt_tokens": 2071,
+      "usage": {
+        "completion_tokens": 1024,
+        "prompt_tokens": 2071,
+        "total_tokens": 3095,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 2071,
+        "prompt_ms": 2319.339,
+        "prompt_per_token_ms": 1.119912602607436,
+        "prompt_per_second": 892.9268209606272,
+        "predicted_n": 1024,
+        "predicted_ms": 28655.286,
+        "predicted_per_token_ms": 28.011032258064517,
+        "predicted_per_second": 35.70021949876892
+      },
+      "elapsed_seconds": 30.981316364952363,
+      "time_to_first_token_seconds": 2.325942367897369,
+      "completion_tokens_per_wall_second": 33.05217854327199,
+      "finish_reason": "length",
+      "visible_characters": 2283,
+      "reasoning_characters": 1036,
+      "GPU_samples": [
+        {
+          "seconds": 0.03,
+          "used_MiB": 21948,
+          "free_MiB": 2157,
+          "utilization_percent": 98,
+          "temperature_C": 85
+        },
+        {
+          "seconds": 2.06,
+          "used_MiB": 21949,
+          "free_MiB": 2155,
+          "utilization_percent": 100,
+          "temperature_C": 83
+        },
+        {
+          "seconds": 4.09,
+          "used_MiB": 21918,
+          "free_MiB": 2187,
+          "utilization_percent": 98,
+          "temperature_C": 84
+        },
+        {
+          "seconds": 6.12,
+          "used_MiB": 21924,
+          "free_MiB": 2181,
+          "utilization_percent": 98,
+          "temperature_C": 85
+        },
+        {
+          "seconds": 8.14,
+          "used_MiB": 21999,
+          "free_MiB": 2105,
+          "utilization_percent": 97,
+          "temperature_C": 84
+        },
+        {
+          "seconds": 10.17,
+          "used_MiB": 21953,
+          "free_MiB": 2152,
+          "utilization_percent": 98,
+          "temperature_C": 84
+        },
+        {
+          "seconds": 12.2,
+          "used_MiB": 22162,
+          "free_MiB": 1943,
+          "utilization_percent": 98,
+          "temperature_C": 84
+        },
+        {
+          "seconds": 14.23,
+          "used_MiB": 22093,
+          "free_MiB": 2012,
+          "utilization_percent": 98,
+          "temperature_C": 85
+        },
+        {
+          "seconds": 16.26,
+          "used_MiB": 22081,
+          "free_MiB": 2023,
+          "utilization_percent": 98,
+          "temperature_C": 84
+        },
+        {
+          "seconds": 18.29,
+          "used_MiB": 22071,
+          "free_MiB": 2033,
+          "utilization_percent": 99,
+          "temperature_C": 84
+        },
+        {
+          "seconds": 20.32,
+          "used_MiB": 22123,
+          "free_MiB": 1982,
+          "utilization_percent": 96,
+          "temperature_C": 84
+        },
+        {
+          "seconds": 22.35,
+          "used_MiB": 22073,
+          "free_MiB": 2032,
+          "utilization_percent": 98,
+          "temperature_C": 85
+        },
+        {
+          "seconds": 24.37,
+          "used_MiB": 22054,
+          "free_MiB": 2050,
+          "utilization_percent": 98,
+          "temperature_C": 85
+        },
+        {
+          "seconds": 26.4,
+          "used_MiB": 21992,
+          "free_MiB": 2113,
+          "utilization_percent": 97,
+          "temperature_C": 85
+        },
+        {
+          "seconds": 28.43,
+          "used_MiB": 22100,
+          "free_MiB": 2004,
+          "utilization_percent": 98,
+          "temperature_C": 85
+        },
+        {
+          "seconds": 30.46,
+          "used_MiB": 22136,
+          "free_MiB": 1968,
+          "utilization_percent": 97,
+          "temperature_C": 85
+        }
+      ],
+      "response_sha256": "32378e6d874e759dad6ba095ee0bc396028a4cba4197a5067d0332aa2b46c656"
+    }
+  ],
+  "health_before": {
+    "status": "ok"
+  },
+  "server": {
+    "model_alias": "qwen3.8-27b",
+    "model_ftype": "Q4_K - Medium",
+    "build_info": "b11146-7fe450e19",
+    "total_slots": 1,
+    "context_capacity": 131072
+  },
+  "deployment": {
+    "GPU": "RTX 3090 24GB",
+    "weights": "Q4_K_M",
+    "kv_cache": "q8_0 K and V",
+    "flash_attention": true,
+    "batch": 512,
+    "microbatch": 256,
+    "concurrency": 1
+  },
+  "short_decode_summary": {
+    "samples": 3,
+    "median_tokens_per_second": 36.37962760788001,
+    "minimum": 36.04454880513026,
+    "maximum": 36.62952986679395
+  },
+  "health_after": {
+    "status": "ok"
+  },
+  "finished_at": "2026-09-29T23:24:51.721034-07:00"
+}
