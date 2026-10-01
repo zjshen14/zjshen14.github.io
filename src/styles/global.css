@@ -10,3 +10,25 @@
     @apply bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100 min-h-screen antialiased transition-colors duration-200;
   }
 }
+
+@layer components {
+  .prose details {
+    @apply my-6 rounded-xl border border-zinc-200 bg-white/60 px-5 py-4 dark:border-zinc-800 dark:bg-zinc-900/40;
+  }
+
+  .prose details > summary {
+    @apply cursor-pointer font-semibold text-zinc-700 dark:text-zinc-200;
+  }
+
+  .prose details > summary::marker {
+    @apply text-indigo-500;
+  }
+
+  .prose details > :last-child {
+    margin-bottom: 0;
+  }
+
+  .prose :is(h2, h3) {
+    scroll-margin-top: 6rem;
+  }
+}
