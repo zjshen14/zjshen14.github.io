@@ -1,0 +1,30 @@
+---
+import type { Locale } from '@/utils/i18n';
+import { ANALYTICS_ID } from '@/utils/analytics';
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+---
+
+<section id="analytics-choice" hidden data-measurement-id={ANALYTICS_ID} data-production-host={Astro.site!.hostname}
+  aria-label={zh ? '访问统计选择' : 'Analytics preferences'}
+  class="fixed bottom-4 left-4 right-4 z-50 mx-auto max-w-2xl rounded-xl border border-zinc-300 bg-white p-5 shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
+  <p class="font-semibold">{zh ? '允许访问统计吗？' : 'Allow visitor analytics?'}</p>
+  <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-300">
+    {zh ? '同意后，我们会使用 Google Analytics 和 Cookie 了解访问来源、页面阅读情况及下载链接点击。拒绝不会影响阅读。'
+      : 'With your permission, we use Google Analytics and cookies to understand traffic sources, page engagement and download-link clicks. You can read everything without analytics.'}
+    <a href={`/${locale}/privacy/`} class="ml-1 underline hover:text-indigo-600 dark:hover:text-indigo-400">{zh ? '隐私说明' : 'Privacy notice'}</a>
+  </p>
+  <div class="mt-4 flex flex-wrap gap-3">
+    <button data-analytics-reject type="button" class="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-100 dark:border-zinc-600 dark:hover:bg-zinc-800">{zh ? '拒绝统计' : 'Decline analytics'}</button>
+    <button data-analytics-accept type="button" class="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-600 dark:hover:bg-zinc-800">{zh ? '同意统计' : 'Allow analytics'}</button>
+  </div>
+</section>
+<style>#analytics-choice[hidden] { display: none; }</style>
+<script>
+  import { initAnalytics } from '@/utils/analytics';
+  const element = document.querySelector<HTMLElement>('#analytics-choice');
+  if (element?.dataset.measurementId && element.dataset.productionHost) {
+    initAnalytics(element.dataset.measurementId, element.dataset.productionHost);
+  }
+</script>

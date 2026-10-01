@@ -4,6 +4,7 @@ import type { Locale } from '@/utils/i18n';
 import { uiStrings } from '@/utils/i18n';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
+import Analytics from '@/components/Analytics.astro';
 
 interface Props {
   title?: string;
@@ -46,7 +47,7 @@ const otherLocale = locale === 'en' ? 'zh' : 'en';
 const siteURL = new URL('/', Astro.site).href;
 const isRoot = Astro.url.pathname === '/';
 const isLanguageHome = /^\/(en|zh)\/$/.test(Astro.url.pathname);
-const sectionMatch = Astro.url.pathname.match(/^\/(en|zh)\/((?:blog|about|tags)\/)?$/);
+const sectionMatch = Astro.url.pathname.match(/^\/(en|zh)\/((?:blog|about|tags|privacy)\/)?$/);
 const alternates: { lang: string; href: string }[] = [];
 if (isRoot) {
   alternates.push({ lang: 'en', href: new URL('/en/', Astro.site).href });
@@ -155,5 +156,6 @@ const websiteJsonLd = isRoot && {
       <slot />
     </main>
     <Footer locale={locale} />
+    <Analytics locale={locale} />
   </body>
 </html>
