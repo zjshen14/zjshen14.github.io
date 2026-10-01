@@ -7,6 +7,7 @@ import Footer from '@/components/Footer.astro';
 
 interface Props {
   title?: string;
+  seoTitle?: string;
   description?: string;
   locale: Locale;
   canonicalURL?: string;
@@ -22,6 +23,7 @@ interface Props {
 
 const {
   title,
+  seoTitle,
   description,
   locale,
   canonicalURL = Astro.url.href,
@@ -32,7 +34,8 @@ const {
 } = Astro.props;
 
 const t = uiStrings[locale];
-const pageTitle = title ? `${title} | ${t.siteTitle}` : t.siteTitle;
+const searchTitle = seoTitle ?? title;
+const pageTitle = searchTitle ? `${searchTitle} | ${t.siteTitle}` : t.siteTitle;
 const pageDescription = description || t.siteDescription;
 const ogImageURL = new URL(ogImage, Astro.url).href;
 const hreflangOf = (lang: string) => (lang === 'zh' ? 'zh-CN' : 'en');
@@ -40,9 +43,15 @@ const hreflangOf = (lang: string) => (lang === 'zh' ? 'zh-CN' : 'en');
 // hreflang must point each page at its own translation (and itself). Posts pass their
 // translation via alternateUrl; section pages exist under both locale prefixes.
 const otherLocale = locale === 'en' ? 'zh' : 'en';
+const siteURL = new URL('/', Astro.site).href;
+const isRoot = Astro.url.pathname === '/';
+const isLanguageHome = /^\/(en|zh)\/$/.test(Astro.url.pathname);
 const sectionMatch = Astro.url.pathname.match(/^\/(en|zh)\/((?:blog|about|tags)\/)?$/);
 const alternates: { lang: string; href: string }[] = [];
-if (alternateUrl && alternateLang) {
+if (isRoot) {
+  alternates.push({ lang: 'en', href: new URL('/en/', Astro.site).href });
+  alternates.push({ lang: 'zh', href: new URL('/zh/', Astro.site).href });
+} else if (alternateUrl && alternateLang) {
   alternates.push({ lang: locale, href: new URL(Astro.url.pathname, Astro.site).href });
   alternates.push({ lang: alternateLang, href: new URL(alternateUrl, Astro.site).href });
 } else if (sectionMatch) {
@@ -51,8 +60,8 @@ if (alternateUrl && alternateLang) {
   alternates.push({ lang: otherLocale, href: new URL(`/${otherLocale}/${rest}`, Astro.site).href });
 }
 const xDefault = alternates.find(a => a.lang === 'en');
+const xDefaultURL = isRoot || isLanguageHome ? siteURL : xDefault?.href;
 
-const siteURL = new URL('/', Astro.site).href;
 const jsonLd = article && {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
@@ -68,6 +77,13 @@ const jsonLd = article && {
   author: { '@type': 'Organization', name: t.siteTitle, url: siteURL },
   publisher: { '@type': 'Organization', name: t.siteTitle, url: siteURL }
 };
+const websiteJsonLd = isRoot && {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: uiStrings.en.siteTitle,
+  alternateName: uiStrings.zh.siteTitle,
+  url: siteURL
+};
 ---
 
 <!doctype html>
@@ -77,13 +93,14 @@ const jsonLd = article && {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
+    {isRoot && <meta name="google-site-verification" content="J0p_EaSURPQOajJsy1R5M4lJcxfOdweZR-LOc3ixH4A" />}
 
     <!-- Canonical URL -->
     <link rel="canonical" href={canonicalURL} />
 
     <!-- Bilingual Hreflang SEO -->
     {alternates.map(a => <link rel="alternate" hreflang={hreflangOf(a.lang)} href={a.href} />)}
-    {xDefault && <link rel="alternate" hreflang="x-default" href={xDefault.href} />}
+    {xDefaultURL && <link rel="alternate" hreflang="x-default" href={xDefaultURL} />}
 
     <!-- Open Graph / Facebook / LinkedIn -->
     <meta property="og:type" content={article ? 'article' : 'website'} />
@@ -108,6 +125,7 @@ const jsonLd = article && {
 
     <!-- Structured data (Google rich results) -->
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+    {websiteJsonLd && <script type="application/ld+json" set:html={JSON.stringify(websiteJsonLd)} />}
 
     <!-- RSS Autodiscovery -->
     <link rel="alternate" type="application/rss+xml" title={`${t.siteTitle} RSS (${locale.toUpperCase()})`} href={`/${locale}/rss.xml`} />

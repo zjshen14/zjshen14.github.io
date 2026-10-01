@@ -1,6 +1,7 @@
 ---
 title: "实战记录：远程部署 OpenCode Web IDE 与代理配置，接入 Meta MuseSpark 1.3 开发者免费额度"
-description: "总结 Agent Hosting 项目实战经验：如何搭建支持远程浏览器访问的 OpenCode Web IDE，配置 HTTP/WebSocket 反向代理，并接入 Meta 最新发布的 MuseSpark 1.3 开发者免费额度，实现手机与电脑多端随时随地驱动 Agent 开发。"
+seoTitle: "OpenCode Web IDE 远程部署：反向代理、认证与模型接入"
+description: "部署 OpenCode Web IDE，配置认证与 HTTP/WebSocket 反向代理，从手机和电脑访问同一个编码 Agent 工作区。附模型接入示例与局域网、VPS 部署步骤。"
 pubDate: 2026-09-26
 updatedDate: 2026-09-27
 tags: ["ai", "agent", "opencode", "musespark", "meta", "web-ide", "tutorial"]

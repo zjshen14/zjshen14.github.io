@@ -25,6 +25,16 @@ const t = uiStrings[locale];
 const { Content } = await post.render();
 const translation = getPostTranslation(post, allPosts);
 const { text: readingTimeText } = getReadingTime(post.body, locale);
+const postTags = new Set(post.data.tags.map((tag: string) => tag.trim().toLowerCase()));
+const relatedPosts = allPosts
+  .filter(candidate => candidate.id !== post.id && getPostSlugParts(candidate).locale === locale)
+  .map(candidate => ({
+    post: candidate,
+    score: new Set(candidate.data.tags.map(tag => tag.trim().toLowerCase()).filter(tag => postTags.has(tag))).size
+  }))
+  .filter(candidate => candidate.score >= 2)
+  .sort((a, b) => b.score - a.score || b.post.data.pubDate.valueOf() - a.post.data.pubDate.valueOf())
+  .slice(0, 2);
 
 // Frontmatter dates are parsed as UTC midnight; format in UTC so they don't shift a day
 // in timezones west of UTC (the build machine's local time).
@@ -41,6 +51,7 @@ const formattedUpdatedDate = post.data.updatedDate && formatDate(post.data.updat
 <BaseLayout
   locale={locale}
   title={post.data.title}
+  seoTitle={post.data.seoTitle}
   description={post.data.description}
   canonicalURL={post.data.canonicalURL || Astro.url.href}
   ogImage={post.data.ogImage}
@@ -98,6 +109,22 @@ const formattedUpdatedDate = post.data.updatedDate && formatDate(post.data.updat
     </div>
 
     <!-- Social Share Bar & Copy Link -->
+    {relatedPosts.length > 0 && (
+      <nav aria-label={locale === 'zh' ? '继续阅读' : 'Further reading'} class="mt-10 rounded-xl border border-zinc-200 p-5 dark:border-zinc-800">
+        <h2 class="font-bold text-zinc-900 dark:text-zinc-100">{locale === 'zh' ? '继续阅读' : 'Further reading'}</h2>
+        <ul class="mt-3 space-y-3">
+          {relatedPosts.map(({ post: related }) => (
+            <li>
+              <a href={`/${locale}/blog/${getPostSlugParts(related).articleSlug}/`} class="font-medium text-indigo-600 hover:underline dark:text-indigo-400">
+                {related.data.title}
+              </a>
+              <p class="mt-1 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">{related.data.description}</p>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )}
+
     <ShareBar title={post.data.title} url={Astro.url.href} locale={locale} />
   </article>
 

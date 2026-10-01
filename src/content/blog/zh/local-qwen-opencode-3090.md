@@ -1,5 +1,6 @@
 ---
 title: "一张 RTX 3090 跑本地编码 Agent：Qwen3.8-27B 部署、OpenCode 接入与实测"
+seoTitle: "RTX 3090 本地部署 Qwen3.8-27B：OpenCode 接入与实测"
 description: "在 RTX 3090 24GB 上部署 Qwen3.8-27B Q4_K_M，通过 llama.cpp 接入 OpenCode。分享 128K 上下文验证、20.9–36.4 token/s 吞吐量，以及四个代码任务的成功、超时和审查发现。"
 pubDate: 2026-09-30
 tags: ["ai", "agent", "opencode", "qwen", "llama-cpp", "local-llm", "benchmark", "tutorial"]

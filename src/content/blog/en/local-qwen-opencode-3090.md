@@ -1,5 +1,6 @@
 ---
 title: "A Local Coding Agent on One RTX 3090: Qwen3.8-27B, OpenCode, and Measured Results"
+seoTitle: "Qwen3.8-27B on RTX 3090: OpenCode Setup & Benchmarks"
 description: "Deploy Qwen3.8-27B Q4_K_M on an RTX 3090 24GB and connect it to OpenCode through llama.cpp. Measured 128K capacity, 20.9–36.4 tokens/s generation, and four coding tasks with successes, timeouts, and review findings."
 pubDate: 2026-09-30
 tags: ["ai", "agent", "opencode", "qwen", "llama-cpp", "local-llm", "benchmark", "tutorial"]
