@@ -41,6 +41,8 @@ PAGES = {  # output path (relative to public/) -> page
  'og/setup-opencode-remote-web-ide-zh.png': page('研发手记 · 实战教程', '自建 OpenCode Web IDE', '手机、笔记本随时驱动编码 Agent，免费接入 Muse Spark 1.3', ['家庭局域网', 'Tailscale', 'Caddy / Nginx', '100 万上下文']),
  'og/local-qwen-opencode-3090-en.png': page('DevLog · Local AI Lab', 'One RTX 3090.<br>A local coding agent.', 'Qwen3.8-27B + OpenCode: deployment, throughput & coding results', ['24GB VRAM', 'Q4_K_M', '128K capacity']),
  'og/local-qwen-opencode-3090-zh.png': page('研发手记 · 本地 AI 实验', '一张 RTX 3090<br>跑本地编码 Agent', 'Qwen3.8-27B + OpenCode：部署、吞吐量与代码任务实测', ['24GB 显存', 'Q4_K_M', '128K 容量']),
+ 'og/qwen-mtp-speed-quality-en.png': page('DevLog · Local AI Lab', 'MTP: faster tokens.<br>Better coding?', 'Qwen3.8-27B on RTX 3090: speed, patches & task completion', ['Same weights', '16 attempts', '+56% tokens/s']),
+ 'og/qwen-mtp-speed-quality-zh.png': page('研发手记 · 本地 AI 实验', 'MTP 提速之后<br>编码质量如何？', 'Qwen3.8-27B × RTX 3090：速度、补丁与任务交付', ['同一份权重', '16 次运行', '吞吐量 +56%']),
 }
 
 def render(out_rel, page_html):

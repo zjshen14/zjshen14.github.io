@@ -1,0 +1,999 @@
+{
+  "protocol": {
+    "cases": [
+      "cache",
+      "ledger",
+      "buildplan",
+      "wallet"
+    ],
+    "seeds": [
+      4242,
+      8675309
+    ],
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 20,
+    "output_limit": 8192,
+    "seconds_limit": 480,
+    "context": 131072,
+    "runtime": "b11146",
+    "opencode": "opencode v2.0.20",
+    "model": "Qwen3.8-27B-Q4_K_M.gguf",
+    "model_bytes": 16810714464,
+    "draft_max": 3,
+    "cache_prompt": false,
+    "target_backend_sampling": false,
+    "draft_backend_sampling": false,
+    "server_restart": "before every task attempt",
+    "workspace": "same absolute path for every attempt",
+    "order": "per case: off/on for seed 4242, on/off for seed 8675309",
+    "controls": "same committed fixture, prompt, working directory, agent title, tools, permissions and project config per pair",
+    "request_audit": "abort on any difference in the canonical complete first chat-completion request",
+    "scope": "two paired seeds per task; exploratory screen, not proof of general non-inferiority"
+  },
+  "pairs": [
+    {
+      "case": "cache",
+      "seed": 4242,
+      "identical_first_model_request": true,
+      "identical_fixture": true,
+      "only_server_argument_difference_is_mtp": true,
+      "new_test_failures_with_mtp": [],
+      "new_test_passes_with_mtp": [],
+      "off": {
+        "passed": 10,
+        "tests": 10,
+        "complete_and_passing": true,
+        "seconds": 192.027,
+        "timed_out": false,
+        "exit_code": 0,
+        "protected_files_unchanged": true,
+        "production_diff_present": true,
+        "tool_error_count": 0,
+        "throughput": {
+          "target_output_tokens": 5920,
+          "generation_seconds": 155.98983,
+          "generation_tokens_per_second": 37.95119207450896,
+          "generation_requests": 6,
+          "requests_reaching_output_limit": 0
+        },
+        "first_request_throughput": {
+          "target_output_tokens": 110,
+          "generation_seconds": 2.76131,
+          "generation_tokens_per_second": 39.83616471891965,
+          "scope": "same complete first request per pair; short tool-selection response"
+        },
+        "response": {
+          "reasoning_characters": 11090,
+          "visible_characters": 2397,
+          "completion_tokens": 5920,
+          "finish_reasons": [
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "stop"
+          ],
+          "usage_requests": 6,
+          "max_prompt_tokens": 9942,
+          "all_reported_prefix_cache_counts_zero": true
+        },
+        "review": [
+          {
+            "probe": "finite_large_integer_ttl",
+            "passed": true
+          }
+        ]
+      },
+      "on": {
+        "passed": 10,
+        "tests": 10,
+        "complete_and_passing": true,
+        "seconds": 153.523,
+        "timed_out": false,
+        "exit_code": 0,
+        "protected_files_unchanged": true,
+        "production_diff_present": true,
+        "tool_error_count": 0,
+        "throughput": {
+          "target_output_tokens": 6082,
+          "generation_seconds": 93.78266,
+          "generation_tokens_per_second": 64.85207393349687,
+          "generation_requests": 8,
+          "requests_reaching_output_limit": 0
+        },
+        "first_request_throughput": {
+          "target_output_tokens": 110,
+          "generation_seconds": 1.3061800000000001,
+          "generation_tokens_per_second": 84.21503927483195,
+          "scope": "same complete first request per pair; short tool-selection response"
+        },
+        "response": {
+          "reasoning_characters": 9211,
+          "visible_characters": 2748,
+          "completion_tokens": 6082,
+          "finish_reasons": [
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "stop"
+          ],
+          "usage_requests": 8,
+          "max_prompt_tokens": 11035,
+          "all_reported_prefix_cache_counts_zero": true
+        },
+        "review": [
+          {
+            "probe": "finite_large_integer_ttl",
+            "passed": true
+          }
+        ]
+      },
+      "new_review_failures_with_mtp": [],
+      "new_review_passes_with_mtp": []
+    },
+    {
+      "case": "cache",
+      "seed": 8675309,
+      "identical_first_model_request": true,
+      "identical_fixture": true,
+      "only_server_argument_difference_is_mtp": true,
+      "new_test_failures_with_mtp": [],
+      "new_test_passes_with_mtp": [],
+      "off": {
+        "passed": 10,
+        "tests": 10,
+        "complete_and_passing": true,
+        "seconds": 431.217,
+        "timed_out": false,
+        "exit_code": 0,
+        "protected_files_unchanged": true,
+        "production_diff_present": true,
+        "tool_error_count": 1,
+        "throughput": {
+          "target_output_tokens": 11009,
+          "generation_seconds": 306.96519,
+          "generation_tokens_per_second": 35.86400138725828,
+          "generation_requests": 11,
+          "requests_reaching_output_limit": 0
+        },
+        "first_request_throughput": {
+          "target_output_tokens": 109,
+          "generation_seconds": 2.7771399999999997,
+          "generation_tokens_per_second": 39.249011573057174,
+          "scope": "same complete first request per pair; short tool-selection response"
+        },
+        "response": {
+          "reasoning_characters": 27666,
+          "visible_characters": 3554,
+          "completion_tokens": 11009,
+          "finish_reasons": [
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "stop"
+          ],
+          "usage_requests": 11,
+          "max_prompt_tokens": 18003,
+          "all_reported_prefix_cache_counts_zero": true
+        },
+        "review": [
+          {
+            "probe": "finite_large_integer_ttl",
+            "passed": true
+          }
+        ]
+      },
+      "on": {
+        "passed": 10,
+        "tests": 10,
+        "complete_and_passing": true,
+        "seconds": 259.004,
+        "timed_out": false,
+        "exit_code": 0,
+        "protected_files_unchanged": true,
+        "production_diff_present": true,
+        "tool_error_count": 1,
+        "throughput": {
+          "target_output_tokens": 10260,
+          "generation_seconds": 169.27704,
+          "generation_tokens_per_second": 60.610700659699624,
+          "generation_requests": 9,
+          "requests_reaching_output_limit": 0
+        },
+        "first_request_throughput": {
+          "target_output_tokens": 109,
+          "generation_seconds": 1.4510699999999999,
+          "generation_tokens_per_second": 75.1169826403964,
+          "scope": "same complete first request per pair; short tool-selection response"
+        },
+        "response": {
+          "reasoning_characters": 25894,
+          "visible_characters": 2688,
+          "completion_tokens": 10260,
+          "finish_reasons": [
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "stop"
+          ],
+          "usage_requests": 9,
+          "max_prompt_tokens": 16555,
+          "all_reported_prefix_cache_counts_zero": true
+        },
+        "review": [
+          {
+            "probe": "finite_large_integer_ttl",
+            "passed": false
+          }
+        ]
+      },
+      "new_review_failures_with_mtp": [
+        "finite_large_integer_ttl"
+      ],
+      "new_review_passes_with_mtp": []
+    },
+    {
+      "case": "ledger",
+      "seed": 4242,
+      "identical_first_model_request": true,
+      "identical_fixture": true,
+      "only_server_argument_difference_is_mtp": true,
+      "new_test_failures_with_mtp": [],
+      "new_test_passes_with_mtp": [],
+      "off": {
+        "passed": 1,
+        "tests": 10,
+        "complete_and_passing": false,
+        "seconds": 255.474,
+        "timed_out": false,
+        "exit_code": 0,
+        "protected_files_unchanged": true,
+        "production_diff_present": false,
+        "tool_error_count": 0,
+        "throughput": {
+          "target_output_tokens": 8700,
+          "generation_seconds": 240.04264999999998,
+          "generation_tokens_per_second": 36.24355921749739,
+          "generation_requests": 4,
+          "requests_reaching_output_limit": 1
+        },
+        "first_request_throughput": {
+          "target_output_tokens": 110,
+          "generation_seconds": 2.81848,
+          "generation_tokens_per_second": 39.02812863671198,
+          "scope": "same complete first request per pair; short tool-selection response"
+        },
+        "response": {
+          "reasoning_characters": 32165,
+          "visible_characters": 0,
+          "completion_tokens": 8700,
+          "finish_reasons": [
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "length"
+          ],
+          "usage_requests": 4,
+          "max_prompt_tokens": 4823,
+          "all_reported_prefix_cache_counts_zero": true
+        },
+        "review": [
+          {
+            "probe": "large_exact_amount",
+            "passed": false
+          },
+          {
+            "probe": "exact_header_names",
+            "passed": false
+          },
+          {
+            "probe": "read_time_io_error",
+            "passed": false
+          }
+        ]
+      },
+      "on": {
+        "passed": 1,
+        "tests": 10,
+        "complete_and_passing": false,
+        "seconds": 178.766,
+        "timed_out": false,
+        "exit_code": 0,
+        "protected_files_unchanged": true,
+        "production_diff_present": false,
+        "tool_error_count": 0,
+        "throughput": {
+          "target_output_tokens": 8700,
+          "generation_seconds": 162.1489,
+          "generation_tokens_per_second": 53.65438803470144,
+          "generation_requests": 4,
+          "requests_reaching_output_limit": 1
+        },
+        "first_request_throughput": {
+          "target_output_tokens": 110,
+          "generation_seconds": 1.3332899999999999,
+          "generation_tokens_per_second": 82.50268133714347,
+          "scope": "same complete first request per pair; short tool-selection response"
+        },
+        "response": {
+          "reasoning_characters": 31840,
+          "visible_characters": 0,
+          "completion_tokens": 8700,
+          "finish_reasons": [
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "length"
+          ],
+          "usage_requests": 4,
+          "max_prompt_tokens": 4823,
+          "all_reported_prefix_cache_counts_zero": true
+        },
+        "review": [
+          {
+            "probe": "large_exact_amount",
+            "passed": false
+          },
+          {
+            "probe": "exact_header_names",
+            "passed": false
+          },
+          {
+            "probe": "read_time_io_error",
+            "passed": false
+          }
+        ]
+      },
+      "new_review_failures_with_mtp": [],
+      "new_review_passes_with_mtp": []
+    },
+    {
+      "case": "ledger",
+      "seed": 8675309,
+      "identical_first_model_request": true,
+      "identical_fixture": true,
+      "only_server_argument_difference_is_mtp": true,
+      "new_test_failures_with_mtp": [],
+      "new_test_passes_with_mtp": [],
+      "off": {
+        "passed": 1,
+        "tests": 10,
+        "complete_and_passing": false,
+        "seconds": 264.241,
+        "timed_out": false,
+        "exit_code": 0,
+        "protected_files_unchanged": true,
+        "production_diff_present": false,
+        "tool_error_count": 1,
+        "throughput": {
+          "target_output_tokens": 8752,
+          "generation_seconds": 242.71041,
+          "generation_tokens_per_second": 36.05943395670585,
+          "generation_requests": 5,
+          "requests_reaching_output_limit": 1
+        },
+        "first_request_throughput": {
+          "target_output_tokens": 109,
+          "generation_seconds": 2.78065,
+          "generation_tokens_per_second": 39.199467750346145,
+          "scope": "same complete first request per pair; short tool-selection response"
+        },
+        "response": {
+          "reasoning_characters": 32145,
+          "visible_characters": 0,
+          "completion_tokens": 8752,
+          "finish_reasons": [
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "length"
+          ],
+          "usage_requests": 5,
+          "max_prompt_tokens": 5243,
+          "all_reported_prefix_cache_counts_zero": true
+        },
+        "review": [
+          {
+            "probe": "large_exact_amount",
+            "passed": false
+          },
+          {
+            "probe": "exact_header_names",
+            "passed": false
+          },
+          {
+            "probe": "read_time_io_error",
+            "passed": false
+          }
+        ]
+      },
+      "on": {
+        "passed": 1,
+        "tests": 10,
+        "complete_and_passing": false,
+        "seconds": 194.297,
+        "timed_out": false,
+        "exit_code": 0,
+        "protected_files_unchanged": true,
+        "production_diff_present": false,
+        "tool_error_count": 1,
+        "throughput": {
+          "target_output_tokens": 8860,
+          "generation_seconds": 169.20983,
+          "generation_tokens_per_second": 52.361024179269016,
+          "generation_requests": 5,
+          "requests_reaching_output_limit": 1
+        },
+        "first_request_throughput": {
+          "target_output_tokens": 109,
+          "generation_seconds": 1.47226,
+          "generation_tokens_per_second": 74.03583606156522,
+          "scope": "same complete first request per pair; short tool-selection response"
+        },
+        "response": {
+          "reasoning_characters": 31762,
+          "visible_characters": 0,
+          "completion_tokens": 8860,
+          "finish_reasons": [
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "length"
+          ],
+          "usage_requests": 5,
+          "max_prompt_tokens": 7495,
+          "all_reported_prefix_cache_counts_zero": true
+        },
+        "review": [
+          {
+            "probe": "large_exact_amount",
+            "passed": false
+          },
+          {
+            "probe": "exact_header_names",
+            "passed": false
+          },
+          {
+            "probe": "read_time_io_error",
+            "passed": false
+          }
+        ]
+      },
+      "new_review_failures_with_mtp": [],
+      "new_review_passes_with_mtp": []
+    },
+    {
+      "case": "buildplan",
+      "seed": 4242,
+      "identical_first_model_request": true,
+      "identical_fixture": true,
+      "only_server_argument_difference_is_mtp": true,
+      "new_test_failures_with_mtp": [],
+      "new_test_passes_with_mtp": [],
+      "off": {
+        "passed": 1,
+        "tests": 10,
+        "complete_and_passing": false,
+        "seconds": 256.33,
+        "timed_out": false,
+        "exit_code": 0,
+        "protected_files_unchanged": true,
+        "production_diff_present": false,
+        "tool_error_count": 0,
+        "throughput": {
+          "target_output_tokens": 8700,
+          "generation_seconds": 240.88231999999996,
+          "generation_tokens_per_second": 36.117221056323274,
+          "generation_requests": 4,
+          "requests_reaching_output_limit": 1
+        },
+        "first_request_throughput": {
+          "target_output_tokens": 110,
+          "generation_seconds": 2.8193,
+          "generation_tokens_per_second": 39.01677721420211,
+          "scope": "same complete first request per pair; short tool-selection response"
+        },
+        "response": {
+          "reasoning_characters": 33053,
+          "visible_characters": 0,
+          "completion_tokens": 8700,
+          "finish_reasons": [
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "length"
+          ],
+          "usage_requests": 4,
+          "max_prompt_tokens": 4641,
+          "all_reported_prefix_cache_counts_zero": true
+        }
+      },
+      "on": {
+        "passed": 1,
+        "tests": 10,
+        "complete_and_passing": false,
+        "seconds": 168.852,
+        "timed_out": false,
+        "exit_code": 0,
+        "protected_files_unchanged": true,
+        "production_diff_present": false,
+        "tool_error_count": 0,
+        "throughput": {
+          "target_output_tokens": 8700,
+          "generation_seconds": 152.29135,
+          "generation_tokens_per_second": 57.127341769575224,
+          "generation_requests": 4,
+          "requests_reaching_output_limit": 1
+        },
+        "first_request_throughput": {
+          "target_output_tokens": 110,
+          "generation_seconds": 1.3444800000000001,
+          "generation_tokens_per_second": 81.81601808877781,
+          "scope": "same complete first request per pair; short tool-selection response"
+        },
+        "response": {
+          "reasoning_characters": 33233,
+          "visible_characters": 0,
+          "completion_tokens": 8700,
+          "finish_reasons": [
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "length"
+          ],
+          "usage_requests": 4,
+          "max_prompt_tokens": 4641,
+          "all_reported_prefix_cache_counts_zero": true
+        }
+      }
+    },
+    {
+      "case": "buildplan",
+      "seed": 8675309,
+      "identical_first_model_request": true,
+      "identical_fixture": true,
+      "only_server_argument_difference_is_mtp": true,
+      "new_test_failures_with_mtp": [],
+      "new_test_passes_with_mtp": [],
+      "off": {
+        "passed": 1,
+        "tests": 10,
+        "complete_and_passing": false,
+        "seconds": 275.924,
+        "timed_out": false,
+        "exit_code": 0,
+        "protected_files_unchanged": true,
+        "production_diff_present": false,
+        "tool_error_count": 1,
+        "throughput": {
+          "target_output_tokens": 8904,
+          "generation_seconds": 249.33214,
+          "generation_tokens_per_second": 35.71140086472606,
+          "generation_requests": 6,
+          "requests_reaching_output_limit": 1
+        },
+        "first_request_throughput": {
+          "target_output_tokens": 109,
+          "generation_seconds": 2.80188,
+          "generation_tokens_per_second": 38.902451211329534,
+          "scope": "same complete first request per pair; short tool-selection response"
+        },
+        "response": {
+          "reasoning_characters": 32655,
+          "visible_characters": 0,
+          "completion_tokens": 8904,
+          "finish_reasons": [
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "length"
+          ],
+          "usage_requests": 6,
+          "max_prompt_tokens": 7033,
+          "all_reported_prefix_cache_counts_zero": true
+        }
+      },
+      "on": {
+        "passed": 1,
+        "tests": 10,
+        "complete_and_passing": false,
+        "seconds": 179.621,
+        "timed_out": false,
+        "exit_code": 0,
+        "protected_files_unchanged": true,
+        "production_diff_present": false,
+        "tool_error_count": 1,
+        "throughput": {
+          "target_output_tokens": 8679,
+          "generation_seconds": 163.12643,
+          "generation_tokens_per_second": 53.20413129864976,
+          "generation_requests": 4,
+          "requests_reaching_output_limit": 1
+        },
+        "first_request_throughput": {
+          "target_output_tokens": 109,
+          "generation_seconds": 1.46741,
+          "generation_tokens_per_second": 74.28053509244178,
+          "scope": "same complete first request per pair; short tool-selection response"
+        },
+        "response": {
+          "reasoning_characters": 32829,
+          "visible_characters": 0,
+          "completion_tokens": 8679,
+          "finish_reasons": [
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "length"
+          ],
+          "usage_requests": 4,
+          "max_prompt_tokens": 4688,
+          "all_reported_prefix_cache_counts_zero": true
+        }
+      }
+    },
+    {
+      "case": "wallet",
+      "seed": 4242,
+      "identical_first_model_request": true,
+      "identical_fixture": true,
+      "only_server_argument_difference_is_mtp": true,
+      "new_test_failures_with_mtp": [],
+      "new_test_passes_with_mtp": [],
+      "off": {
+        "passed": 1,
+        "tests": 10,
+        "complete_and_passing": false,
+        "seconds": 254.721,
+        "timed_out": false,
+        "exit_code": 0,
+        "protected_files_unchanged": true,
+        "production_diff_present": false,
+        "tool_error_count": 0,
+        "throughput": {
+          "target_output_tokens": 8633,
+          "generation_seconds": 239.05108,
+          "generation_tokens_per_second": 36.11362057013087,
+          "generation_requests": 4,
+          "requests_reaching_output_limit": 1
+        },
+        "first_request_throughput": {
+          "target_output_tokens": 110,
+          "generation_seconds": 2.81759,
+          "generation_tokens_per_second": 39.040456560393814,
+          "scope": "same complete first request per pair; short tool-selection response"
+        },
+        "response": {
+          "reasoning_characters": 34740,
+          "visible_characters": 0,
+          "completion_tokens": 8633,
+          "finish_reasons": [
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "length"
+          ],
+          "usage_requests": 4,
+          "max_prompt_tokens": 4886,
+          "all_reported_prefix_cache_counts_zero": true
+        },
+        "review": [
+          {
+            "probe": "destination_integer_overflow",
+            "passed": false
+          }
+        ]
+      },
+      "on": {
+        "passed": 1,
+        "tests": 10,
+        "complete_and_passing": false,
+        "seconds": 161.89,
+        "timed_out": false,
+        "exit_code": 0,
+        "protected_files_unchanged": true,
+        "production_diff_present": false,
+        "tool_error_count": 0,
+        "throughput": {
+          "target_output_tokens": 8633,
+          "generation_seconds": 145.25869,
+          "generation_tokens_per_second": 59.43190042537214,
+          "generation_requests": 4,
+          "requests_reaching_output_limit": 1
+        },
+        "first_request_throughput": {
+          "target_output_tokens": 110,
+          "generation_seconds": 1.32487,
+          "generation_tokens_per_second": 83.02701397118207,
+          "scope": "same complete first request per pair; short tool-selection response"
+        },
+        "response": {
+          "reasoning_characters": 35216,
+          "visible_characters": 0,
+          "completion_tokens": 8633,
+          "finish_reasons": [
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "length"
+          ],
+          "usage_requests": 4,
+          "max_prompt_tokens": 4886,
+          "all_reported_prefix_cache_counts_zero": true
+        },
+        "review": [
+          {
+            "probe": "destination_integer_overflow",
+            "passed": false
+          }
+        ]
+      },
+      "new_review_failures_with_mtp": [],
+      "new_review_passes_with_mtp": []
+    },
+    {
+      "case": "wallet",
+      "seed": 8675309,
+      "identical_first_model_request": true,
+      "identical_fixture": true,
+      "only_server_argument_difference_is_mtp": true,
+      "new_test_failures_with_mtp": [
+        "heldout.ContractTests.test_argument_validation_without_mutation",
+        "heldout.ContractTests.test_concurrent_competing_debits",
+        "heldout.ContractTests.test_concurrent_identical_retries",
+        "heldout.ContractTests.test_conflicting_id_rejected_without_mutation",
+        "heldout.ContractTests.test_credit_failure_rolls_back_debit",
+        "heldout.ContractTests.test_insufficient_funds_and_reusable_id",
+        "heldout.ContractTests.test_missing_accounts",
+        "heldout.ContractTests.test_record_failure_rolls_back_both_balances",
+        "heldout.ContractTests.test_replay_returns_original_snapshot"
+      ],
+      "new_test_passes_with_mtp": [],
+      "off": {
+        "passed": 10,
+        "tests": 10,
+        "complete_and_passing": false,
+        "seconds": 480.114,
+        "timed_out": true,
+        "exit_code": -15,
+        "protected_files_unchanged": true,
+        "production_diff_present": true,
+        "tool_error_count": 1,
+        "throughput": {
+          "target_output_tokens": 13214,
+          "generation_seconds": 373.29143,
+          "generation_tokens_per_second": 35.398616035733795,
+          "generation_requests": 8,
+          "requests_reaching_output_limit": 0
+        },
+        "first_request_throughput": {
+          "target_output_tokens": 109,
+          "generation_seconds": 2.78907,
+          "generation_tokens_per_second": 39.0811274008899,
+          "scope": "same complete first request per pair; short tool-selection response"
+        },
+        "response": {
+          "reasoning_characters": 34387,
+          "visible_characters": 1473,
+          "completion_tokens": 13214,
+          "finish_reasons": [
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "tool_calls"
+          ],
+          "usage_requests": 8,
+          "max_prompt_tokens": 20057,
+          "all_reported_prefix_cache_counts_zero": true
+        },
+        "review": [
+          {
+            "probe": "destination_integer_overflow",
+            "passed": true
+          }
+        ]
+      },
+      "on": {
+        "passed": 1,
+        "tests": 10,
+        "complete_and_passing": false,
+        "seconds": 186.13,
+        "timed_out": false,
+        "exit_code": 0,
+        "protected_files_unchanged": true,
+        "production_diff_present": false,
+        "tool_error_count": 1,
+        "throughput": {
+          "target_output_tokens": 8631,
+          "generation_seconds": 164.27568,
+          "generation_tokens_per_second": 52.5397307745127,
+          "generation_requests": 5,
+          "requests_reaching_output_limit": 1
+        },
+        "first_request_throughput": {
+          "target_output_tokens": 109,
+          "generation_seconds": 1.46386,
+          "generation_tokens_per_second": 74.46067246867871,
+          "scope": "same complete first request per pair; short tool-selection response"
+        },
+        "response": {
+          "reasoning_characters": 36729,
+          "visible_characters": 0,
+          "completion_tokens": 8631,
+          "finish_reasons": [
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "tool_calls",
+            "length"
+          ],
+          "usage_requests": 5,
+          "max_prompt_tokens": 5122,
+          "all_reported_prefix_cache_counts_zero": true
+        },
+        "review": [
+          {
+            "probe": "destination_integer_overflow",
+            "passed": false
+          }
+        ]
+      },
+      "new_review_failures_with_mtp": [
+        "destination_integer_overflow"
+      ],
+      "new_review_passes_with_mtp": []
+    }
+  ],
+  "completed_pairs": 8,
+  "planned_pairs": 8,
+  "limits": [
+    "Two seeds per task; exploratory evidence, not statistical non-inferiority.",
+    "Test methods within one task are correlated, not independent replications.",
+    "Prefix caching is disabled and each attempt starts a fresh server; latency excludes server startup.",
+    "Later model inputs necessarily diverge when the agent takes different actions.",
+    "Generation throughput uses completed server timing records; an interrupted generation without a final timing is excluded.",
+    "No simultaneous hardware workloads are intentionally added; desktop/background GPU activity is not fully controlled.",
+    "Only accepted target output contributes to generation tokens/s, including reasoning and tool calls."
+  ],
+  "off": {
+    "completed_tasks": 2,
+    "attempts": 8,
+    "passed_test_methods": 35,
+    "test_methods": 80,
+    "generation_tokens_per_second": 36.046116199658826,
+    "target_output_tokens": 73832,
+    "generation_seconds": 2048.26505,
+    "median_task_elapsed_seconds": 260.28549999999996
+  },
+  "on": {
+    "completed_tasks": 2,
+    "attempts": 8,
+    "passed_test_methods": 26,
+    "test_methods": 80,
+    "generation_tokens_per_second": 56.21342775056948,
+    "target_output_tokens": 68545,
+    "generation_seconds": 1219.37058,
+    "median_task_elapsed_seconds": 179.1935
+  },
+  "paired_completion_regressions": [],
+  "paired_completion_improvements": [],
+  "paired_primary_test_regressions": [
+    {
+      "case": "wallet",
+      "seed": 8675309,
+      "off_passed": 10,
+      "on_passed": 1,
+      "new_failed_methods": [
+        "heldout.ContractTests.test_argument_validation_without_mutation",
+        "heldout.ContractTests.test_concurrent_competing_debits",
+        "heldout.ContractTests.test_concurrent_identical_retries",
+        "heldout.ContractTests.test_conflicting_id_rejected_without_mutation",
+        "heldout.ContractTests.test_credit_failure_rolls_back_debit",
+        "heldout.ContractTests.test_insufficient_funds_and_reusable_id",
+        "heldout.ContractTests.test_missing_accounts",
+        "heldout.ContractTests.test_record_failure_rolls_back_both_balances",
+        "heldout.ContractTests.test_replay_returns_original_snapshot"
+      ]
+    }
+  ],
+  "paired_review_regressions": [
+    {
+      "case": "cache",
+      "seed": 8675309,
+      "probes": [
+        "finite_large_integer_ttl"
+      ]
+    },
+    {
+      "case": "wallet",
+      "seed": 8675309,
+      "probes": [
+        "destination_integer_overflow"
+      ]
+    }
+  ],
+  "successful_in_both_modes": [
+    {
+      "case": "cache",
+      "seed": 4242,
+      "off_seconds": 192.027,
+      "on_seconds": 153.523,
+      "mtp_elapsed_reduction_percent": 20.05134694600238
+    },
+    {
+      "case": "cache",
+      "seed": 8675309,
+      "off_seconds": 431.217,
+      "on_seconds": 259.004,
+      "mtp_elapsed_reduction_percent": 39.93650528620161
+    }
+  ],
+  "first_request_speed_ratios": [
+    {
+      "case": "cache",
+      "seed": 4242,
+      "ratio": 2.1140348190907834
+    },
+    {
+      "case": "cache",
+      "seed": 8675309,
+      "ratio": 1.913856671283949
+    },
+    {
+      "case": "ledger",
+      "seed": 4242,
+      "ratio": 2.1139287026828377
+    },
+    {
+      "case": "ledger",
+      "seed": 8675309,
+      "ratio": 1.8886949316017552
+    },
+    {
+      "case": "buildplan",
+      "seed": 4242,
+      "ratio": 2.096944543615375
+    },
+    {
+      "case": "buildplan",
+      "seed": 8675309,
+      "ratio": 1.9094050060991814
+    },
+    {
+      "case": "wallet",
+      "seed": 4242,
+      "ratio": 2.1266916754096625
+    },
+    {
+      "case": "wallet",
+      "seed": 8675309,
+      "ratio": 1.9052846583689702
+    }
+  ]
+}
