@@ -26,6 +26,8 @@ Our existing **Qwen3.8-27B Q4_K_M GGUF contained an MTP prediction layer**, so w
 
 ## Generation was 56% faster; successful tasks saved 20–40%
 
+![MTP off versus on: generation throughput rose from 36.0 to 56.2 tokens per second, while completed and passing tasks remained 2 out of 8 in each mode. Small controlled sample with a shared 8K response budget.](/og/qwen-mtp-results.png)
+
 Generation throughput counts tokens produced per second, including the model's reasoning output. Task time also includes reading source, executing tools, and running tests. It is closer to how long you wait for a patch.
 
 | Measure | MTP off | MTP on |
