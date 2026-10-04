@@ -1,0 +1,391 @@
+{
+  "schema_version": 1,
+  "suite_version": "agentic-v2.0.1",
+  "suite_fingerprint": "e6561c8c2a4f8337e5d7fec02ee3eff01f9eafe1157b601af2fb79fec4e316c0",
+  "tasks": {
+    "cache": {
+      "language": "python",
+      "turns": 1,
+      "summary": "Expiration and LRU without API regressions"
+    },
+    "ledger": {
+      "language": "python",
+      "turns": 1,
+      "summary": "Exact money, CSV and failure-safe CLI"
+    },
+    "buildplan": {
+      "language": "python",
+      "turns": 1,
+      "summary": "Deterministic graph planning and compatibility"
+    },
+    "wallet": {
+      "language": "python",
+      "turns": 1,
+      "summary": "Atomic and concurrent transfers with overflow checks"
+    },
+    "async_pool": {
+      "language": "typescript",
+      "turns": 1,
+      "summary": "Bounded async scheduling and failure recovery"
+    },
+    "pagination": {
+      "language": "typescript",
+      "turns": 1,
+      "summary": "Multi-file pagination, deduplication and cancellation"
+    },
+    "eventstream": {
+      "language": "python",
+      "turns": 1,
+      "summary": "Incremental UTF-8 parsing across arbitrary chunk boundaries"
+    },
+    "boltons_paths": {
+      "language": "python",
+      "turns": 1,
+      "summary": "Locate a nested-lookup regression in an upstream library"
+    }
+  },
+  "profiles": {
+    "medium_8k": {
+      "context_tokens": 131072,
+      "output_tokens_per_response": 8192,
+      "enable_thinking": true,
+      "reasoning_effort": "medium",
+      "temperature": 1.0,
+      "temperature_origin": "server_default",
+      "top_p": 0.95,
+      "top_k": 20,
+      "min_p": 0.0,
+      "repeat_penalty": 1.0
+    },
+    "medium_16k": {
+      "context_tokens": 131072,
+      "output_tokens_per_response": 16384,
+      "enable_thinking": true,
+      "reasoning_effort": "medium",
+      "temperature": 1.0,
+      "temperature_origin": "server_default",
+      "top_p": 0.95,
+      "top_k": 20,
+      "min_p": 0.0,
+      "repeat_penalty": 1.0
+    },
+    "medium_32k": {
+      "context_tokens": 131072,
+      "output_tokens_per_response": 32768,
+      "enable_thinking": true,
+      "reasoning_effort": "medium",
+      "temperature": 1.0,
+      "temperature_origin": "server_default",
+      "top_p": 0.95,
+      "top_k": 20,
+      "min_p": 0.0,
+      "repeat_penalty": 1.0
+    },
+    "xhigh_32k": {
+      "context_tokens": 131072,
+      "output_tokens_per_response": 32768,
+      "enable_thinking": true,
+      "reasoning_effort": "xhigh",
+      "temperature": 1.0,
+      "temperature_origin": "server_default",
+      "top_p": 0.95,
+      "top_k": 20,
+      "min_p": 0.0,
+      "repeat_penalty": 1.0
+    },
+    "xhigh_32k_temperature08": {
+      "context_tokens": 131072,
+      "output_tokens_per_response": 32768,
+      "enable_thinking": true,
+      "reasoning_effort": "xhigh",
+      "temperature": 0.8,
+      "temperature_origin": "profile_override",
+      "top_p": 0.95,
+      "top_k": 20,
+      "min_p": 0.0,
+      "repeat_penalty": 1.0
+    },
+    "thinking_off_32k": {
+      "context_tokens": 131072,
+      "output_tokens_per_response": 32768,
+      "enable_thinking": false,
+      "reasoning_effort": "medium",
+      "temperature": 1.0,
+      "temperature_origin": "server_default",
+      "top_p": 0.95,
+      "top_k": 20,
+      "min_p": 0.0,
+      "repeat_penalty": 1.0
+    }
+  },
+  "quality_budget": {
+    "seconds": 1800,
+    "generated_tokens": 65536,
+    "tool_calls": 120
+  },
+  "cohorts": {
+    "medium_8k": {
+      "attempt_ids": [
+        "a0001",
+        "a0002",
+        "a0003",
+        "a0004",
+        "a0005",
+        "a0006",
+        "a0007",
+        "a0008",
+        "a0009",
+        "a0010",
+        "a0011",
+        "a0012",
+        "a0013",
+        "a0014",
+        "a0015",
+        "a0016",
+        "a0017",
+        "a0018",
+        "a0019",
+        "a0020",
+        "a0021",
+        "a0022",
+        "a0023",
+        "a0024"
+      ],
+      "expected_count": 24,
+      "role": "primary_development"
+    },
+    "medium_16k": {
+      "attempt_ids": [
+        "a0025",
+        "a0026",
+        "a0027",
+        "a0028",
+        "a0029",
+        "a0030",
+        "a0031",
+        "a0032",
+        "a0033",
+        "a0034",
+        "a0035",
+        "a0036",
+        "a0037",
+        "a0038",
+        "a0039",
+        "a0040",
+        "a0041",
+        "a0042",
+        "a0043",
+        "a0044",
+        "a0045",
+        "a0046",
+        "a0047",
+        "a0048"
+      ],
+      "expected_count": 24,
+      "role": "primary_development"
+    },
+    "medium_32k": {
+      "attempt_ids": [
+        "a0049",
+        "a0050",
+        "a0051",
+        "a0052",
+        "a0053",
+        "a0054",
+        "a0055",
+        "a0056",
+        "a0057",
+        "a0058",
+        "a0059",
+        "a0060",
+        "a0061",
+        "a0062",
+        "a0063",
+        "a0064",
+        "a0065",
+        "a0066",
+        "a0067",
+        "a0068",
+        "a0069",
+        "a0070",
+        "a0071",
+        "a0072"
+      ],
+      "expected_count": 24,
+      "role": "primary_development"
+    },
+    "xhigh_32k": {
+      "attempt_ids": [
+        "a0073",
+        "a0074",
+        "a0075",
+        "a0076",
+        "a0077",
+        "a0078",
+        "a0079",
+        "a0080",
+        "a0081",
+        "a0082",
+        "a0083",
+        "a0084",
+        "a0085",
+        "a0086",
+        "a0087",
+        "a0088",
+        "a0089",
+        "a0090",
+        "a0091",
+        "a0092",
+        "a0093",
+        "a0094",
+        "a0095",
+        "a0096"
+      ],
+      "expected_count": 24,
+      "role": "primary_development"
+    },
+    "temperature08_targeted": {
+      "attempt_ids": [
+        "a0097",
+        "a0098",
+        "a0099",
+        "a0100",
+        "a0101",
+        "a0102"
+      ],
+      "expected_count": 6,
+      "role": "targeted_development"
+    },
+    "temperature10_reused_controls": {
+      "attempt_ids": [
+        "a0078",
+        "a0079",
+        "a0081",
+        "a0084",
+        "a0089",
+        "a0092"
+      ],
+      "expected_count": 6,
+      "role": "reused_subset_of_xhigh_32k"
+    }
+  },
+  "comparisons": [
+    [
+      "medium_8k",
+      "medium_16k"
+    ],
+    [
+      "medium_16k",
+      "medium_32k"
+    ],
+    [
+      "medium_32k",
+      "xhigh_32k"
+    ],
+    [
+      "temperature10_reused_controls",
+      "temperature08_targeted"
+    ]
+  ],
+  "expected_inventory": {
+    "unique_records": 159,
+    "completed_results": 119,
+    "primary_unique_attempts": 102,
+    "extra_8k_excluded": 14,
+    "pilots": 2,
+    "thinking_off_completed": 1,
+    "thinking_off_cancelled_after_start": 1,
+    "thinking_off_cancelled_unstarted": 22,
+    "infrastructure_no_result": 3,
+    "configuration_only": 4,
+    "extra_8k_cancelled_unstarted": 10
+  },
+  "repeat_policy": "Date-shaped seeds omitted. repeat-1, repeat-2 and repeat-3 consistently preserve the original paired seed order; pilot-repeat-1 is separate. Labels are not numeric inference seeds.",
+  "temperature_sampling": [
+    {
+      "attempt_id": "a0097",
+      "observations": 25,
+      "all_sampled_temperatures_match_08": true
+    },
+    {
+      "attempt_id": "a0098",
+      "observations": 11,
+      "all_sampled_temperatures_match_08": true
+    },
+    {
+      "attempt_id": "a0099",
+      "observations": 10,
+      "all_sampled_temperatures_match_08": true
+    },
+    {
+      "attempt_id": "a0100",
+      "observations": 17,
+      "all_sampled_temperatures_match_08": true
+    },
+    {
+      "attempt_id": "a0101",
+      "observations": 16,
+      "all_sampled_temperatures_match_08": true
+    },
+    {
+      "attempt_id": "a0102",
+      "observations": 16,
+      "all_sampled_temperatures_match_08": true
+    }
+  ],
+  "replacement_attempt_id": "a0038",
+  "technical_identity": {
+    "model_filename": "Qwen3.8-27B-Q4_K_M.gguf",
+    "weights_sha256": "f5f1dd8920d417aac2718b0bda3403da274301efdd6760b4f0f4b864ff2ad57d",
+    "weights_bytes": 16810714464,
+    "runtime_build": "b11146-7fe450e19",
+    "opencode_sha256": "a5f6b8fa55c21b4897bf640bbedfa64c06c11aa17731b6f81e9ea756dcf94813",
+    "versions": {
+      "python": "Python 3.12.3",
+      "node": "v24.21.0",
+      "typescript": "Version 5.9.3",
+      "opencode": "opencode v2.0.20"
+    },
+    "identity_basis": "Historical per-attempt recorded full-weight verification, configuration and server properties; no fresh weight hashing or live service inspection. Recorded deployment name is not independent upstream authenticity verification.",
+    "hardware": "NVIDIA GeForce RTX 3090, 24 GiB (accepted historical audit)",
+    "cuda_version": "12.8 (accepted historical deployment audit)",
+    "serving_settings": {
+      "gpu_layers": "all",
+      "fit": "off",
+      "flash_attention": "on",
+      "cache_k": "q8_0",
+      "cache_v": "q8_0",
+      "batch_size": 512,
+      "microbatch_size": 256,
+      "context_checkpoints": 4,
+      "host_cache_mib": 2048,
+      "threads": 8,
+      "threads_batch": 8,
+      "parallel_slots": 1,
+      "context_shift": false,
+      "vision_projector": false,
+      "speculation": "none",
+      "reasoning_format": "deepseek",
+      "reasoning_preserve": true
+    }
+  },
+  "metric_definitions": {
+    "functional_success": "Solved phase-one AND final grade AND unchanged configuration.",
+    "grade_solved": "No protected changes AND no missing starter files AND every required check group successful.",
+    "delivered_success": "Functional success AND expected turn count AND every turn completed with exit zero, nonempty final text after tools, last recognized test validation passed, and last recognized typecheck passed for TypeScript.",
+    "seconds": "Sum of recorded turn durations; excludes startup, between-attempt rests and independent grading.",
+    "native_output_tokens": "Sum of model-server generated-token counter deltas over turns.",
+    "opencode_output_tokens": "Sum of output usage reported by OpenCode over turns.",
+    "missing_result": "Null outcome, never a scored model failure.",
+    "paired_transition": "Match by case and public repeat label; compare stored and recomputed booleans.",
+    "median_seconds": "Median of all completed attempts in the selected cohort, including failures."
+  },
+  "lineage": {
+    "development_task_count": 8,
+    "turns_per_task": 1,
+    "boltons_paths_upstream_revision": "4e5faa3d7e4008d89e0d8bf1ea87b6d9a061a16d",
+    "boltons_paths_license": "BSD-3-Clause",
+    "boltons_paths_kind": "pinned_upstream_seeded_fault",
+    "other_tasks_kind": "authored_fixture"
+  }
+}

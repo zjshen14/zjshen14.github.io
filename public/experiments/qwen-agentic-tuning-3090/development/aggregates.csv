@@ -1,0 +1,13 @@
+section,name,records,completed,not_scored,functional_success,functional_failed,delivered_success,delivered_failed,median_seconds,status_counts,termination_counts
+cohorts,medium_8k,24,24,0,5,19,5,19,245.5435,"{""complete"":24}","{""completed"":24}"
+cohorts,medium_16k,24,24,0,14,10,14,10,527.506,"{""complete"":24}","{""completed"":24}"
+cohorts,medium_32k,24,24,0,20,4,20,4,586.5995,"{""complete"":24}","{""completed"":23,""wall_time_limit"":1}"
+cohorts,xhigh_32k,24,24,0,23,1,23,1,775.7825,"{""complete"":24}","{""completed"":24}"
+cohorts,temperature08_targeted,6,6,0,5,1,4,2,1171.476,"{""complete"":6}","{""completed"":5,""wall_time_limit"":1}"
+cohorts,temperature10_reused_controls,6,6,0,5,1,5,1,972.4514999999999,"{""complete"":6}","{""completed"":6}"
+separate_groups,configuration_only,4,0,4,0,0,0,0,,"{""not_inference"":4}",{}
+separate_groups,extra_8k_cancelled,10,0,10,0,0,0,0,,"{""cancelled_unstarted"":10}",{}
+separate_groups,extra_8k_excluded,14,14,0,3,11,3,11,245.54149999999998,"{""complete"":14}","{""completed"":14}"
+separate_groups,infrastructure_excluded,3,0,3,0,0,0,0,,"{""infrastructure_no_result"":3}",{}
+separate_groups,pilots,2,2,0,1,1,1,1,254.55700000000002,"{""complete"":2}","{""completed"":2}"
+separate_groups,thinking_off_cancelled,24,1,23,1,0,1,0,134.695,"{""cancelled_after_start"":1,""cancelled_unstarted"":22,""complete"":1}","{""completed"":1}"
