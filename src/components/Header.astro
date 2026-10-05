@@ -30,25 +30,25 @@ if (!switchUrl.endsWith('/')) switchUrl += '/';
 
 <header class="sticky top-0 z-40 w-full backdrop-blur-md bg-zinc-50/80 dark:bg-zinc-950/80 border-b border-zinc-200 dark:border-zinc-800 transition-colors">
   <div class="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-    <a href={`/${locale}/`} class="font-bold text-lg tracking-tight text-zinc-900 dark:text-zinc-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+    <a href={`/${locale}/`} class="font-bold text-base sm:text-lg whitespace-nowrap tracking-tight text-zinc-900 dark:text-zinc-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
       {t.siteTitle}
     </a>
 
-    <nav class="flex items-center space-x-2 sm:space-x-4">
-      <a href={`/${locale}/blog/`} class="px-3 py-1.5 text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100 rounded-md transition-colors">
+    <nav class="flex items-center space-x-1 sm:space-x-4">
+      <a href={`/${locale}/blog/`} class="px-2 sm:px-3 py-1.5 text-sm whitespace-nowrap font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100 rounded-md transition-colors">
         {t.navBlog}
       </a>
-      <a href={`/${locale}/tags/`} class="px-3 py-1.5 text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100 rounded-md transition-colors">
+      <a href={`/${locale}/tags/`} class="px-2 sm:px-3 py-1.5 text-sm whitespace-nowrap font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100 rounded-md transition-colors">
         {t.navTags}
       </a>
-      <a href={`/${locale}/about/`} class="px-3 py-1.5 text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100 rounded-md transition-colors">
+      <a href={`/${locale}/about/`} class="px-2 sm:px-3 py-1.5 text-sm whitespace-nowrap font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100 rounded-md transition-colors">
         {t.navAbout}
       </a>
 
       <!-- Language Switcher -->
       <a
         href={switchUrl}
-        class="px-2.5 py-1 text-xs font-semibold uppercase tracking-wider rounded border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+        class="px-2 sm:px-2.5 py-1 text-xs whitespace-nowrap font-semibold uppercase tracking-wider rounded border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
         title={locale === 'en' ? "切换到中文" : "Switch to English"}
       >
         {locale === 'en' ? '中文' : 'EN'}

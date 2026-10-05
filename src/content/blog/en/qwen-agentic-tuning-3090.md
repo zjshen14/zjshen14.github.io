@@ -1,55 +1,84 @@
 ---
 title: "Tuning a Local Qwen Coding Agent: What Changed, What Still Fails"
-seoTitle: "Qwen Coding Agent Tuning on RTX 3090: Development Results"
-description: "A local Qwen development study reached 23/24 delivered attempts after output and reasoning tuning. A targeted temperature test regressed delivery, and held-out confirmation never launched."
+seoTitle: "Qwen on RTX 3090: Output Limits and Medium vs Xhigh"
+description: "Two tuning stages on eight repeated development cases: raise the response cap from 8K to 32K, then compare medium with xhigh. More repairs finished, waiting increased, and confirmation remains unrun."
 pubDate: 2026-10-04
+updatedDate: 2026-10-05
 tags: ["ai", "agent", "opencode", "qwen", "llama-cpp", "local-llm", "benchmark"]
 draft: false
+ogImage: "/og-default.png"
 ---
 
-On eight development cases repeated three times, my local Qwen coding agent went from **5/24 to 23/24 functional and delivered successes** across sequential output-budget and reasoning rounds. That is a useful development result. It does **not** establish that the final profile generalizes, that `xhigh` alone caused the difference, or that these settings are a universal optimum.
+Giving this local Qwen coding agent more room to respond coincided with **5 → 14 → 20 successful deliveries out of 24** as the output cap rose from 8K to 16K to 32K. Changing the reasoning setting from **medium to `xhigh` at the same 32K cap** brought the observed result to **23/24**. The cost was longer waits: median attempt time rose from **245.5 to 775.8 seconds** across the sequence.
 
-The next sampling experiment was less encouraging: temperature 0.8 produced **5/6 functional successes but only 4/6 delivered successes**, versus **5/6 for both** in reused temperature-1.0 controls. Held-out confirmation then stopped at safety preflight. **Zero confirmation attempts ran.**
+Those are promising **development results**, not proof of a generally better coding agent. The rounds reused earlier controls and the same eight cases. A later temperature test lost one delivery overall, and **zero held-out confirmation attempts ran**.
 
-For developers, the useful lesson is a measurement process: track whether the patch passes independent checks, whether the agent finishes its delivery, and which evidence remains development-only. The [public data notes](/experiments/qwen-agentic-tuning-3090/development/README.md) and [standalone checker](/experiments/qwen-agentic-tuning-3090/development/check.py) let you inspect and recompute the reported aggregates without running a model.
+This follow-up to the [deployment guide](/en/blog/local-qwen-opencode-3090/) and [MTP comparison](/en/blog/qwen-mtp-speed-quality/) explains the two tuning decisions separately: first make room for a response to finish, then compare reasoning settings within that room. The earlier studies used different protocols; their scores are not pooled here.
 
-*Writing disclosure: this article was drafted with AI assistance from the recorded experiment reports and reviewed development export. The public checker verifies aggregation; it does not validate patch semantics or establish generalization.*
+*Writing disclosure: this article was drafted with AI assistance from recorded experiment reports and the reviewed development export. The public checker verifies aggregation, not patch semantics or generalization.*
 
-## From deployment to completing a repair
+## Four settings that sound similar but do different jobs
 
-My [deployment article](/en/blog/local-qwen-opencode-3090/) covers connecting OpenCode to a local llama.cpp server on an RTX 3090. The [MTP comparison](/en/blog/qwen-mtp-speed-quality/) asks whether faster generation translates into better coding delivery. This follow-up asks what happens when I give the agent more response space, change its reasoning profile, and then try lower-temperature sampling on difficult cases.
+OpenCode reads files, runs tools, edits code, and tests the changes. The local llama.cpp server generates reasoning, tool requests, and text. A single repair can involve many model responses before the agent produces its final handoff.
 
-OpenCode runs the coding workflow: reading files, choosing tools, editing code, testing, and producing a final response. The model server generates the reasoning, tool requests, and text. A server returning normally is only one part of success; the resulting patch still needs to satisfy the task, and the agent still needs to finish.
+That makes four limits worth separating:
 
-These results belong to the **agentic-v2.0.1 development suite**. They are not pooled with the earlier deployment or MTP batches, which used different protocols and budgets.
+- **Output cap:** how many tokens one model response may generate. Reasoning, tool requests, and final text share this allowance. An 8,192-token cap is not 8,192 tokens reserved for the answer after thinking.
+- **Reasoning setting:** the configured effort label, `medium` or `xhigh`, passed through the model's chat-template options. Both modes keep thinking enabled. The label is not a measured quantity of internal computation or a guaranteed number of thinking tokens.
+- **Context capacity:** the server can accommodate up to **131,072 tokens** of context, shared by input and output. It does not grant every response that much output or demonstrate coding quality at full capacity.
+- **Whole-attempt budget:** each repair has **1,800 seconds, 65,536 generated tokens, and 120 tool calls**. These limits cover the attempt across responses; increasing one response's cap does not increase them.
 
-## More response space coincided with more delivered attempts
+Success also has two parts. **Functional success** means the candidate passes all required independent grading checks and preserves the configuration. **Delivered success** additionally means the agent completes the required turn, exits successfully, finishes its own recognized validations, and supplies final text after tools. The two counts match in the four main cohorts, but diverge in the later temperature test.
 
-Each principal cohort contains the same eight cases and three paired repeat labels, for 24 attempts. Functional and delivered outcomes happened to coincide in all four principal cohorts.
+## Stage 1: raise the output cap, keep medium reasoning
 
-<div class="overflow-x-auto" tabindex="0" role="region" aria-label="Scrollable experiment table">
+The reason to try a larger cap was concrete. In the earlier deployment and MTP studies, some attempts used the entire 8,192-token response allowance on reasoning and ended before editing production code. More context could not solve that particular limit. The question for this development suite was whether a larger response allowance would let more repairs reach a working patch and final delivery.
 
-| Recorded profile | Functional | Delivered | Median attempt time |
+This stage kept thinking enabled and reasoning at **`medium`**, while increasing the configured output cap from **8,192 → 16,384 → 32,768 tokens**. Context stayed at 131,072, temperature at 1.0, and the whole-attempt budget stayed fixed.
+
+Each row below uses the same eight development cases, repeated three times. The fourth row belongs to the next stage, where the cap stops changing.
+
+<div class="overflow-x-auto" tabindex="0" role="region" aria-label="Scrollable tuning results">
+
+| Stage and profile | Functional | Delivered | Median attempt time |
 | --- | ---: | ---: | ---: |
-| Medium, 8,192 output tokens | 5/24 | 5/24 | 245.5 s |
-| Medium, 16,384 output tokens | 14/24 | 14/24 | 527.5 s |
-| Medium, 32,768 output tokens | 20/24 | 20/24 | 586.6 s |
-| Xhigh, 32,768 output tokens | 23/24 | 23/24 | 775.8 s |
+| 1 · Medium, 8,192 output tokens | 5/24 | 5/24 | 245.5 s |
+| 1 · Medium, 16,384 output tokens | 14/24 | 14/24 | 527.5 s |
+| 1 · Medium, 32,768 output tokens | 20/24 | 20/24 | 586.6 s |
+| 2 · Xhigh, 32,768 output tokens | 23/24 | 23/24 | 775.8 s |
 
 </div>
 
-Source: [cohort aggregates](/experiments/qwen-agentic-tuning-3090/development/aggregates.json). Medians include unsuccessful attempts and exclude server startup, rests, and independent grading. They describe the observed agent runs; they do not measure successful-task speedups on identical work.
+Source: [cohort aggregates](/experiments/qwen-agentic-tuning-3090/development/aggregates.json). Medians include failures and exclude server startup, rests, and independent grading. These are observed waiting times, not speedups for identical successful work.
 
-The response allowance is **per model response**, including reasoning and tool/final output. It differs from the server's **131,072-token context capacity**, and from the whole-attempt budget of **1,800 seconds, 65,536 generated tokens, and 120 tool calls**. A large context does not automatically give one generation a large output allowance.
+The gains appeared across several kinds of repair. The **async pool**, which tests bounded concurrent scheduling and failure recovery, went from **0/3 at 8K to 3/3 at 16K**. The **build planner**, which tests deterministic dependency planning and compatibility, went from **0/3 to 1/3 to 3/3** as the cap increased. These examples show why counting completed repairs is more informative than counting generated tokens.
 
-Matching case and repeat labels yields nine improvements and zero regressions from 8K to 16K, six and zero from 16K to 32K, and three and zero from medium to xhigh at 32K, for both metrics. These are descriptive transitions across reused controls. Later rounds were selected after earlier feedback and ran sequentially, with changes in rests and recovery history. They are not randomized estimates of the effect of one setting.
+More room did not solve everything. **Pagination** reached **2/3 at 32K**, while the **CSV ledger**, testing exact money and failure-safe handling, remained **0/3 at every medium cap**. That remaining gap motivated the next comparison: would a different reasoning setting help while keeping response space fixed?
+
+The waiting cost matters. Median time more than doubled between 8K and 16K, then increased again at 32K. A short unsuccessful attempt is not a fast successful repair; a larger allowance can keep an unproductive attempt running longer too.
+
+## Stage 2: compare medium with xhigh at a fixed 32K cap
+
+This stage changed the configured **`reasoning_effort` from `medium` to `xhigh`**. The conversational phrase “extreme high” refers here to that recorded `xhigh` value. **The output cap remained 32,768, and thinking stayed enabled in both modes.** This was not a thinking-on versus thinking-off comparison.
+
+In the recorded OpenCode profiles, the cap is `limit.output`; the effort label is `reasoning_effort` inside `body.chat_template_kwargs`, alongside `enable_thinking: true`. These are different controls. Setting `xhigh` requests a different reasoning mode through the template; it does not establish that every response used more computation, or that the server assigned a known extra reasoning budget. The records support the configured comparison, not a measurement of internal thinking depth.
+
+The observed result rose from **20/24 to 23/24** for both success metrics. All three matched improvements came from two cases: **ledger went from 0/3 to 2/3**, and **pagination from 2/3 to 3/3**. The other six cases remained at 3/3. The ledger still failed one repeat, so even this development result was not uniformly successful.
+
+Median attempt time rose from **586.6 to 775.8 seconds**. That is the tradeoff to assess for a coding workflow: more of these repairs finished, but the typical recorded attempt took longer. It is not evidence that `xhigh` will improve every task or every local model.
+
+### Why the improvement is still provisional
+
+The case and repeat labels match across cohorts, but the controls were collected earlier. The output rounds and reasoning round were sequential extensions selected after previous feedback, rather than fresh randomized, interleaved comparisons. Rest policies and recovery history also changed. Matching labels therefore describes observed transitions; it cannot isolate an `xhigh`-only causal effect.
+
+The main cohorts contain **eight distinct small cases**, not 24 independent production repositories. Repeats share tasks and checks, and later tool trajectories can diverge. The selected **xhigh / 32K / temperature 1.0** profile is worth investigating as a complete configuration; these results do not establish a universal optimum or a new adoption decision.
 
 <details>
-<summary>Where the development gains appeared</summary>
+<summary>All eight cases and matched transitions</summary>
 
-Each cell below is successes out of three attempts; both metrics agree here.
+Each cell is successes out of three attempts. Functional and delivered counts agree in this table.
 
-<div class="overflow-x-auto" tabindex="0" role="region" aria-label="Scrollable experiment table">
+<div class="overflow-x-auto" tabindex="0" role="region" aria-label="Scrollable per-case results">
 
 | Case | Medium 8K | Medium 16K | Medium 32K | Xhigh 32K |
 | --- | ---: | ---: | ---: | ---: |
@@ -64,69 +93,75 @@ Each cell below is successes out of three attempts; both metrics agree here.
 
 </div>
 
-The suite covers Python and TypeScript repairs: expiration/LRU, atomic transfers, incremental UTF-8 parsing, nested lookup, bounded async scheduling, exact-money CSV handling, pagination, and deterministic graph planning. Seven cases are authored fixtures; nested paths uses a pinned upstream seeded fault. These small cases are not eight independent production-repository deployments.
+The cases cover expiration/LRU, atomic transfers, incremental UTF-8 parsing, nested lookup, bounded async scheduling, exact-money CSV handling, pagination, and graph planning. Seven are authored fixtures; nested paths uses a pinned upstream seeded fault. They belong to **agentic-v2.0.1**, separate from the deployment and MTP studies.
 
-The ledger remained the hardest case: even the xhigh cohort failed one of its three repeats. The [per-attempt records](/experiments/qwen-agentic-tuning-3090/development/attempts.json) retain failures alongside successes.
+Matched transitions show nine improvements and zero regressions from 8K to 16K, six and zero from 16K to 32K, and three and zero from medium to xhigh at 32K, for both metrics. These are descriptive counts from [aggregates.json](/experiments/qwen-agentic-tuning-3090/development/aggregates.json), not randomized effect estimates.
+
+The later 16K continuation and medium/32K round used 300-second rests; the reasoning round used 180-second rests. Earlier recovery and pauses further limit attribution. The [data notes](/experiments/qwen-agentic-tuning-3090/development/README.md) retain that history and the cohort inclusion rules.
 
 </details>
 
-## A correct patch and a completed delivery are different outcomes
+## Lower temperature exposed the gap between a patch and a delivery
 
-**Functional success** requires solved phase-one and final grades plus unchanged agent configuration. Solved grading means no protected-file changes, no missing starter files, and success in every required check group. Python requires acceptance, regression, public-test, and syntax groups. TypeScript requires acceptance, regression, public-test, project-typecheck, and consumer-typecheck groups; it has no separate syntax group. The predefined acceptance and regression checks stay outside the agent workspace.
+After the reasoning comparison, temperature **0.8** was tested on ledger and pagination, three repeats each, at xhigh/32K. These cases were selected after earlier failures. Their temperature-1.0 controls are six reused attempts from the existing xhigh cohort, not six new concurrent controls.
 
-**Delivered success** also requires the expected turn count, completed termination with exit code zero, nonempty final text after tools, and the last recognized agent test validation passing. TypeScript requires the last recognized typecheck to pass too. Every development case requires one turn.
-
-This distinction catches two different failure modes in the targeted sampling round:
-
-- **`a0100`, ledger, repeat-2:** both grades solved, but the run stopped at the wall-time limit after 1,800.017 seconds, with exit code -15 and no final text. The patch counted as functional; delivery failed.
-- **`a0101`, ledger, repeat-3:** the process exited normally, recorded passing agent tests, and supplied final text. Independent acceptance checks still failed. Both success metrics were false.
-
-A green agent test run cannot override failed independent checks. Conversely, a patch passing those checks does not turn a timeout into completed delivery. The medium/32K ledger timeout `a0060` also remains a scored failure rather than disappearing as an infrastructure exclusion.
-
-These examples establish what the records show, not why the model failed. The public package contains outcome flags and counts, not patches or raw conversations. Final text presence is a delivery requirement, **not verification that the handoff accurately describes the patch**. Passing the frozen checks also does not prove absence of every possible defect.
-
-## Lower temperature did not improve delivery in the targeted round
-
-After the reasoning round, I tested temperature **0.8** on ledger and pagination, with three repeats each. These were selected development cases following earlier failures, not a fresh representative sample.
-
-<div class="overflow-x-auto" tabindex="0" role="region" aria-label="Scrollable experiment table">
+<div class="overflow-x-auto" tabindex="0" role="region" aria-label="Scrollable temperature results">
 
 | Targeted profile | Functional | Delivered |
 | --- | ---: | ---: |
-| Temperature 1.0, reused xhigh/32K controls | 5/6 | 5/6 |
-| Temperature 0.8, new xhigh/32K attempts | 5/6 | 4/6 |
+| Temperature 1.0, reused controls | 5/6 | 5/6 |
+| Temperature 0.8, new attempts | 5/6 | 4/6 |
 
 </div>
 
-The 1.0 row reuses six attempts from the existing xhigh cohort. No fresh temperature-1.0 controls ran alongside the 0.8 attempts, so those six records must not be counted twice in a pooled total.
+One ledger attempt, **`a0100`**, passed both independent grades but hit the wall-time limit at **1,800.017 seconds**, exiting with code -15 and no final text. It counted as a functional patch, but not a completed delivery. Another, **`a0101`**, exited normally with passing agent tests and final text, yet failed independent acceptance checks. Neither metric counted it as successful.
 
-At the case/repeat level, lowering temperature yielded one functional improvement and one regression. For delivery, it yielded one improvement and two regressions. It recovered the earlier ledger failure in one repeat while losing outcomes elsewhere. The result supplies no basis for calling 0.8 a better default.
+Together these explain why green agent tests, a correct patch, and a finished handoff must be tracked separately. At matched case/repeat level, temperature 0.8 produced one functional improvement and one regression; delivery had one improvement and two regressions. This targeted result does not support making 0.8 the better default.
 
-Historical sampling observations covered all six 0.8 attempts and matched the requested temperature within floating-point tolerance. They did not capture every request. The export distinguishes this observation layer from profile metadata and configured request bodies; I do not claim independent capture of every effective setting throughout every run.
+<details>
+<summary>Exact scoring and sampling limits</summary>
 
-## The selected profile is provisional; confirmation is unrun
+Functional success requires solved phase-one and final grades plus unchanged agent configuration. A solved grade requires no protected-file changes, no missing starter files, and every required check group passing. Python requires acceptance, regression, public-test, and syntax groups. TypeScript requires acceptance, regression, public-test, project-typecheck, and consumer-typecheck groups, with no separate syntax group. Predefined acceptance and regression checks stay outside the agent workspace.
 
-The selected profile—**xhigh reasoning, 32,768 output tokens, temperature 1.0**—was fixed before the held-out experiment. The development results support investigating that complete configuration. They do not isolate the causal effect of xhigh, and this article makes no new adoption decision.
+Delivered success also requires the expected turn count, completed termination with exit code zero, nonempty final text after tools, and the last recognized agent test validation passing. TypeScript also requires the last recognized typecheck to pass. Every development case requires one turn. The medium/32K ledger timeout **`a0060`** remains a scored failure, not an infrastructure exclusion.
 
-A frozen confirmation protocol planned **four fresh cases, three paired repeats, and two profiles**: medium/8K versus xhigh/32K, both at temperature 1.0 and 131,072 context capacity. That is 24 planned attempts and 12 planned pairs. The protocol registration SHA-256 is:
+Final-text presence does not prove that the handoff accurately describes the patch. Passing frozen checks does not prove every defect is absent. The [attempt records](/experiments/qwen-agentic-tuning-3090/development/attempts.json) expose outcome fields, not patches or raw conversations.
+
+Historical sampling observations covered all six 0.8 attempts and matched the requested temperature within floating-point tolerance, but did not capture every request. Profile metadata and configured request bodies are evidence of configuration; they are not independent capture of every effective field throughout every run.
+
+</details>
+
+## Confirmation never launched
+
+A frozen held-out protocol planned **four fresh cases, three paired repeats, and two profiles**: medium/8K versus xhigh/32K, both at temperature 1.0 and 131,072 context capacity. That would be 24 attempts and 12 pairs.
+
+Preflight stopped launch because hardware readiness remained unresolved after historical CPU machine-check reports. Their cause is unexplained: they do not diagnose a defective component or establish a confirmation-induced fault. An absence of new matching events in retained observations would not, by itself, clear the hardware. A separate **OpenCode resource-ownership prerequisite** also remained unresolved. Neither guard was bypassed.
+
+**Zero confirmation attempts ran, zero pairs completed, and there are no confirmation quality measurements.** Missing observations are not 0/12 success rates or model failures. There was no confirmation inference, runtime-identity measurement, or fresh weight hash. Further testing depends on independently resolved readiness and software ownership; the development result cannot answer whether the gains transfer to fresh cases.
+
+<details>
+<summary>Confirmation registration</summary>
+
+The frozen protocol's registration SHA-256 is:
 
 ```text
 6760f39c13e67f0814edbdaf314b3572d985c30c8ef94752631e551482e423cd
 ```
 
-Safety preflight stopped launch because hardware readiness remained unresolved after a CPU machine-check report. That report does not establish a hardware cause or identify a defective component. A separate resource-ownership prerequisite also remained unresolved. Neither guard was bypassed.
+Even a completed four-case, three-repeat test would contain four distinct cases with correlated repeats. No such test completed here, and this article provides no hardware clearance or promise of a completed held-out comparison.
 
-**There were zero observed confirmation attempts, zero complete pairs, and no confirmation quality measurements.** These are missing observations, not 0/12 success rates for each profile and not model failures. No confirmation inference, runtime-identity measurement, or fresh weight hash came from that blocked execution. The hardware has not been cleared by this article.
+</details>
 
-Four cases repeated three times would still be four distinct cases with correlated repeats. Since none ran, there is no new evidence for or against generalization. Further testing depends on independently resolved readiness and ownership prerequisites; this report promises no completed held-out test.
+## Trying the comparison in your own workflow
 
-## What to record when trying a similar profile
+The useful order is to identify the failure first. If one response ends at its output cap before useful edits, compare a larger allowance while keeping the reasoning setting fixed. Once that comparison is understood, test reasoning settings at a fixed cap. Keep independent acceptance checks, failed attempts, and elapsed time in the same record; inspect the actual diff and final handoff too.
 
-For an already working local deployment, the recorded development settings are a concrete starting point for your own controlled comparison:
+Before changing a working deployment, save its configuration and record the actual request allowance, thinking options, sampling fields, and model digest. Restore the saved configuration when reverting. The [deployment guide](/en/blog/local-qwen-opencode-3090/) covers integration; this article supplies historical profile values, not a full launch command or ready-to-run benchmark harness.
 
-<div class="overflow-x-auto" tabindex="0" role="region" aria-label="Scrollable experiment table">
+<details>
+<summary>Selected development configuration and model identity</summary>
 
-| Setting | Selected development profile |
+| Setting | Recorded value |
 | --- | --- |
 | Reasoning / thinking | xhigh / enabled |
 | Output per response | 32,768 tokens |
@@ -135,27 +170,35 @@ For an already working local deployment, the recorded development settings are a
 | Sampling | top-p 0.95; top-k 20; min-p 0; repetition penalty 1 |
 | Speculation | Off |
 
-</div>
+Within the model entry of the recorded OpenCode configuration, the two tuning fields look like this:
 
-The recorded model is **Qwen3.8-27B Q4_K_M**, with weight SHA-256:
+```json
+{
+  "limit": { "context": 131072, "output": 32768 },
+  "body": {
+    "chat_template_kwargs": {
+      "enable_thinking": true,
+      "reasoning_effort": "xhigh"
+    }
+  }
+}
+```
+
+This is a field excerpt, not a complete provider configuration. Stage 1 changes `limit.output` with effort at `medium`; stage 2 changes the effort label with output fixed at 32768.
+
+The recorded model is **Qwen3.8-27B Q4_K_M**, a 16,810,714,464-byte weight file with SHA-256:
 
 ```text
 f5f1dd8920d417aac2718b0bda3403da274301efdd6760b4f0f4b864ff2ad57d
 ```
 
-The [protocol export](/experiments/qwen-agentic-tuning-3090/development/protocol.json) pins the 16,810,714,464-byte file, llama.cpp **b11146-7fe450e19**, CUDA **12.8**, OpenCode **2.0.20**, tool versions, and serving settings. Completed records agree on their recorded model/runtime identity. This is historical recorded identity, not a fresh attestation of loaded GPU tensors or independent verification of upstream branding. A client alias alone cannot identify the weights.
+The [protocol export](/experiments/qwen-agentic-tuning-3090/development/protocol.json) pins llama.cpp **b11146-7fe450e19**, CUDA **12.8**, OpenCode **2.0.20**, tool versions, and serving settings. Completed records agree on recorded model/runtime identity. This is historical identity, not fresh attestation of loaded GPU tensors or independent upstream-branding verification. A client alias alone cannot identify the weights.
 
-Use the [deployment guide](/en/blog/local-qwen-opencode-3090/) for integration details. Before changing a working setup, save its configuration and record the actual request allowance, reasoning/thinking settings, sampling fields, and model digest. Compare on representative work with independent acceptance checks, keep failed attempts, and restore the saved configuration when reverting. This article provides profile values rather than a full launch command or ready-to-run benchmark harness.
+</details>
 
-The longer runs also impose a waiting cost. Keep time, generated tokens, tools, grading, and delivery in the same record. An early unsuccessful exit is not a successful-task speedup, and a larger allowance can spend more time without guaranteeing a better patch.
+## Download and recompute the results
 
-## Download and recompute the public results
-
-The export contains **102 unique primary attempts**: four 24-attempt cohorts plus six targeted 0.8 attempts. The reused 1.0 subset adds no new attempts. Its broader inventory has **159 records**, including 119 completed results and 40 unscored records or planned slots.
-
-The separate records preserve extra 8K trials, pilots, the cancelled thinking-off direction, infrastructure predecessors, and configuration preflights. A registered replacement resolves the 16K cohort to 24 attempts. Cancelled or unstarted slots have null outcomes rather than fabricated model failures. The [README](/experiments/qwen-agentic-tuning-3090/development/README.md) explains inclusion and replacement rules.
-
-Download these eight files into one directory:
+The public export lets you recompute these aggregates without a model. Download all eight files into one directory:
 
 - [README.md](/experiments/qwen-agentic-tuning-3090/development/README.md)
 - [protocol.json](/experiments/qwen-agentic-tuning-3090/development/protocol.json)
@@ -169,8 +212,15 @@ With Python 3.10 or later, run:
 python3 check.py
 ```
 
-It needs no network or model and writes nothing. It checks checksums, JSON/CSV parity, cohort membership, inventory, grade formulas, outcome formulas, totals, medians, and paired transitions. Missing, changed, or unexpected files fail validation.
+It needs no network or model and writes nothing. Missing, changed, or unexpected files fail validation. This is **aggregation reproduction only**: it does not rerun inference or grading, validate patches, or prove the source records true.
 
-This is **aggregation reproduction only**. Fixtures, raw prompts, candidate patches, sessions, private tests, numeric seeds, and the inference/grading harness are omitted. Public repeat labels preserve matching, but cannot substitute for inference seeds. The checker does not rerun grading or prove that the source records are true; checksums cannot establish authenticity if someone changes both data and checksums.
+<details>
+<summary>Inventory, exclusions, and reproduction boundaries</summary>
 
-The practical result is a promising development profile with retained failures and an unfulfilled confirmation step. Keep that boundary visible when deciding what to test on your own work.
+There are **102 unique primary attempts**: four 24-attempt cohorts plus six new temperature-0.8 attempts. Reused temperature-1.0 controls add none. The broader inventory has **159 records**, including 119 completed results and 40 unscored records or planned slots.
+
+Extra 8K trials, pilots, the cancelled thinking-off direction, infrastructure predecessors, and configuration preflights remain separate. A registered replacement completes the 16K cohort at 24 attempts. Cancelled or unstarted slots have null outcomes; they are not fabricated failures.
+
+The checker verifies checksums, JSON/CSV parity, cohort membership, inventory, grade and outcome formulas, totals, medians, and matched transitions. Fixtures, prompts, candidate patches, raw sessions, private tests, numeric seeds, and the inference/grading harness are omitted. Public repeat labels preserve matching, but cannot substitute for inference seeds. Checksums cannot establish authenticity if both data and checksums are changed together.
+
+</details>
