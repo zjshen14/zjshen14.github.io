@@ -21,6 +21,10 @@ if (!switchUrl) {
     switchUrl = currentPath.startsWith('/zh') ? currentPath.replace(/^\/zh/, '/en') : `/en${currentPath}`;
   }
 }
+// An untranslated article has no matching route; switch to the blog index.
+if (!alternateUrl && /^\/(en|zh)\/blog\/.+/.test(currentPath)) {
+  switchUrl = `/${locale === 'en' ? 'zh' : 'en'}/blog/`;
+}
 if (!switchUrl.endsWith('/')) switchUrl += '/';
 ---
 
