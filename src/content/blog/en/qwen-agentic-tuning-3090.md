@@ -72,7 +72,7 @@ The ledger remained the hardest case: even the xhigh cohort failed one of its th
 
 ## A correct patch and a completed delivery are different outcomes
 
-**Functional success** requires solved phase-one and final grades plus unchanged agent configuration. Solved grading means no protected-file changes, no missing starter files, and success in every required check group. Python groups include acceptance, regression, public tests, and syntax; TypeScript additionally requires project and consumer type checks. The predefined acceptance and regression checks stay outside the agent workspace.
+**Functional success** requires solved phase-one and final grades plus unchanged agent configuration. Solved grading means no protected-file changes, no missing starter files, and success in every required check group. Python requires acceptance, regression, public-test, and syntax groups. TypeScript requires acceptance, regression, public-test, project-typecheck, and consumer-typecheck groups; it has no separate syntax group. The predefined acceptance and regression checks stay outside the agent workspace.
 
 **Delivered success** also requires the expected turn count, completed termination with exit code zero, nonempty final text after tools, and the last recognized agent test validation passing. TypeScript requires the last recognized typecheck to pass too. Every development case requires one turn.
 
