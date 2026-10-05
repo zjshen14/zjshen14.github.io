@@ -78,7 +78,7 @@ OpenCode 负责读文件、调用工具、修改代码和运行测试。本地 l
 
 每格都是三次运行中的成功次数。下表功能与交付计数相同。
 
-<div class="overflow-x-auto" tabindex="0" role="region" aria-label="可横向滚动的逐题结果表">
+<div class="overflow-x-auto [&_table]:min-w-[28rem] [&_th:first-child]:whitespace-nowrap [&_td:first-child]:whitespace-nowrap" tabindex="0" role="region" aria-label="可横向滚动的逐题结果表">
 
 | 题目 | Medium 8K | Medium 16K | Medium 32K | Xhigh 32K |
 | --- | ---: | ---: | ---: | ---: |
