@@ -11,11 +11,40 @@ ogImage: "/og-default.png"
 
 Giving this local Qwen coding agent more room to respond coincided with **5 → 14 → 20 successful deliveries out of 24** as the output cap rose from 8K to 16K to 32K. Changing the reasoning setting from **medium to `xhigh` at the same 32K cap** brought the observed result to **23/24**. The cost was longer waits: median attempt time rose from **245.5 to 775.8 seconds** across the sequence.
 
+Those counts come from **eight repair tasks attempted three times per configuration—24 attempts, not 24 different tasks**.
+
 Those are promising **development results**, not proof of a generally better coding agent. The rounds reused earlier controls and the same eight cases. A later temperature test lost one delivery overall, and **zero held-out confirmation attempts ran**.
 
 This follow-up to the [deployment guide](/en/blog/local-qwen-opencode-3090/) and [MTP comparison](/en/blog/qwen-mtp-speed-quality/) explains the two tuning decisions separately: first make room for a response to finish, then compare reasoning settings within that room. The earlier studies used different protocols; their scores are not pooled here.
 
 *Writing disclosure: this article was drafted with AI assistance from recorded experiment reports and the reviewed development export. The public checker verifies aggregation, not patch semantics or generalization.*
+
+## What do the 24 attempts actually test?
+
+This tuning study uses **agentic-v2.0.1**, a newly assembled development suite of **eight small code-repair tasks: six in Python and two in TypeScript**. The agent works on code, runs tools and tests, and returns a final handoff. The suite tests whether it can finish a bounded repair, rather than answer a coding question in text. It is separate from the four-task deployment and MTP studies above.
+
+Seven tasks are authored test projects. The eighth, nested paths, starts from a pinned version of the upstream **boltons** library with a deliberately inserted fault. These are development exercises, not official SWE-bench results or eight independent production projects. The [public protocol](/experiments/qwen-agentic-tuning-3090/development/protocol.json) describes their scope:
+
+<div class="overflow-x-auto [&_th:first-child]:whitespace-nowrap [&_td:first-child]:whitespace-nowrap" tabindex="0" role="region" aria-label="Coding tasks in the development suite">
+
+| Task | What the repair must handle |
+| --- | --- |
+| Cache | Expiration and least-recently-used eviction, while preserving the existing API. |
+| Wallet | Atomic, concurrent transfers and overflow checks. |
+| Event stream | Incremental UTF-8 parsing when incoming chunks split at arbitrary boundaries. |
+| Nested paths | A nested-lookup regression in an upstream library. |
+| Ledger | Exact monetary arithmetic, CSV input and failure-safe command-line behavior. |
+| Build planner | Deterministic dependency-graph planning and compatibility. |
+| Async pool | A limit on concurrent asynchronous work and recovery from failures. |
+| Pagination | Pagination across multiple files, duplicate removal and cancellation. |
+
+</div>
+
+The last two tasks are TypeScript; the other six are Python. **Each configuration gets the same eight tasks, with three separate attempts per task: 24 attempts in total.** Each attempt contributes either one delivered success or none, regardless of how many assertions its tests contain. So **5/24 means five successful deliveries among 24 attempts**, not five distinct tasks or five passing unit tests. The later 14/24, 20/24 and 23/24 use the same denominator.
+
+A success requires more than the agent saying it is done. **Functional success** means the candidate passes both grading stages, including predefined acceptance and regression checks kept outside the agent workspace, while preserving protected files, starter files and configuration. **Delivered success** also requires the agent to finish the required turn normally, pass its recognized self-checks, and produce final text after using tools. TypeScript additionally requires type checks. The detailed scoring rules are below. Passing the fixed checks does not prove that every defect is absent.
+
+For a concrete example, ledger's **0/3 → 2/3** from medium/32K to xhigh/32K means the same ledger repair failed all three medium attempts, then succeeded in two of the three xhigh attempts. It does not mean two new ledger tasks were added. The final **23/24** consists of three successes on each of the other seven tasks and two on ledger. These repeats show variability on familiar development cases; they do not establish success rates on fresh tasks.
 
 ## Four settings that sound similar but do different jobs
 
@@ -27,8 +56,6 @@ That makes four limits worth separating:
 - **Reasoning setting:** the configured effort label, `medium` or `xhigh`, passed through the model's chat-template options. Both modes keep thinking enabled. The label is not a measured quantity of internal computation or a guaranteed number of thinking tokens.
 - **Context capacity:** the server can accommodate up to **131,072 tokens** of context, shared by input and output. It does not grant every response that much output or demonstrate coding quality at full capacity.
 - **Whole-attempt budget:** each repair has **1,800 seconds, 65,536 generated tokens, and 120 tool calls**. These limits cover the attempt across responses; increasing one response's cap does not increase them.
-
-Success also has two parts. **Functional success** means the candidate passes all required independent grading checks and preserves the configuration. **Delivered success** additionally means the agent completes the required turn, exits successfully, finishes its own recognized validations, and supplies final text after tools. The two counts match in the four main cohorts, but diverge in the later temperature test.
 
 ## Stage 1: raise the output cap, keep medium reasoning
 
