@@ -1198,5 +1198,260 @@
     "https://z-lab.ai/projects/dflash/",
     "https://inco.ai/blog/dflash2/",
     "https://huggingface.co/nerkyor/Qwen3.8-27B-Coder390-EfficientThink-Opus5.5-GPT6Astra-Grok4.7-DSV4Pro-K3-SFT-RLOO-MTP-DFlash2"
-  ]
+  ],
+  "runtime_probabilistic_update": {
+    "date": "2026-10-10",
+    "runtime_control": "b11146",
+    "runtime_candidate": "b11429",
+    "fixed_settings": {
+      "weights": "Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf",
+      "main_kv": "q8_0",
+      "draft_kv": "f16",
+      "mtp_max_draft": 4,
+      "context_tokens": 225280,
+      "temperature": 1.0,
+      "top_p": 0.95,
+      "top_k": 20,
+      "min_p": 0,
+      "repeat_penalty": 1,
+      "reasoning": "xhigh"
+    },
+    "speed_screen": {
+      "input_targets": [
+        8192,
+        32768
+      ],
+      "actual_input_tokens": [
+        8207,
+        32783
+      ],
+      "output_tokens_per_request": 1024,
+      "seeds": [
+        20261011,
+        20261012,
+        20261013
+      ],
+      "completed_measurements": 24,
+      "aggregates": [
+        {
+          "arm": "old_q8_start",
+          "target": 8192,
+          "samples": 3,
+          "decode_tps": 49.85935992462408,
+          "end_to_end_tps": 36.431019086410345,
+          "request_qps": 0.0355771670765726
+        },
+        {
+          "arm": "old_q8_start",
+          "target": 32768,
+          "samples": 3,
+          "decode_tps": 44.37747182843115,
+          "end_to_end_tps": 18.026525096457426,
+          "request_qps": 0.017604028414509205
+        },
+        {
+          "arm": "new_q8_greedy",
+          "target": 8192,
+          "samples": 3,
+          "decode_tps": 52.699236178437346,
+          "end_to_end_tps": 37.97094694751238,
+          "request_qps": 0.03708100287843006
+        },
+        {
+          "arm": "new_q8_greedy",
+          "target": 32768,
+          "samples": 3,
+          "decode_tps": 46.13589640665044,
+          "end_to_end_tps": 18.22324747780162,
+          "request_qps": 0.017796140115040646
+        },
+        {
+          "arm": "new_q8_probabilistic",
+          "target": 8192,
+          "samples": 3,
+          "decode_tps": 61.62702446129465,
+          "end_to_end_tps": 42.30018538631269,
+          "request_qps": 0.04130877479132099
+        },
+        {
+          "arm": "new_q8_probabilistic",
+          "target": 32768,
+          "samples": 3,
+          "decode_tps": 57.46472910515015,
+          "end_to_end_tps": 19.670774845347367,
+          "request_qps": 0.019209741059909538
+        },
+        {
+          "arm": "old_q8_end",
+          "target": 8192,
+          "samples": 3,
+          "decode_tps": 49.57029316875049,
+          "end_to_end_tps": 36.23363945135268,
+          "request_qps": 0.0353844135267116
+        },
+        {
+          "arm": "old_q8_end",
+          "target": 32768,
+          "samples": 3,
+          "decode_tps": 44.005733007305096,
+          "end_to_end_tps": 17.71919438115518,
+          "request_qps": 0.017303900762846856
+        }
+      ],
+      "old_control_anchors": {
+        "8192": {
+          "drift_percent": -0.5797642735698827,
+          "valid": true,
+          "decode_tps": 49.714826546687284
+        },
+        "32768": {
+          "drift_percent": -0.8376746259075807,
+          "valid": true,
+          "decode_tps": 44.191602417868125
+        }
+      },
+      "decode_gains": [
+        {
+          "arm": "new_q8_greedy",
+          "decode_gain_percent": {
+            "8192": 6.003057516347554,
+            "32768": 4.399691077950529
+          }
+        },
+        {
+          "arm": "new_q8_probabilistic",
+          "decode_gain_percent": {
+            "8192": 23.961056976474815,
+            "32768": 30.035404830478065
+          }
+        }
+      ],
+      "request_throughput_comparison": [
+        {
+          "input_target": 8192,
+          "control_decode_tps": 49.714826546687284,
+          "candidate_decode_tps": 61.62702446129465,
+          "control_end_to_end_tps": 36.33232926888151,
+          "candidate_end_to_end_tps": 42.30018538631269,
+          "end_to_end_gain_percent": 16.425745988553018
+        },
+        {
+          "input_target": 32768,
+          "control_decode_tps": 44.191602417868125,
+          "candidate_decode_tps": 57.46472910515015,
+          "control_end_to_end_tps": 17.872859738806305,
+          "candidate_end_to_end_tps": 19.670774845347367,
+          "end_to_end_gain_percent": 10.059470799949
+        }
+      ],
+      "excluded_main_f16_arm": {
+        "reason": "GPU allocation failure at unchanged 220K context",
+        "quality_scored": false
+      }
+    },
+    "coding_single_pass": {
+      "suite": "v2.0.3",
+      "distinct_tasks": 8,
+      "repeats_per_task": 1,
+      "generation_seed": 20261014,
+      "retained_completed_candidate_attempts": 5,
+      "new_candidate_attempts": 3,
+      "completed": 8,
+      "functional": 7,
+      "delivered": 7,
+      "independent_acceptance_and_regression_passes": 8,
+      "output_cap_per_response": 51200,
+      "native_output_tokens": 217789.0,
+      "decode_seconds": 3185.234,
+      "pooled_native_tps": 68.3745683990564,
+      "task_seconds_all_attempts_including_failure": 3496.6090000000004,
+      "rows": [
+        {
+          "case": "ledger",
+          "functional": true,
+          "delivered": true,
+          "seconds": 835.566,
+          "native_tps": 64.58918044966666,
+          "native_output_tokens": 48857.0
+        },
+        {
+          "case": "eventstream",
+          "functional": true,
+          "delivered": true,
+          "seconds": 396.151,
+          "native_tps": 69.65974679456994,
+          "native_output_tokens": 25888.0
+        },
+        {
+          "case": "buildplan",
+          "functional": false,
+          "delivered": false,
+          "seconds": 280.107,
+          "native_tps": 73.4296328134594,
+          "native_output_tokens": 19134.0
+        },
+        {
+          "case": "pagination",
+          "functional": true,
+          "delivered": true,
+          "seconds": 486.835,
+          "native_tps": 66.62061901810921,
+          "native_output_tokens": 30961.0
+        },
+        {
+          "case": "wallet",
+          "functional": true,
+          "delivered": true,
+          "seconds": 548.9,
+          "native_tps": 68.90615481534306,
+          "native_output_tokens": 33142.0
+        },
+        {
+          "case": "boltons_paths",
+          "functional": true,
+          "delivered": true,
+          "seconds": 174.396,
+          "native_tps": 72.4105632100556,
+          "native_output_tokens": 9586.0
+        },
+        {
+          "case": "cache",
+          "functional": true,
+          "delivered": true,
+          "seconds": 242.303,
+          "native_tps": 76.11098779134295,
+          "native_output_tokens": 17144.0
+        },
+        {
+          "case": "async_pool",
+          "functional": true,
+          "delivered": true,
+          "seconds": 532.351,
+          "native_tps": 67.05889269806772,
+          "native_output_tokens": 33077.0
+        }
+      ],
+      "buildplan_failure": "Submitted public tests depend on an agent-specific temporary directory that is absent in clean grading: 15 setup errors. Strict failure retained; no answer edits or rerun.",
+      "old_runtime_coding_runs_after_scope_change": 0
+    },
+    "long_input_capacity_check": {
+      "runtime": "b11429",
+      "context_tokens": 225280,
+      "input_tokens": 179532,
+      "output_tokens": 128,
+      "cached_input_tokens": 0,
+      "truncated_tokens": 0,
+      "sampled_whole_gpu_mib": 22843,
+      "memory_sampling_seconds": 5,
+      "full_170k_input_plus_50k_output_tested": false
+    },
+    "limitations": [
+      "Fixed-length synthetic speed gains are not universal task speedups.",
+      "Eight familiar development tasks once do not establish general coding noninferiority or repeated-run stability.",
+      "The previous 128K-versus-220K paired coding cohort remains incomplete.",
+      "Draft F16 KV was already the default; it was held fixed and is not an isolated optimization.",
+      "Earlier DFlash2 comparison used b11146; no b11429 DFlash2 rerun is claimed.",
+      "Daily-service defaults were not changed."
+    ]
+  }
 }

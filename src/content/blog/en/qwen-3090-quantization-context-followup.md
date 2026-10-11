@@ -1,18 +1,19 @@
 ---
 title: "Making Qwen Faster on an RTX 3090"
 seoTitle: "Qwen3.8 27B on RTX 3090 IQ3 MTP4 and 220K Context Benchmarks"
-description: "What worked on the way to roughly 60 tokens/s, why a coding test rejected valid answers, and what longer context and DFlash2 actually delivered."
+description: "Updated with b11429 probabilistic MTP: 24–30% faster decode in matched screens, 68.4 tokens/s across eight coding attempts, and 7/8 strict deliveries."
 pubDate: 2026-10-10
+updatedDate: 2026-10-10
 tags: ["ai", "agent", "opencode", "qwen", "llama-cpp", "local-llm", "benchmark", "mtp"]
 draft: false
 ogImage: "/og-default.png"
 ---
 
-Over the past few days, I continued tuning Qwen3.8-27B on a single 24GB RTX 3090. Generation speed during coding tasks increased from roughly **33 tokens/s** with the original configuration to around **60 tokens/s**.
+Over the past few days, I continued tuning Qwen3.8-27B on a single 24GB RTX 3090. Generation speed during coding tasks increased from roughly **33 tokens/s** with the original configuration to around **60 tokens/s**. A subsequent runtime and draft-sampling update reached **68.4 tokens/s** across eight coding attempts; the matched speed screen below isolates its additional gain.
 
 Two other findings deserve attention: a repeatedly failing task turned out to have a defective test, and one configuration generated tokens faster but took three extra minutes to deliver its code.
 
-My current first choice is **IQ3_S quantized weights, Q8 KV cache, and MTP4**. I would use a 128K total context window for common repair tasks. A 220K window has processed a long input, but its full coding validation remains incomplete. Here is what led to those choices.
+My current speed candidate is **IQ3_S, Q8 main KV, and MTP4 on llama.cpp b11429 with probabilistic draft sampling**. Its latest eight-task screen used a 220K total window and a 50K output cap, delivering 7/8. Long input has also run, though a full 170K-input-plus-50K-output sequence remains untested.
 
 *Writing disclosure: this article was drafted with AI assistance from recorded local experiments and reviewed by the experimenter. The results and limits below refer to those saved runs.*
 
@@ -22,9 +23,31 @@ My current first choice is **IQ3_S quantized weights, Q8 KV cache, and MTP4**. I
 
 The suite has six Python tasks and two TypeScript tasks covering caching, database transactions, incremental streams, paths, ledger processing, build dependencies, asynchronous concurrency, and pagination. Seven are authored repair tasks; one has an injected defect in a pinned version of boltons. The agent must inspect code, edit files, run checks, and hand over a result. Saying “tests pass” is insufficient.
 
-I record a functional pass when the code passes independent checks. A delivered pass additionally requires normal completion, a self-check, and a final handoff. These small repair tasks help choose a configuration; they do not represent every kind of production repository work.
+I record a functional pass when the code passes independent acceptance, regression, public tests, and applicable syntax or type checks. A delivered pass additionally requires normal completion, a self-check, and a final handoff. These small repair tasks help choose a configuration; they do not represent every kind of production repository work.
 
 **Tokens/s below measures generation:** total generated tokens divided by total decode time. It includes reasoning and tool-call syntax but excludes prompt processing. Whole-task time also includes file access, tests, and tool waits. Generation speed and delivery speed are different measurements.
+
+## Update (October 10): a runtime change adds another speed gain
+
+After the initial publication, I upgraded llama.cpp from b11146 to **b11429** and tested `--spec-draft-sampling probabilistic` for MTP. This changes how draft tokens are sampled; the target model's temperature and other sampling settings stayed fixed. The weights and maximum draft depth also stayed the same.
+
+The speed screen used identical cold inputs of approximately 8K and 32K tokens, 1,024 output tokens, and three shared seeds per setting. All settings used IQ3_S, Q8 main KV, F16 draft KV, MTP4, and a 220K total window. The old runtime ran before and after the candidates, with less than 1% drift; its table entry averages those two controls.
+
+| Runtime and draft sampling | 8K input generation rate | 32K input generation rate |
+| --- | ---: | ---: |
+| b11146, original behavior | 49.7 tokens/s | 44.2 tokens/s |
+| b11429, greedy | 52.7 tokens/s | 46.1 tokens/s |
+| b11429, probabilistic | **61.6 tokens/s** | **57.5 tokens/s** |
+
+The runtime upgrade with greedy drafting gained approximately **6% / 4%** over the old controls. With probabilistic drafting, the combined gain was **24% / 30%**. Including input processing, the latter's output throughput gains were approximately **16% / 10%**. These percentages describe this fixed-length screen, not every coding task.
+
+The candidate then completed **one attempt on each of the same eight coding tasks**, using a 220K total window and a 50K per-response output cap. Its pooled generation rate was **68.4 tokens/s**, with **7/8 strict functional and delivered passes**. All eight passed independent acceptance and regression checks, but Buildplan's submitted tests assumed an agent-specific temporary directory existed. Fifteen public tests errored during setup in the clean grading environment, so that attempt remains a failure. I did not repair its answer or rerun it to improve the score.
+
+This is encouraging evidence for the speed candidate, but eight familiar development tasks run once cannot establish general coding-quality equivalence. Higher TPS also does not guarantee shorter tasks: in the already completed wallet pair, the candidate generated faster but took 549 seconds versus 543 seconds on the old runtime. No additional old-runtime coding runs were made after switching to the single-pass candidate screen.
+
+**F16 draft KV was already the previous default**, and it was held fixed here. It is not a new source of the gain. Switching the *main* KV from Q8 to F16 failed GPU allocation at the unchanged 220K window, so that arm was excluded rather than measured at a smaller context.
+
+The remaining sections retain the earlier experiments and their original settings. The current recommendation at the end includes this update.
 
 ## Why I am keeping IQ3 for now
 
@@ -84,7 +107,7 @@ I created a new suite version and regraded MTP4's eight existing answers. Functi
 
 It changed how I approach failures: inspect truncation and code defects, and check whether the test actually exercises the behavior it claims to measure.
 
-## 220K processes long input but still needs full coding validation
+## 220K fits long input; full-window generation is still untested
 
 Input and output share the context window; K here means 1,024 tokens. A 170K input budget plus 50K output requires 220K total. A 192K input budget plus 64K output requires 256K. Raising the output cap does not remove that total-capacity constraint.
 
@@ -102,7 +125,7 @@ The full material retained required information; cropping omitted specifications
 
 A larger window helped avoid information loss. Accurate selection let a smaller window solve the task faster. This was **one task, one seed, and 198 checks**, not 198 coding problems. It did not test whether the agent could retrieve every necessary file itself.
 
-The real 220K coding comparison completed only 2/8 tasks. Cache and wallet passed; during the third task, CPU temperature reached a sampled 93.25°C and triggered the configured 92°C guard. Six tasks have no valid score. The full path of 170K input followed by 50K generated output also remains untested.
+The earlier 128K-versus-220K coding comparison stopped after 2/8 tasks. Cache and wallet passed; during the third task, CPU temperature reached a sampled 93.25°C and triggered the configured 92°C guard. Six tasks in that historical comparison have no valid score. The newer b11429 screen above completed all eight at 220K, with 7/8 deliveries; it does not complete that older paired comparison or test a full 170K input followed by 50K output.
 
 Wallet makes the tradeoff concrete. Generation at 220K was approximately **6.4% faster** than at 128K, but output increased from about 35,000 to 46,000 tokens. Task time increased from **654 to 835 seconds**. Generating more content slightly faster can still delay delivery by three minutes. One observation cannot establish that larger context caused verbosity, but completion time and correctness need to be part of the optimization target.
 
@@ -110,7 +133,7 @@ Wallet makes the tradeoff concrete. Generation at 220K was approximately **6.4% 
 
 [DFlash](https://z-lab.ai/projects/dflash/) also asks the main model to verify drafts, but a separate small model proposes an entire block in parallel. Local MTP drafts sequentially. [DFlash2](https://inco.ai/blog/dflash2/) improves drafting further. The mechanism deserves testing; its benefit still depends on hardware and workload.
 
-I compared MTP4 and DFlash2 separately with the same IQ3_S target, Q8 main cache, and 220K total window. MTP was disabled when DFlash2 was active. Identical cold inputs of approximately 8K, 32K, and 179K tokens ran once per configuration, generating 512, 512, and 128 tokens respectively.
+Before the runtime update, I compared MTP4 and DFlash2 separately on b11146 with the same IQ3_S target, Q8 main cache, and 220K total window. MTP was disabled when DFlash2 was active. Identical cold inputs of approximately 8K, 32K, and 179K tokens ran once per configuration, generating 512, 512, and 128 tokens respectively.
 
 DFlash2's **generation rate was approximately 3–6% lower**. Its memory peak was about 23.33 GiB, approximately **540 MiB** above MTP4. For the longest input, its complete request was slightly faster, around 303 versus 307 seconds, because request time also includes prompt processing.
 
@@ -118,13 +141,13 @@ I will keep MTP4 for now. This short test did not cover long output or complete 
 
 ## What I would run now
 
-For these common repair tasks, my first choice is **GSQ-RCO IQ3_S + Q8 KV + MTP4, a 128K total window, and a 64K per-response output cap**. Input and output still share the window. Temperature remains 1.0, with thinking enabled and xhigh reasoning effort.
+My current experimental speed candidate is **GSQ-RCO IQ3_S + Q8 main KV + F16 draft KV + MTP4**, with **probabilistic draft sampling on llama.cpp b11429**. The completed eight-task screen used a **220K total window and a 50K per-response output cap**. Input and output share that window. Temperature remains 1.0, with thinking enabled and xhigh reasoning effort.
 
-The reference stack is llama.cpp b11146, CUDA 12.8, and OpenCode 2.0.20, with one concurrent slot, Flash Attention, and all model layers on GPU. For long input, I would consider 220K while completing its coding validation.
+The updated stack uses CUDA 12.8 and OpenCode 2.0.20, with one concurrent slot, Flash Attention, and all model layers on GPU. Earlier results used b11146 unless stated otherwise. The newer long-input capacity check processed 179,532 input tokens plus 128 output tokens without truncation, with sampled whole-GPU memory around 22.31 GiB. That is a separate b11429 check, not a replacement for the earlier 22.80 GiB measurement. These experiments did not rewrite the daily-service defaults.
 
 Power draw and cooling also matter for sustained use. Two nearly complete early coding segments averaged approximately **329W** of GPU board power. That excludes the CPU, other components, and PSU losses; whole-PC power needs measurement at the wall.
 
-This round produced a roughly 60-tokens/s candidate and a clearer distinction between failures that need parameter changes and failures that need test repairs. Repeated runs and broader task coverage under the corrected suite are the next evidence needed for IQ3 + MTP4 coding quality, along with completion of the 220K cohort.
+The update gives me a faster runtime and draft-sampling candidate without changing the weights. The measured gain is useful; the 7/8 strict delivery result and its remaining failure stay visible. More distinct tasks and repeated comparisons are still needed to establish how well coding quality holds across broader work.
 
 
 [Detailed methods and tables](/experiments/qwen-3090-quantization-context-followup/technical-notes.en.md) · [Benchmark aggregates](/experiments/qwen-3090-quantization-context-followup/benchmark-data.json) · [中文版本](/zh/blog/qwen-3090-quantization-context-followup/)
