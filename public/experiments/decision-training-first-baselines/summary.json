@@ -1,0 +1,187 @@
+{
+  "scope": "Selected aggregate measurements for the initial B1/B2 training account. Historical development results; not fresh confirmation, external rank, a released model, or full training reproduction.",
+  "upstream": {
+    "kev": "https://github.com/jaredpalmer/kev/tree/2ecafc49fe1e8945cd600443e6c04c1cf0b3a78f",
+    "base_models": [
+      "https://huggingface.co/Qwen/Qwen3.5-0.8B-Base",
+      "https://huggingface.co/Qwen/Qwen3.5-4B-Base"
+    ]
+  },
+  "tiny_run": {
+    "source_records": 24,
+    "training_questions": 30,
+    "optimizer_updates": 80,
+    "training_before": {
+      "questions": 30,
+      "accuracy": 0.23333333333333334,
+      "nll": 2.184472596768631
+    },
+    "training_after": {
+      "questions": 30,
+      "accuracy": 0.9666666666666667,
+      "nll": 0.10302296687789107
+    },
+    "development_records": 24,
+    "development_before": {
+      "questions": 28,
+      "accuracy": 0.25,
+      "nll": 2.2152887030298625
+    },
+    "development_after": {
+      "questions": 28,
+      "accuracy": 0.4642857142857143,
+      "nll": 3.9161025184350398
+    },
+    "frozen_parameters_unchanged": true,
+    "reload_max_probability_difference": 0.0,
+    "limit": "Tiny repeated training subset; same-source exploratory development probe; raw T=1."
+  },
+  "data_stages": [
+    {
+      "stage": "Original admitted train",
+      "records": 12576,
+      "questions": 15576
+    },
+    {
+      "stage": "Provisional audit derivative",
+      "records": 12520,
+      "questions": 15514
+    },
+    {
+      "stage": "Final repaired B1/B2 train",
+      "records": 12520,
+      "questions": 15476,
+      "sha256": "3b8411a33f200a438b589c88e0cd32d65da8d0fc5849ede88c6218ee5a745858"
+    }
+  ],
+  "quarantine": {
+    "whole_records": 56,
+    "reasons": {
+      "public_cross_split_near_copy": 6,
+      "unresolved_label_ambiguity": 39,
+      "reviewed_label_conflict": 11
+    },
+    "limit": "Sampled/model-assisted semantic findings and approximate near-copy discovery; not a population noise estimate or full decontamination."
+  },
+  "semantic_development": {
+    "candidates": 200,
+    "admitted": 194,
+    "held": 6,
+    "limit": "Model-assisted labels; development-only, not independent human gold or final confirmation."
+  },
+  "recovery_probe": {
+    "updates": 8,
+    "checked_questions": 30,
+    "trainable_parameters_bit_identical": true,
+    "optimizer_and_scheduler_bit_identical": true,
+    "reloaded_probability_max_difference": 0,
+    "limit": "Single-GPU process-termination probe; not cross-hardware retraining or physical-power-loss proof."
+  },
+  "baselines": [
+    {
+      "name": "B1",
+      "base": "Qwen/Qwen3.5-0.8B-Base",
+      "base_revision": "dc7cdfe2ee4154fa7e30f5b51ca41bfa40174e68",
+      "records": 12520,
+      "epochs": 2,
+      "optimizer_updates": 3130,
+      "batch": 1,
+      "gradient_accumulation": 8,
+      "lora_rank": 16,
+      "learning_rate": 0.0001,
+      "storage_dtype": "fp32",
+      "autocast_dtype": "bf16",
+      "row_budget": 4096
+    },
+    {
+      "name": "B2",
+      "base": "Qwen/Qwen3.5-4B-Base",
+      "base_revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+      "records": 12520,
+      "epochs": 2,
+      "optimizer_updates": 3130,
+      "batch": 1,
+      "gradient_accumulation": 8,
+      "lora_rank": 16,
+      "learning_rate": 5e-05,
+      "storage_dtype": "fp32",
+      "autocast_dtype": "bf16",
+      "row_budget": 8192
+    }
+  ],
+  "development": [
+    {
+      "panel": "semantic",
+      "checkpoint": "B1",
+      "questions": 194,
+      "correct": 184,
+      "mean_nll": 0.09619920409132042,
+      "temperature": 1
+    },
+    {
+      "panel": "semantic",
+      "checkpoint": "B2",
+      "questions": 194,
+      "correct": 192,
+      "mean_nll": 0.04023877539916598,
+      "temperature": 1
+    },
+    {
+      "panel": "retention",
+      "checkpoint": "B1",
+      "questions": 1184,
+      "correct": 951,
+      "mean_nll": 0.6013273213781842,
+      "temperature": 1
+    },
+    {
+      "panel": "retention",
+      "checkpoint": "B2",
+      "questions": 1184,
+      "correct": 1033,
+      "mean_nll": 0.46749089950577705,
+      "temperature": 1
+    }
+  ],
+  "development_limits": [
+    "Semantic labels are model-assisted, not independent human gold.",
+    "Historical retention labels and pretraining overlap remain limitations.",
+    "Paired source-stratified cluster bootstrap captures resampling uncertainty, not label error or training-seed variation.",
+    "24 exploratory unadjusted intervals; no multiplicity-adjusted discovery claim. Macro aggregation gives equal weight to tasks, not sources.",
+    "Six-step pilot throughput is a small sample and does not establish a global optimum.",
+    "All admitted batch1 row budgets produce identical pass packing; measured timing differences do not show a row-budget speed benefit."
+  ],
+  "recipe_comparison_limit": "Learning rates and recipe details differ; shared data does not isolate model-size causality.",
+  "included_material": "Aggregate counts and selected settings only; source text, full predictions, weights and the training harness are not included.",
+  "supervision_repair": {
+    "held_uncertain_questions": 38,
+    "meaning": "Annotation holding status, not a third output class; other questions and retained records remain."
+  },
+  "semantic_high_confidence_predictions": [
+    {
+      "checkpoint": "B1",
+      "confidence_threshold": 0.9,
+      "predictions": 181,
+      "errors": 1,
+      "limit": "Descriptive small-sample slice over different coverage; not a significance claim or production threshold."
+    },
+    {
+      "checkpoint": "B2",
+      "confidence_threshold": 0.9,
+      "predictions": 188,
+      "errors": 2,
+      "limit": "Descriptive small-sample slice over different coverage; not a significance claim or production threshold."
+    }
+  ],
+  "retention_scoring_scope": {
+    "all_questions": 1388,
+    "selected_original_questions": 1184,
+    "selection": "variant == clean and source != unknowable",
+    "excluded_variants": {
+      "permuted": 84,
+      "none_present": 60,
+      "none_absent": 60
+    },
+    "meaning": "None means none of the above; excluded variants are not missing-label questions."
+  }
+}
