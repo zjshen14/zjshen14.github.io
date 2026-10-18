@@ -1,7 +1,7 @@
 ---
-title: "Training Qwen to Make Structured Decisions"
-seoTitle: "Qwen3.5 Decision Model Training on RTX 3090"
-description: "Training a small Qwen3.5 decision model on an RTX 3090: why more correct answers can accompany worse NLL, how rating labels can teach the wrong task, and how to establish comparable training and evaluation baselines."
+title: "Post-Training a Decision Model from Qwen3.5 Base"
+seoTitle: "Post-Training a Decision Model from Qwen3.5 Base on RTX 3090"
+description: "Post-training a small decision model from a Qwen3.5 Base backbone, LoRA and a pointer head on an RTX 3090: why more correct answers can accompany worse NLL, how rating labels can teach the wrong task, and how to establish comparable training and evaluation baselines."
 pubDate: 2026-10-18
 tags: ["ai", "decision-model", "qwen", "lora", "training", "evaluation", "local-llm"]
 draft: false
@@ -9,9 +9,9 @@ draft: false
 
 Some calls in an agent workflow only need a judgment: is the user adding context or changing an earlier decision? Does a passage support a claim? Which team should handle a ticket? The answer may be a single option, yet it determines what the program does next.
 
-Reading about [TypeSafe's Jev](https://typesafe.ai/blog/introducing-system-one-models-and-jev) made me curious about one capability: reading context, a question and candidate answers, then returning probabilities over those candidates. It sounded complex. I wanted to understand whether the underlying structure and training process could be broken into steps an individual developer could understand and try firsthand.
+Reading about [TypeSafe's Jev and System One models](https://typesafe.ai/blog/introducing-system-one-models-and-jev) made me curious about one capability: reading context, a question and candidate answers, then returning probabilities over those candidates. It sounded complex. I wanted to understand whether the underlying structure and training process could be broken into steps an individual developer could understand and try firsthand.
 
-I used the RTX 3090 from my earlier [local coding agent experiments](/en/blog/local-qwen-opencode-3090/), starting with Qwen3.5 Base at 0.8B and then trying 4B. Those sizes also reflected local memory and compute constraints. This was primarily a personal learning experiment: implement the basic candidate-scoring path with the resources available, understand how the model learns these judgments, and learn how to check the results. Matching the full results of enterprise-scale cluster training was outside the goal of this experiment.
+I used the RTX 3090 from my earlier [local coding agent experiments](/en/blog/local-qwen-opencode-3090/), using Qwen3.5 Base as the pretrained backbone for post-training a decision model: first the 0.8B backbone, then 4B. The backbone weights stayed frozen; supervised post-training updated newly initialized LoRA parameters and a pointer decision head. The resulting model reads context, a question and candidate answers, and returns a probability for each candidate. Those sizes also reflected local memory and compute constraints. This was primarily a personal learning experiment: implement the basic candidate-scoring path with the resources available, understand how the model learns these judgments, and learn how to check the results. Matching the full results of enterprise-scale cluster training was outside the goal of this experiment.
 
 Initially, I only wanted to establish that the training path worked. The model quickly learned a tiny set of training questions. On another set, something more interesting happened: **the number of correct answers increased while mean NLL got worse.** Later, inspecting the training data revealed labels derived from review stars, even though the question asked about the attitude expressed in the text.
 
@@ -30,7 +30,7 @@ The candidate answers and their descriptions are part of the input. A ticket-rou
 
 The structure used here has three parts:
 
-1. **The Qwen3.5 backbone reads the input.** Context, question and candidate descriptions are encoded as tokens, and the pretrained model computes contextual representations at their positions.
+1. **The Qwen3.5 Base backbone reads the input.** Context, question and candidate descriptions are encoded as tokens, and the pretrained model computes contextual representations at their positions.
 2. **A pointer decision head scores the candidates.** This small readout takes the representations at the decision and candidate positions, projects and matches them to obtain candidate scores, then applies softmax to produce a probability distribution.
 3. **LoRA adapts the model to the task.** The original backbone weights stay frozen. Training updates low-rank parameters inserted into it and the newly initialized readout, reducing the parameters and optimizer state that need to be optimized.
 
