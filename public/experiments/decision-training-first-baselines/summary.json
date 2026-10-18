@@ -1,5 +1,5 @@
 {
-  "scope": "Selected aggregate measurements for the initial B1/B2 training account. Historical development results; not fresh confirmation, external rank, a released model, or full training reproduction.",
+  "scope": "Selected aggregate measurements for initial B1/B2 training and the subsequent frozen-4B public JevBench diagnostic. Historical development and exposed public results; no official sealed result or rank.",
   "upstream": {
     "kev": "https://github.com/jaredpalmer/kev/tree/2ecafc49fe1e8945cd600443e6c04c1cf0b3a78f",
     "base_models": [
@@ -183,5 +183,49 @@
       "none_absent": 60
     },
     "meaning": "None means none of the above; excluded variants are not missing-label questions."
+  },
+  "jevbench_public_diagnostic": {
+    "model": "Qwen3.5-4B decision model (experiment B2), unchanged checkpoint",
+    "benchmark": "https://github.com/fstandhartinger/jevbench/tree/609a664e81f46e03731600bd7bd9f1b7a61257c5",
+    "questions": 231,
+    "correct": 170,
+    "groups": {
+      "easy": {
+        "correct": 48,
+        "questions": 48
+      },
+      "hard": {
+        "correct": 53,
+        "questions": 111
+      },
+      "original": {
+        "correct": 69,
+        "questions": 72
+      }
+    },
+    "task_families": {
+      "temporal_numeric": {
+        "correct": 0,
+        "questions": 15
+      },
+      "long_policy": {
+        "correct": 4,
+        "questions": 19
+      }
+    },
+    "failed_requests": 0,
+    "truncated_inputs": 0,
+    "original_training_context_limit_tokens": 384,
+    "long_policy_context_tokens": [
+      2203,
+      3666
+    ],
+    "limits": [
+      "Local available-public diagnostic, not an official sealed evaluation or leaderboard rank.",
+      "Small task-family labels and conversions require item-level review.",
+      "All longer-than-training contexts belong to Hard; length and task difficulty are confounded.",
+      "Inspected public cases are exposed diagnostics, not fresh confirmation; they and case-specific variants stay evaluation-only.",
+      "Cross-group differences do not establish a training-induced regression."
+    ]
   }
 }

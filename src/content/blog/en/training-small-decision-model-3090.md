@@ -15,7 +15,7 @@ I used the RTX 3090 from my earlier [local coding agent experiments](/en/blog/lo
 
 Initially, I only wanted to establish that the training path worked. The model quickly learned a tiny set of training questions. On another set, something more interesting happened: **the number of correct answers increased while mean NLL got worse.** Later, inspecting the training data revealed labels derived from review stars, even though the question asked about the attitude expressed in the text.
 
-This account follows the first two model versions: turning a language model into a candidate scorer, understanding why accuracy alone cannot establish training success, and making supervision and evaluation answer the same question. Further optimization is still underway.
+This account follows the first two model versions: turning a language model into a candidate scorer, understanding why accuracy alone cannot establish training success, and making supervision and evaluation answer the same question. It also introduces the weaknesses revealed by public JevBench questions that motivated further quality optimization.
 
 ## Reading a question and scoring its candidates
 
@@ -112,18 +112,25 @@ We compared uninterrupted training against a run terminated mid-process and resu
 
 This validated process-interruption recovery in that single-GPU environment. It provided a recoverable starting point for further iteration; the test did not cover retraining on different hardware or physical power loss. Saving and comparison details are in the notes below.
 
-## What I would check first next time
+## JevBench exposed the next problems to solve
 
-This experiment left me with a few checks that are more reusable than its final scores:
+Training, saving and loading worked, and results on the existing development sets had improved. The next question was how well the model would handle a different set of practical decisions. We evaluated the unchanged 4B version locally on a [fixed public JevBench revision](https://github.com/fstandhartinger/jevbench/tree/609a664e81f46e03731600bd7bd9f1b7a61257c5).
 
-- **Establish learning and save/reload behavior on a tiny sample before scaling.** This checks the implementation; generalization needs separate data.
-- **Read the question, candidate descriptions and label together.** When labels come from ratings or an older task, check that they supervise the current question.
-- **Inspect both the selected answer and the assigned probabilities.** For decisions used by software, mean NLL, high-confidence errors and calibration answer different questions.
-- **Pin the data actually used and enforce evaluation separation in code.** Filenames and informal conventions cannot prevent accidental misuse.
+That checkout contained **231 downloadable public questions**. Every request returned a valid probability vector without input truncation. Breaking the results down by the benchmark's groups revealed a clear gap:
 
-At this point, we had two local models on the 3090 that could read context and candidate descriptions and return probabilities, plus a way to examine their training and results.
+| Public JevBench group | Correct |
+| --- | ---: |
+| Easy | 48/48 |
+| Original | 69/72 |
+| Hard | 53/111 |
 
-The next problem is whether they can make correct judgments involving **multiple conditions, exceptions and time calculations**. A return policy might combine a purchase date, membership status and an exception clause; answering each part correctly does not guarantee a reliable combined decision. We will examine whether the training data covers these situations and whether improving difficult tasks preserves performance on existing ones. We will also return to the probabilities: when can the model handle a decision automatically, and when should it hand off to a stronger model or a person? These questions will guide the next set of experiments and write-ups.
+The overall result was 170/231, but **58 of the 61 errors came from Hard**. A further breakdown by task family showed 0/15 on temporal and numeric questions and 4/19 on long-policy judgments. Handling simple decisions did not establish reliability on date calculations, combined conditions, exception clauses or evidence distributed across a long document. The overall score hid these weaknesses.
+
+That gave the subsequent training a more specific direction. First, inspect task conversions, options and labels item by item to understand the failures. Then add independently checkable date calculations, rule combinations and exception cases, progressively increasing the context the model needs to process. Keep original-task training data and evaluations alongside them to check whether improving difficult questions costs performance on decisions the model could already handle.
+
+Length was one factor to investigate: the original 4B training configuration limited context to 384 tokens, while these long-policy contexts contained roughly 2,203–3,666 tokens. However, the longer inputs also all belonged to Hard. Length and difficulty were entangled, so the results could not establish that length alone caused the failures. Labels and conversions in these small task-family groups also still needed item-level review.
+
+These are local public-question diagnostics, not an official sealed evaluation or leaderboard rank. Differences between task groups also do not establish a regression caused by training. The inspected public questions can track known weaknesses, but independent reserved data is needed to confirm whether improvements generalize. Quality optimization is still underway. Future posts will examine which training changes help these weaknesses, which do not, and whether performance on other tasks is preserved.
 
 ## Model downloads and data reconstruction
 
@@ -189,6 +196,6 @@ This implementation runs each question with its context as an independent causal
 
 [Selected aggregate measurements](/experiments/decision-training-first-baselines/summary.json) support checking the counts and configurations here. That file contains summary values only; model downloads, data reconstruction and training reproduction materials are in the Hugging Face repositories above.
 
-This article was prepared with AI assistance from local experiment records. It stops at the initial B1/B2 versions and their corresponding development results.
+This article was prepared with AI assistance from local experiment records. It covers the initial B1/B2 versions, their corresponding development results, and the 4B public JevBench diagnostic that motivated further optimization.
 
 </details>
