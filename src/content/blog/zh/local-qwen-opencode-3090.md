@@ -297,6 +297,8 @@ python3 benchmark_throughput.py --report-dir reports/throughput-new-run
 
 ## 配置、数据和复现材料
 
+如果想探索本地模型在工作流中的另一种用法，可以接着看[同一张 RTX 3090 上的 Jev 启发决策模型后训练](/zh/blog/training-small-decision-model-3090/)。那轮实验以 Qwen3.5 Base 为骨干，结合 LoRA 与 pointer head，直接给候选答案打分，探索生成式编码 Agent 之外的结构化决策接口。
+
 - [配置与测量包 ZIP](/experiments/qwen3.8-27b-3090/reproduction-kit.zip)：下载校验、完整启动脚本、OpenCode 配置、吞吐量脚本和数据；不包含权重或编码任务完整夹具。
 - [实验说明](/experiments/qwen3.8-27b-3090/README.txt)、[吞吐量测量记录](/experiments/qwen3.8-27b-3090/throughput-results.json)、[代码任务汇总](/experiments/qwen3.8-27b-3090/coding-summary.json)。附件已去除实验日期、绝对时间戳、时区、个人路径和会话标识，保留性能测量、评分及审查探针。
 - [Qwen 官方模型卡](https://huggingface.co/Qwen/Qwen3.8-27B)、[固定版本 llama-server 文档](https://github.com/ggml-org/llama.cpp/blob/b11146/tools/server/README.md)、[OpenCode Provider 文档](https://opencode.ai/docs/providers/)。上游资料提供选型背景、官方评测和部署说明；本文的本机性能及四个代码任务结论来自附带的实验记录。

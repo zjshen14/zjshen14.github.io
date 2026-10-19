@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { LOCALES, type Locale, uiStrings } from '@/utils/i18n';
+import { blogAuthor, authorProfilePath } from '@/utils/author';
 
 export function getStaticPaths() {
   return LOCALES.map(locale => ({ params: { locale } }));
@@ -8,14 +9,27 @@ export function getStaticPaths() {
 
 const { locale } = Astro.params as { locale: Locale };
 const t = uiStrings[locale];
+const profileJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfilePage',
+  url: new URL(authorProfilePath(locale), Astro.site).href,
+  mainEntity: {
+    '@type': 'Person',
+    '@id': new URL('/#author', Astro.site).href,
+    ...blogAuthor,
+    url: new URL(authorProfilePath(locale), Astro.site).href
+  }
+};
 ---
 
 <BaseLayout locale={locale} title={t.navAbout}>
+  <script type="application/ld+json" set:html={JSON.stringify(profileJsonLd)} />
   <div class="py-8 prose prose-zinc dark:prose-invert max-w-none">
     <h1>{t.navAbout}</h1>
     {locale === 'en' ? (
       <>
-        <p>Welcome! I explore the intersections of technology, market dynamics, and decentralized systems, with a core focus on artificial intelligence, crypto protocols, and investment strategy.</p>
+        <p>I'm {blogAuthor.name}, the author of DevLog. I publish hands-on notes on AI coding agents, local models and decision-model post-training, with configurations, measurements, failure cases and reproduction materials from my own experiments.</p>
+        <p>I also explore the intersections of technology, market dynamics, and decentralized systems, with a core focus on artificial intelligence, crypto protocols, and investment strategy.</p>
         <h2>What I Write About</h2>
         <ul>
           <li><strong>Artificial Intelligence</strong>: Frontier models, autonomous agents, and AI systems engineering.</li>
@@ -23,11 +37,12 @@ const t = uiStrings[locale];
           <li><strong>Investment & Markets</strong>: Macro trends, tech investing strategies, mental models, and asymmetric opportunities.</li>
         </ul>
         <h2>Connect With Me</h2>
-        <p>Feel free to connect on <a href="https://github.com/zjshen14" target="_blank">GitHub</a> or follow along on social platforms.</p>
+        <p>Find my projects on <a href="https://github.com/zjshen14">GitHub</a>, experiment updates on <a href="https://x.com/z_j_s">X</a>, and released models and data materials on <a href="https://huggingface.co/zjshen">Hugging Face</a>.</p>
       </>
     ) : (
       <>
-        <p>你好！欢迎来到这里。我长期关注技术变革与资本市场的交汇点，主要聚焦于人工智能、加密经济与科技投资领域。</p>
+        <p>我是 {blogAuthor.name}，「研发手记」的作者。我记录 AI 编码 Agent、本地模型和决策模型后训练的动手实验，分享自己的配置、测量结果、失败案例和复现材料。</p>
+        <p>我也长期关注技术变革与资本市场的交汇点，主要聚焦于人工智能、加密经济与科技投资领域。</p>
         <h2>博客内容聚焦</h2>
         <ul>
           <li><strong>人工智能 (AI)</strong>：前沿大模型、自主智能体（AI Agents）与系统级工程落地。</li>
@@ -35,7 +50,7 @@ const t = uiStrings[locale];
           <li><strong>商业与投资 (Investment)</strong>：宏观趋势、科技投资思考、心智模型与非对称机会探索。</li>
         </ul>
         <h2>联系交流</h2>
-        <p>欢迎通过 <a href="https://github.com/zjshen14" target="_blank">GitHub</a> 关注我的开源项目或在社交平台上进行交流讨论。</p>
+        <p>开源项目见 <a href="https://github.com/zjshen14">GitHub</a>，实验动态见 <a href="https://x.com/z_j_s">X</a>，已发布的模型和数据材料见 <a href="https://huggingface.co/zjshen">Hugging Face</a>。</p>
       </>
     )}
   </div>

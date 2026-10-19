@@ -297,6 +297,8 @@ Then try a bounded task of your own and validate it with independent tests and r
 
 ## Configuration, data, and reproduction materials
 
+For a different way to use a local model inside a workflow, see [post-training a Jev-inspired decision model on the same RTX 3090](/en/blog/training-small-decision-model-3090/). That experiment uses a Qwen3.5 Base backbone, LoRA and a pointer head to score candidate answers directly, exploring a structured decision interface alongside the generative coding-agent workflow here.
+
 - [Configuration and measurement ZIP](/experiments/qwen3.8-27b-3090/reproduction-kit.zip): verified downloads, full launcher, OpenCode configuration, throughput script, and data. It includes neither weights nor the complete coding-task fixtures.
 - [Experiment notes](/experiments/qwen3.8-27b-3090/README.txt), [throughput measurements](/experiments/qwen3.8-27b-3090/throughput-results.json), and [coding summary](/experiments/qwen3.8-27b-3090/coding-summary.json). Experiment dates, absolute timestamps, timezones, personal paths, and session identifiers were removed from attachments; measurements, scores, and review probes are retained.
 - [Official Qwen model card](https://huggingface.co/Qwen/Qwen3.8-27B), [pinned llama-server documentation](https://github.com/ggml-org/llama.cpp/blob/b11146/tools/server/README.md), and [OpenCode provider documentation](https://opencode.ai/docs/providers/). Upstream sources provide selection context, reported benchmarks, and deployment guidance; this host's performance and four-task coding results come from the attached experiment records.

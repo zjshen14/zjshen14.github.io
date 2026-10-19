@@ -1,7 +1,9 @@
 ---
-title: "Post-Training a Decision Model from Qwen3.5 Base"
-seoTitle: "Post-Training a Decision Model from Qwen3.5 Base on RTX 3090"
-description: "Post-training a small decision model from a Qwen3.5 Base backbone, LoRA and a pointer head on an RTX 3090: why more correct answers can accompany worse NLL, how rating labels can teach the wrong task, and how to establish comparable training and evaluation baselines."
+title: "Post-Training a Jev-Inspired Decision Model on an RTX 3090"
+seoTitle: "Jev-Inspired Decision Model Post-Training on RTX 3090"
+description: "Post-training a Jev-inspired decision model on one RTX 3090 with Qwen3.5 Base, LoRA and a pointer head: architecture, data pitfalls, evaluation and model downloads."
+ogImage: "/images/decision-model-post-training-en.png"
+ogImageAlt: "Jev-inspired decision-model post-training on an RTX 3090: a frozen Qwen3.5 Base backbone, trainable LoRA and a pointer head produce candidate probabilities."
 pubDate: 2026-10-18
 tags: ["ai", "decision-model", "qwen", "lora", "training", "evaluation", "local-llm"]
 draft: false

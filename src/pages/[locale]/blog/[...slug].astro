@@ -5,6 +5,7 @@ import TranslationAlert from '@/components/TranslationAlert.astro';
 import ShareBar from '@/components/ShareBar.astro';
 import { type Locale, uiStrings, getPostSlugParts, getPostTranslation } from '@/utils/i18n';
 import { getReadingTime } from '@/utils/readingTime';
+import { blogAuthor, authorProfilePath } from '@/utils/author';
 
 export async function getStaticPaths() {
   const allPosts = await getCollection('blog', p => !p.data.draft);
@@ -55,6 +56,7 @@ const formattedUpdatedDate = post.data.updatedDate && formatDate(post.data.updat
   description={post.data.description}
   canonicalURL={post.data.canonicalURL || Astro.url.href}
   ogImage={post.data.ogImage}
+  ogImageAlt={post.data.ogImageAlt}
   alternateUrl={translation?.url}
   alternateLang={translation?.locale}
   article={{
@@ -75,6 +77,10 @@ const formattedUpdatedDate = post.data.updatedDate && formatDate(post.data.updat
         {post.data.title}
       </h1>
       <div class="mt-4 flex flex-wrap items-center gap-3 text-sm text-zinc-500 dark:text-zinc-400">
+        <span>
+          {locale === 'zh' ? '作者：' : 'By '}
+          <a href={authorProfilePath(locale)} rel="author" class="hover:text-indigo-600 dark:hover:text-indigo-400">{blogAuthor.name}</a>
+        </span>
         <time datetime={post.data.pubDate.toISOString()}>{formattedDate}</time>
         {post.data.updatedDate && (
           <>

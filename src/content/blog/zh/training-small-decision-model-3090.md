@@ -1,7 +1,9 @@
 ---
-title: "基于 Qwen3.5 Base 后训练决策模型"
-seoTitle: "基于 Qwen3.5 Base 后训练决策模型 RTX 3090 架构与首轮结果"
-description: "在 RTX 3090 上，以 Qwen3.5 Base 为骨干，结合 LoRA 和 pointer head 后训练小型决策模型：为什么答对更多，NLL 却变差；为什么星级标签可能教错任务；以及怎样建立可比较的训练与评估基线。"
+title: "Jev 启发的决策模型后训练：RTX 3090 实验记录"
+seoTitle: "Jev 启发的决策模型后训练：RTX 3090 实验记录"
+description: "受 Jev／System 1 启发，在一张 RTX 3090 上，以 Qwen3.5 Base 为骨干，结合 LoRA 和决策头后训练 decision model。分享模型架构、标签问题、评估结果与模型下载。"
+ogImage: "/images/decision-model-post-training-zh.png"
+ogImageAlt: "Jev 启发的 RTX 3090 决策模型后训练：冻结 Qwen3.5 Base 骨干，训练 LoRA 与 pointer head，输出候选答案概率。"
 pubDate: 2026-10-18
 tags: ["ai", "decision-model", "qwen", "lora", "training", "evaluation", "local-llm"]
 draft: false
