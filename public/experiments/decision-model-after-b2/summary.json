@@ -1,0 +1,573 @@
+{
+  "schema_version": 1,
+  "scope": "Selected historical local experiment aggregates accompanying the bilingual post-B2 blog post.",
+  "research_cutoff": "2026-10-30",
+  "editorial_review_date": "2026-11-03",
+  "benchmark": {
+    "revision": "609a664e81f46e03731600bd7bd9f1b7a61257c5",
+    "questions": 231,
+    "role": "exposed public development diagnostic",
+    "official_rank": false
+  },
+  "definitions": {
+    "accuracy": "Fraction in [0,1]; display percentages multiply by 100.",
+    "question_micro": "Correct questions / eligible questions.",
+    "equal_stratum_macro": "Unweighted mean of task-family accuracies.",
+    "equal_label_macro": "Unweighted mean of label accuracies.",
+    "raw_nll": "T=1 negative log likelihood; lower is better.",
+    "calibrated_nll": "Negative log likelihood after separate calibration-only scalar temperature fitting.",
+    "CI95": "Historical paired source/lineage-cluster interval, not newly estimated here."
+  },
+  "lineage": {
+    "B2": "Fresh Qwen3.5-4B-Base + LoRA + pointer, repaired TRAIN, two epochs.",
+    "B3": "Fresh Qwen3.5-9B-Base + LoRA + pointer, same repaired TRAIN, two epochs; not B2 continuation.",
+    "synthetic_confirmation": "Separate paired descendants of original B3; seeds 3,5,7.",
+    "A": "Coverage treatment, 384 updates from original B3; public-upgrade acceptance failed.",
+    "natural": "Separate branch from original B3, not a descendant of A.",
+    "cumulative_control": "384 updates from A with ordinary replay CE and SGD.",
+    "cumulative_treatment": "Same as control plus fixed 0.1 KL on old TRAIN replay against A."
+  },
+  "b2_selected_history": {
+    "synthetic_confirmation": {
+      "questions": 361,
+      "correct": {
+        "B2": 181,
+        "control": 181,
+        "rules": 255
+      }
+    },
+    "consistency_replication": {
+      "questions": 296,
+      "seed7": {
+        "CE": 170,
+        "consistency": 164
+      },
+      "seed11": {
+        "CE": 180,
+        "consistency": 167
+      }
+    },
+    "calendar_debug": {
+      "train_questions": 64,
+      "B2_train_correct": 30,
+      "debug_train_correct": 64,
+      "other_exposed_questions": 192,
+      "B2_other_correct": 81,
+      "debug_other_correct": 79,
+      "B2_other_raw_nll": 1.045107,
+      "debug_other_raw_nll": 15.251787
+    },
+    "four_epoch_calendar_public_correct": [
+      164,
+      161
+    ],
+    "coverage_retention_public_correct": [
+      172,
+      173
+    ],
+    "coverage_retention_temporal_correct": [
+      0,
+      0
+    ],
+    "promoted": false
+  },
+  "b3_comparison": {
+    "public_correct": {
+      "B2": 170,
+      "B3": 177
+    },
+    "hard_correct": {
+      "n": 111,
+      "B2": 53,
+      "B3": 63
+    },
+    "original_correct": {
+      "n": 72,
+      "B2": 69,
+      "B3": 66
+    },
+    "long_policy_correct": {
+      "n": 19,
+      "B2": 4,
+      "B3": 8
+    },
+    "temporal_numeric_correct": {
+      "n": 15,
+      "B2": 0,
+      "B3": 1
+    },
+    "retention_correct": {
+      "n": 1184,
+      "B2": 1033,
+      "B3": 1032
+    },
+    "historical_accuracy_delta_CI95": [
+      -0.008658008658008698,
+      0.07050024473813025
+    ],
+    "training_seed_count": 1,
+    "size_only_causal_comparison": false
+  },
+  "native4b_additional_pass": {
+    "epoch1_public_correct": 172,
+    "additional_pass_public_correct": 168,
+    "quality_screen": "FAIL",
+    "head_only_causal_comparison": false
+  },
+  "structured_execution": {
+    "synthetic_development_views": 1024,
+    "program_pooled_end_to_end_accuracy_percent": 28.61,
+    "ordinary_decision_pooled_accuracy_percent": 34.38,
+    "invalid_program_percent": 56.15,
+    "program_prediction_mean_ms_per_request": 3405.1,
+    "operator_operand_slots": 24,
+    "program_nodes": 8,
+    "scope": "Single-seed engineering comparison with different supervision and compute; no oracle fallback."
+  },
+  "synthetic_confirmation": {
+    "lineages": 512,
+    "views_per_lineage": 4,
+    "training_seeds": [
+      3,
+      5,
+      7
+    ],
+    "aggregation": "Equal task-family weights; arithmetic mean of per-seed metrics, not probability ensemble.",
+    "means": {
+      "C": 0.9053819444444443,
+      "T": 0.9470486111111112,
+      "B3": 0.9065755208333334
+    },
+    "contrasts": {
+      "T_minus_C": {
+        "delta": 0.04166666666666674,
+        "CI95": [
+          0.032335069444444496,
+          0.051866319444444496
+        ],
+        "one_sided975_lower": 0.032335069444444496
+      },
+      "T_minus_B3": {
+        "delta": 0.040473090277777866,
+        "CI95": [
+          0.031032986111111122,
+          0.05110948350694457
+        ],
+        "one_sided975_lower": 0.031032986111111122
+      }
+    },
+    "latency": {
+      "B3": {
+        "n": 2047,
+        "mean": 172.28881969436472,
+        "p50": 143.63008877262473,
+        "p95": 273.58970805071294
+      },
+      "T3": {
+        "n": 2047,
+        "mean": 170.52180483495033,
+        "p50": 143.7580888159573,
+        "p95": 268.0912261363119
+      },
+      "T5": {
+        "n": 2047,
+        "mean": 170.28473112090666,
+        "p50": 143.00705725327134,
+        "p95": 268.27506818808615
+      },
+      "T7": {
+        "n": 2047,
+        "mean": 170.2231373053279,
+        "p50": 143.23551813140512,
+        "p95": 270.45398126356304
+      }
+    },
+    "scope_limit": "Fresh generated lineages within specified synthetic generators; no natural-task transfer claim."
+  },
+  "synthetic_endpoints_public_correct_by_seed": {
+    "3": {
+      "B3": 177,
+      "control": 177,
+      "treatment": 175
+    },
+    "5": {
+      "B3": 177,
+      "control": 177,
+      "treatment": 176
+    },
+    "7": {
+      "B3": 177,
+      "control": 178,
+      "treatment": 176
+    }
+  },
+  "synthetic_replay_KL": {
+    "coefficient": 0.1,
+    "calibrated_preservation_nll_delta": {
+      "CI95": [
+        0.0011618625775740854,
+        0.003971528366621598
+      ],
+      "delta": 0.002514670908927578,
+      "one_sided975_lower": 0.0011618625775740854,
+      "one_sided975_upper": 0.003971528366621598
+    },
+    "rules": {
+      "all_accuracy_FPFN_guards": true,
+      "all_three_family_warmed_request_p50_p95_within_10pct": true,
+      "all_three_raw_NLL_no_increase": true,
+      "both_calendar_calibrated_NLL_no_increase": false,
+      "fresh_noninferiority_vs_T3": true,
+      "primary_calibrated_collateral_improvement": false,
+      "useful_fresh_gain_vs_C3_and_B3": true
+    },
+    "accepted": false
+  },
+  "coverage": {
+    "jevbench_public": {
+      "questions": 231,
+      "source_groups": 195,
+      "aggregation": "question_micro",
+      "systems": {
+        "B3": {
+          "accuracy": 0.7662337662337663,
+          "raw_nll": 0.9521174485164962,
+          "calibrated_nll": 0.6051648617276967,
+          "correct": 177
+        },
+        "control": {
+          "accuracy": 0.7619047619047619,
+          "raw_nll": 1.1571563378915033,
+          "calibrated_nll": 0.6161590123126329,
+          "correct": 176
+        },
+        "treatment": {
+          "accuracy": 0.7619047619047619,
+          "raw_nll": 0.6355872833533066,
+          "calibrated_nll": 0.5283537671206038,
+          "correct": 176
+        }
+      }
+    },
+    "hard_development": {
+      "questions": 909,
+      "source_groups": 563,
+      "aggregation": "equal_stratum_macro",
+      "systems": {
+        "B3": {
+          "accuracy": 0.5274368137719853,
+          "raw_nll": 1.5094132935583244,
+          "calibrated_nll": 1.0911711404144662
+        },
+        "control": {
+          "accuracy": 0.5310895890609756,
+          "raw_nll": 1.7703715567630982,
+          "calibrated_nll": 1.0985990274762971
+        },
+        "treatment": {
+          "accuracy": 0.6581986817764159,
+          "raw_nll": 0.8727778125608945,
+          "calibrated_nll": 0.8645944653595671
+        }
+      }
+    },
+    "documents_product_development": {
+      "questions": 490,
+      "source_groups": 490,
+      "aggregation": "equal_stratum_macro",
+      "systems": {
+        "B3": {
+          "accuracy": 0.8849770549443104,
+          "raw_nll": 0.3266272397912545,
+          "calibrated_nll": 0.41309405165234225
+        },
+        "control": {
+          "accuracy": 0.8835206302320717,
+          "raw_nll": 0.35659377888045024,
+          "calibrated_nll": 0.4179172999836033
+        },
+        "treatment": {
+          "accuracy": 0.9052792627773469,
+          "raw_nll": 0.25852316199893116,
+          "calibrated_nll": 0.2573482437982244
+        }
+      }
+    }
+  },
+  "coverage_public_repairs_vs_B3": {
+    "control": {
+      "both_correct": 176,
+      "both_wrong": 54,
+      "regressed": 1,
+      "repaired": 0
+    },
+    "treatment": {
+      "both_correct": 173,
+      "both_wrong": 51,
+      "regressed": 4,
+      "repaired": 3
+    }
+  },
+  "natural": {
+    "jevbench_public": {
+      "questions": 231,
+      "source_groups": 195,
+      "aggregation": "question_micro",
+      "systems": {
+        "B3": {
+          "accuracy": 0.7662337662337663,
+          "raw_nll": 0.9521174485164962,
+          "calibrated_nll": 0.6051648617276967,
+          "correct": 177
+        },
+        "control": {
+          "accuracy": 0.7619047619047619,
+          "raw_nll": 1.1571563378915033,
+          "calibrated_nll": 0.6161590123126329,
+          "correct": 176
+        },
+        "treatment": {
+          "accuracy": 0.7662337662337663,
+          "raw_nll": 1.0341920994855176,
+          "calibrated_nll": 0.577723648817896,
+          "correct": 177
+        }
+      }
+    },
+    "sgd_development": {
+      "questions": 929,
+      "source_groups": 763,
+      "aggregation": "equal_label_macro",
+      "systems": {
+        "B3": {
+          "accuracy": 0.6409999999999999,
+          "raw_nll": 1.0636119733018,
+          "calibrated_nll": 0.958335244909294
+        },
+        "control": {
+          "accuracy": 0.6579999999999999,
+          "raw_nll": 1.1735378467002833,
+          "calibrated_nll": 0.9221938159310504
+        },
+        "treatment": {
+          "accuracy": 0.961103448275862,
+          "raw_nll": 0.1819685949451489,
+          "calibrated_nll": 0.20961386329701964
+        }
+      }
+    },
+    "wice_development": {
+      "questions": 132,
+      "source_groups": 124,
+      "aggregation": "equal_label_macro",
+      "systems": {
+        "B3": {
+          "accuracy": 0.6655462184873949,
+          "raw_nll": 1.1652238565588895,
+          "calibrated_nll": 0.8075847107039387
+        },
+        "control": {
+          "accuracy": 0.6655462184873949,
+          "raw_nll": 1.3395093780399014,
+          "calibrated_nll": 0.7956959960366717
+        },
+        "treatment": {
+          "accuracy": 0.7168689698101463,
+          "raw_nll": 0.6604085728956662,
+          "calibrated_nll": 0.632957541884874
+        }
+      }
+    }
+  },
+  "natural_public_repairs_vs_B3": {
+    "control": {
+      "both_correct": 176,
+      "both_wrong": 54,
+      "regressed": 1,
+      "repaired": 0
+    },
+    "treatment": {
+      "both_correct": 176,
+      "both_wrong": 53,
+      "regressed": 1,
+      "repaired": 1
+    }
+  },
+  "wice_per_label": {
+    "not_supported": {
+      "questions": 17,
+      "systems": {
+        "B3": 0.8823529411764706,
+        "control": 0.8823529411764706,
+        "treatment": 0.8823529411764706
+      }
+    },
+    "partially_supported": {
+      "questions": 70,
+      "systems": {
+        "B3": 0.11428571428571428,
+        "control": 0.11428571428571428,
+        "treatment": 0.7571428571428571
+      }
+    },
+    "supported": {
+      "questions": 45,
+      "systems": {
+        "B3": 1.0,
+        "control": 1.0,
+        "treatment": 0.5111111111111111
+      }
+    }
+  },
+  "cumulative": {
+    "jevbench_public": {
+      "questions": 231,
+      "source_groups": 195,
+      "aggregation": "question_micro",
+      "systems": {
+        "B3": {
+          "accuracy": 0.7662337662337663,
+          "raw_nll": 0.9521174485164962,
+          "calibrated_nll": 0.6051648617276967,
+          "correct": 177
+        },
+        "A": {
+          "accuracy": 0.7619047619047619,
+          "raw_nll": 0.6355872833533066,
+          "calibrated_nll": 0.5283537671206038,
+          "correct": 176
+        },
+        "control": {
+          "accuracy": 0.7532467532467533,
+          "raw_nll": 0.7748545050840903,
+          "calibrated_nll": 0.5162594597004033,
+          "correct": 174
+        },
+        "treatment": {
+          "accuracy": 0.7575757575757576,
+          "raw_nll": 0.7407644756198951,
+          "calibrated_nll": 0.5169043225515294,
+          "correct": 175
+        }
+      }
+    },
+    "hard_development": {
+      "questions": 909,
+      "source_groups": 563,
+      "aggregation": "equal_stratum_macro",
+      "systems": {
+        "B3": {
+          "accuracy": 0.5274368137719853,
+          "raw_nll": 1.5094132935583244,
+          "calibrated_nll": 1.0911711404144662
+        },
+        "A": {
+          "accuracy": 0.6581986817764159,
+          "raw_nll": 0.8727778125608945,
+          "calibrated_nll": 0.8645944653595671
+        },
+        "control": {
+          "accuracy": 0.6796845779596117,
+          "raw_nll": 0.8691325638248131,
+          "calibrated_nll": 0.8070719612284344
+        },
+        "treatment": {
+          "accuracy": 0.6794188994448148,
+          "raw_nll": 0.847367125930653,
+          "calibrated_nll": 0.8108590262268758
+        }
+      }
+    },
+    "sgd_development": {
+      "questions": 929,
+      "source_groups": 763,
+      "aggregation": "equal_label_macro",
+      "systems": {
+        "B3": {
+          "accuracy": 0.6409999999999999,
+          "raw_nll": 1.0636119733018,
+          "calibrated_nll": 0.958335244909294
+        },
+        "A": {
+          "accuracy": 0.646,
+          "raw_nll": 0.9490855373609044,
+          "calibrated_nll": 0.9228982634268282
+        },
+        "control": {
+          "accuracy": 0.9522068965517241,
+          "raw_nll": 0.1942560145643994,
+          "calibrated_nll": 0.1930115879339297
+        },
+        "treatment": {
+          "accuracy": 0.9497586206896551,
+          "raw_nll": 0.18834155522480783,
+          "calibrated_nll": 0.18655623916537378
+        }
+      }
+    }
+  },
+  "cumulative_public_repairs_vs_A": {
+    "control": {
+      "both_correct": 173,
+      "both_wrong": 54,
+      "regressed": 3,
+      "repaired": 1
+    },
+    "treatment": {
+      "both_correct": 173,
+      "both_wrong": 53,
+      "regressed": 3,
+      "repaired": 2
+    }
+  },
+  "cumulative_acceptance": {
+    "control": {
+      "capability_coexistence_PASS": false,
+      "public_development_upgrade_PASS": false
+    },
+    "treatment": {
+      "capability_coexistence_PASS": false,
+      "public_development_upgrade_PASS": false
+    }
+  },
+  "next_phase": "Proposed CPU-only task/data audit for concrete requested actions; not completed data admission or training.",
+  "validation": {
+    "atomic_logits_recount": {
+      "A": 176,
+      "control": 174,
+      "treatment": 175
+    },
+    "atomic_hashes_verified": true,
+    "macro_recomputed_from_saved_strata": true,
+    "historical_reports_crosschecked": true,
+    "new_model_execution": false,
+    "independent_experiment_replication": false
+  },
+  "source_root_label": "Local jev-learning-20261011 experiment archive; paths below are relative to that archive.",
+  "source_sha256": {
+    "runs/b3-coverage-transfer-20261029/RESULTS.json": "22ac53dd9fd1d4be8b8f5caee8b9289170b56fa13ade4a38fa2a84c3ac78fe0b",
+    "runs/b3-natural-decision-20261029/RESULTS.json": "c7f8d7e36e40ec074d76e6ab965d8aa2daeee12d4ffb58e35dd7a2123aa26c95",
+    "runs/b3-cumulative-dialogue-20261029/RESULTS.json": "0177a1c2f485c6ad9b06a4d8b3d237ebc4637571497316c584e20a9ce85ce72a",
+    "research/capability-gap-roadmap-20261027/finalization-20261028/report-values.json": "2ae49d70cfab0fd6ee65c78784c8c0fc4aa2b592465858124aedf5ac08c5cbf8",
+    "evaluation-9b-20261021/RESULT-SUMMARY.rst": "c1dbb5992030174ec26e9c4438cf9d4c7190a434b86bb95414359f9d9ffbb7c1",
+    "b2-study-closeout-20261020/README.rst": "4c9584a50246c2445100432a554deabde37f691cd77f63cfccf933ded05618ec",
+    "native4b-base-epoch2-scoring-20261023/FINAL-REPORT.rst": "bfd38908ce22d8a2833d9b828451f6aabe58270b7f96bb9110384de0589a7beb",
+    "research/capability-gap-roadmap-20261027/ROADMAP-REPORT.zh.rst": "26e1bd2fb149383769155282e7ec8a7b67f6e25f62255dc83c81b6e1a9cf236d",
+    "b3-structured-execution-pilot-20261026/FINAL-READOUT.zh.rst": "ef145c0304c379eccc506fae26e2495d15704730f1f7c8b101f3ff43d9fb9711",
+    "research/decision-transfer-20261030/NEXT-PHASE.rst": "c1011aa72b8705ff6752299654ab86a945348d8012c3e36079846883a4afb777",
+    "runs/b3-constraint-verification-20261027/RESULTS.json": "15eed5cb0b2e94f6d6860defae0d4358c9a5198469cc0d3ead1e4a188425ecc3",
+    "runs/b3-constraint-replication-seed5-20261028/RESULTS.json": "49eec5eb2a6ffa1ef866d0fc39359fc8e25335b6c4c521a1a30da30f9aa657e5",
+    "runs/b3-constraint-replication-seed7-20261028/RESULTS.json": "6f50506b180728d23026bb6926ec904d271b82d6d7808de8ace892b606541696",
+    "model-aliases.json": "51f5c1ecd8430c9c1d92a7043829008ce93e0f77fda514ad215f8c6880568bbb",
+    "research/natural-decision-followup-20261029/FINAL-FINDINGS.zh.rst": "aa0ecebae9384d8b6ca6b94d39e06c3c36c199d5959cb14c18c9bcfe9330a33f",
+    "research/jevbench-gap-exploration-20261028/FINAL-FINDINGS.zh.rst": "b002a5f15f8c723d0e76131d9e0058b92bec829ba0fa8e3fe90d410836963c60",
+    "research/cumulative-capabilities-20261029/FINAL-FINDINGS.zh.rst": "fcd348d139065cbedf8f9bd28a4e0be2b0ad87e1acee83f56ca8177755047784"
+  },
+  "limitations": [
+    "No current official leaderboard claim.",
+    "Later pilots use one training seed; sampling intervals omit training-seed uncertainty.",
+    "Synthetic confirmation does not establish general natural-language reasoning.",
+    "Mechanical owner checks of later studies are not independent experiment review.",
+    "This aggregate export is not a full reproducibility package or checkpoint release."
+  ]
+}
