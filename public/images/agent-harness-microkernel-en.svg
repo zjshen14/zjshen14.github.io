@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc"><title id="title">Turning Google Antigravity into a Multitasking Personal Agent</title><desc id="desc">Front Desk capped at 3 quick lookups, parallel tasks isolated in git worktrees, and outbound actions gated by 1-tap phone confirmation.</desc><defs>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 Z" fill="#64748b"/>
+    </marker>
+    <marker id="arr-teal" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 Z" fill="#14746a"/>
+    </marker>
+    <marker id="arr-purple" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 Z" fill="#5b46b2"/>
+    </marker>
+    <marker id="arr-amber" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 Z" fill="#9c5700"/>
+    </marker>
+    <marker id="arr-coral" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 Z" fill="#b84a39"/>
+    </marker>
+  </defs><rect width="1200" height="630" fill="#f4f0e8" rx="16"/><g font-family="Noto Sans CJK SC, Noto Sans, system-ui, -apple-system, sans-serif"><text x="64" y="78" font-size="25" fill="#52606d" font-weight="500" >Google Antigravity Notes · Multitasking Personal Agent</text><text x="64" y="154" font-size="52" fill="#1e293b" font-weight="700" >Turning Google Antigravity into a</text><text x="64" y="224" font-size="48" fill="#1e293b" font-weight="700" >Multitasking Agent: Prompts vs. Hooks</text><rect x="64" y="278" width="344" height="244" rx="20" fill="#fff" /><rect x="428" y="278" width="344" height="244" rx="20" fill="#fff" /><rect x="792" y="278" width="344" height="244" rx="20" fill="#fff" /><text x="92" y="332" font-size="22" fill="#52606d" font-weight="600" >Non-blocking Front Desk</text><text x="92" y="414" font-size="42" fill="#5b46b2" font-weight="700" >≤ 3 lookups</text><text x="92" y="476" font-size="17" fill="#52606d" font-weight="400" >Fast chat; code runs in background</text><text x="456" y="332" font-size="22" fill="#52606d" font-weight="600" >Parallel Task Isolation</text><text x="456" y="414" font-size="40" fill="#14746a" font-weight="700" >Git Worktrees</text><text x="456" y="476" font-size="17" fill="#52606d" font-weight="400" >Separate branches, memory &amp; vault</text><text x="820" y="332" font-size="22" fill="#52606d" font-weight="600" >Safe Outbound Actions</text><text x="820" y="414" font-size="38" fill="#9c5700" font-weight="700" >1-Tap Confirm</text><text x="820" y="476" font-size="17" fill="#52606d" font-weight="400" >Hash-locked proposals on phone UI</text><text x="64" y="584" font-size="24" fill="#1e293b" font-weight="500" >Reuse Antigravity for mobile UI and subagents; use a small Go helper to keep tasks from colliding.</text></g></svg>

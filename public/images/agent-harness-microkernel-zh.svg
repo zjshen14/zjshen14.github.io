@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc"><title id="title">把 Google Antigravity 改造成多任务个人 Agent</title><desc id="desc">主对话最多 3 次轻量查询、独立 Git Worktree 与分层记忆隔离、外发动作手机一键确认。</desc><defs>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 Z" fill="#64748b"/>
+    </marker>
+    <marker id="arr-teal" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 Z" fill="#14746a"/>
+    </marker>
+    <marker id="arr-purple" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 Z" fill="#5b46b2"/>
+    </marker>
+    <marker id="arr-amber" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 Z" fill="#9c5700"/>
+    </marker>
+    <marker id="arr-coral" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 Z" fill="#b84a39"/>
+    </marker>
+  </defs><rect width="1200" height="630" fill="#f4f0e8" rx="16"/><g font-family="Noto Sans CJK SC, Noto Sans, system-ui, -apple-system, sans-serif"><text x="64" y="78" font-size="25" fill="#52606d" font-weight="500" >Google Antigravity 实践笔记 · 多任务个人 Agent</text><text x="64" y="154" font-size="52" fill="#1e293b" font-weight="700" >把 Google Antigravity 改造成</text><text x="64" y="224" font-size="48" fill="#1e293b" font-weight="700" >多任务个人 Agent：提示词是建议，钩子是规则</text><rect x="64" y="278" width="344" height="244" rx="20" fill="#fff" /><rect x="428" y="278" width="344" height="244" rx="20" fill="#fff" /><rect x="792" y="278" width="344" height="244" rx="20" fill="#fff" /><text x="92" y="332" font-size="22" fill="#52606d" font-weight="600" >前台主对话不卡死</text><text x="92" y="414" font-size="48" fill="#5b46b2" font-weight="700" >≤ 3 次查询</text><text x="92" y="476" font-size="17" fill="#52606d" font-weight="400" >日常问答秒回，写代码转后台</text><text x="456" y="332" font-size="22" fill="#52606d" font-weight="600" >多任务并行不冲突</text><text x="456" y="414" font-size="40" fill="#14746a" font-weight="700" >Git Worktrees</text><text x="456" y="476" font-size="17" fill="#52606d" font-weight="400" >独立代码目录、分层记忆与私密库</text><text x="820" y="332" font-size="22" fill="#52606d" font-weight="600" >外部动作先过人眼</text><text x="820" y="414" font-size="46" fill="#9c5700" font-weight="700" >手机一键确认</text><text x="820" y="476" font-size="17" fill="#52606d" font-weight="400" >锁定命令哈希，点批准才真正执行</text><text x="64" y="584" font-size="24" fill="#1e293b" font-weight="500" >复用 Antigravity 的远程界面与子代理，用一个 Go 小助手守住多任务边界。</text></g></svg>

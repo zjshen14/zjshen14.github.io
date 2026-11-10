@@ -1,0 +1,47 @@
+{
+  "experiment": "agent-harness-microkernel",
+  "recorded_date": "2026-11-10",
+  "scope": "Measurements and guardrail checks from a multitasking personal agent setup built on Google Antigravity with a local Go helper.",
+  "setup": {
+    "host_runtime": "Google Antigravity (Remote Control mobile web UI, background subagents, live Markdown status cards, lifecycle hooks)",
+    "helper_language": "Go (standard library only)",
+    "external_go_mod_dependencies": 0,
+    "workflow_skills": {
+      "count": 9,
+      "max_lines_per_skill": 150,
+      "total_frontmatter_tokens": 628
+    }
+  },
+  "front_desk_guardrails": {
+    "inline_lookup_cap_per_turn": 3,
+    "inline_source_edits_allowed": false,
+    "inline_test_suites_allowed": false,
+    "hook_tool_matchers": 10,
+    "simulated_boundary_probes": {
+      "passed": 18,
+      "total": 18
+    },
+    "status_card_update_extra_llm_tokens": 0
+  },
+  "memory_structure": {
+    "startup_index_max_lines": 80,
+    "turn_log_extraction_extra_llm_tokens": 0,
+    "nightly_review_schedule": "23:30 local time (scheduled background pass)"
+  },
+  "safety_and_privacy": {
+    "privacy_boundary_checks": 5,
+    "outbound_approval_binding": "SHA-256 command hash + 1-tap mobile confirmation",
+    "untrusted_content_handling": "Best-effort quarantine wrapper + mandatory outbound approval gate"
+  },
+  "verification_and_pre_push_gate": {
+    "end_to_end_sandbox_workflows": 18,
+    "e2e_suite_wall_clock_seconds": {
+      "before_shared_build_per_test_compile": 10.5,
+      "after_shared_build_compile_once": 1.8,
+      "time_reduction_percent": 82.9,
+      "speedup_factor": 5.8
+    },
+    "local_pre_commit_latency_ms": 150,
+    "local_pre_push_total_seconds": 2.5
+  }
+}
