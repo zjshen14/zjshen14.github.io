@@ -1,0 +1,76 @@
+{
+  "experiment": "introducing-agy-hq",
+  "recorded_date": "2026-11-11",
+  "repository": "https://github.com/zjshen14/agy-hq",
+  "license": "Apache-2.0",
+  "scope": "Architecture parameters, built-in workflow skills, safety gates, and empirical token/prefix-cache measurements for agy-hq on Google Antigravity.",
+  "workspace_and_skills": {
+    "host_runtime": "Google Antigravity (desktop IDE, mobile Remote Control UI, background subagents, live Markdown cards, lifecycle hooks)",
+    "helper_language": "Go (standard library only)",
+    "external_go_mod_dependencies": 0,
+    "built_in_skills": 9,
+    "max_lines_per_skill": 150,
+    "startup_memory_index_max_lines": 80,
+    "front_desk_inline_lookup_cap": 3,
+    "status_card_update_extra_llm_tokens": 0,
+    "model_tier_routing": {
+      "quick": "gemini-3.8-flash-low",
+      "standard": "gemini-3.8-flash-high",
+      "deep": "gemini-4-carbon-high"
+    }
+  },
+  "safety_and_verification": {
+    "automated_privacy_checks": 6,
+    "simulated_hook_security_probes": 18,
+    "end_to_end_sandbox_workflows": 21,
+    "e2e_sandbox_runtime_seconds": 1.8,
+    "pre_push_total_gate_seconds": 2.5,
+    "min_approval_sha256_prefix_chars": 8,
+    "local_webui_bind": "127.0.0.1:4242",
+    "webui_csrf_token_bits": 256
+  },
+  "token_and_prefix_cache_telemetry": {
+    "conversations_analyzed": 68,
+    "model_reasoning_and_compaction_steps": 4894,
+    "gross_tokens": 505830652,
+    "uncached_input_tokens": 39816608,
+    "cache_read_tokens": 462514486,
+    "output_tokens": 3499558,
+    "overall_cache_hit_ratio_percent": 92.1,
+    "comparison": {
+      "continuous_subagent_130_steps": {
+        "steps": 130,
+        "gross_tokens": 15244429,
+        "uncached_input_tokens": 395917,
+        "cache_hit_ratio_percent": 97.4
+      },
+      "continuous_subagent_151_steps": {
+        "steps": 151,
+        "gross_tokens": 20588799,
+        "uncached_input_tokens": 430040,
+        "cache_hit_ratio_percent": 97.9
+      },
+      "idle_front_desk_2_step_wakeup_at_207k": {
+        "steps": 2,
+        "idle_gaps_minutes": [11, 29],
+        "uncached_input_tokens": 414180,
+        "cache_hit_ratio_percent": 0.0
+      },
+      "front_desk_total": {
+        "turns": 110,
+        "steps": 500,
+        "cold_cache_wakeups": 49,
+        "peak_context_tokens": 257398,
+        "uncached_input_tokens": 9505555,
+        "share_of_workspace_uncached_burn_percent": 23.9
+      }
+    },
+    "compaction_watermark": {
+      "warning_tokens": 160000,
+      "critical_tokens": 200000,
+      "cold_wakeup_before_compaction_tokens": 252166,
+      "cold_wakeup_after_compaction_tokens": 27244,
+      "per_wakeup_reduction_percent": 89.2
+    }
+  }
+}
