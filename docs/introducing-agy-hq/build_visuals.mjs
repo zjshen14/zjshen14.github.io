@@ -107,14 +107,14 @@ function architecture(lang) {
   out += text(48, 256, zh ? '并行任务与自动任务' : 'Active & Scheduled', 12, muted, 600);
   const sideItems = zh
     ? [
-        ['[Task:web] 修 PR #279', '独立分支 · Carbon-high'],
-        ['[Task:ACME] 季报核对', '污点沙箱 · Flash-high'],
-        ['[Auto] 07:30 早间简报', '定时触发 · Flash-low']
+        ['[Task:web] 修 PR #279', '独立 worktree · 深度模型'],
+        ['[Task:ACME] 季报核对', '污点隔离沙箱 · Flash'],
+        ['[Auto] 07:30 早间简报', '定时触发守护']
       ]
     : [
-        ['[Task:web] Fix PR #279', 'Worktree · Carbon-high'],
-        ['[Task:ACME] 10-Q Diff', 'Tainted · Flash-high'],
-        ['[Auto] Morning Brief', '7:30 AM · Flash-low']
+        ['[Task:web] Fix PR #279', 'Isolated git worktree'],
+        ['[Task:ACME] 10-Q Diff', 'Quarantined researcher'],
+        ['[Auto] Morning Brief', '7:30 AM cron schedule']
       ];
   sideItems.forEach(([t1, t2], idx) => {
     const sy = 266 + idx * 54;
@@ -182,7 +182,7 @@ function architecture(lang) {
   // Bottom Left: Zero-Dep Go Hook Binary (./bin/hq)
   out += rect(20, 488, 332, 188, '#1e293b', 14);
   out += text(36, 520, zh ? '本地零依赖 Go 引擎 (./bin/hq)' : 'Zero-Dependency Go Helper (./bin/hq)', zh ? 16.5 : 15, '#ffffff', 700);
-  out += text(36, 548, zh ? '• 智能分流：日常 Flash，难题调 Carbon-high' : '• Tiered routing: Flash + Gemini 4 Carbon', 12.8, '#c4b5fd', 600);
+  out += text(36, 548, zh ? '• 按需派单：轻量秒回，重活按难度选模型' : '• Smart routing: fast Desk + tiered workers', 12.8, '#cbd5e1', 500);
   out += text(36, 574, zh ? '• PreToolUse：主台限 3 次查询，禁直接改码' : '• PreToolUse: caps Desk at 3 reads; no edits', 12.8, '#86efac', 600);
   out += text(36, 600, zh ? '• 污点与哈希锁：隔离外部附件，校验 ≥8位哈希' : '• Safety: taints untrusted reads; checks hash', 12.8, '#fcd34d', 600);
   out += text(36, 626, zh ? '• Stop & obs：零开销刷看板、统计缓存命中率' : '• Stop & obs: 0-token board sync & cache stats', 12.8, '#cbd5e1', 500);
@@ -603,31 +603,31 @@ function tokenObs(lang) {
   );
 }
 
-// Cover Card (1200x630): Standalone Community Introduction + Gemini 4 Carbon Synergy
+// Cover Card (1200x630): Personal Assistant Agent First, Subtle Model-Tiering Nod
 function cover(lang) {
   const zh = lang === 'zh';
   let out = text(
     64,
     78,
     zh
-      ? '释放 Gemini 4 Carbon 并行战力 · github.com/zjshen14/agy-hq'
-      : 'Built for Gemini 4 Carbon on Antigravity · github.com/zjshen14/agy-hq',
+      ? '多任务个人助理 Agent 分享 · github.com/zjshen14/agy-hq'
+      : 'Personal Assistant Agent · github.com/zjshen14/agy-hq',
     24,
     muted,
-    600
+    500
   );
   out += text(
     64,
     154,
-    zh ? 'agy-hq：为 Gemini 4 Carbon 打造的' : 'Introducing agy-hq: A Multitasking',
-    50,
+    zh ? 'agy-hq：把 Google Antigravity' : 'Introducing agy-hq: A Multitasking',
+    51,
     ink,
     700
   );
   out += text(
     64,
     224,
-    zh ? 'Antigravity 多任务个人 Agent 工作区' : 'Workspace Built for Gemini 4 Carbon',
+    zh ? '用成多任务并行的个人助理 Agent' : 'Personal Assistant on Antigravity',
     zh ? 48 : 47,
     ink,
     700
@@ -638,23 +638,23 @@ function cover(lang) {
   out += rect(428, 278, 344, 244, '#fff', 20);
   out += rect(792, 278, 344, 244, '#fff', 20);
 
-  out += text(92, 332, zh ? '前台秒回 + 智能分流' : 'Fast Desk + Deep Workers', 21, muted, 600);
-  out += text(92, 414, zh ? 'Flash + Carbon' : 'Flash + Carbon', 38, purple, 700);
-  out += text(92, 476, zh ? '轻量秒答走 Flash，难题派 Carbon-high' : '2s Front Desk; deep Carbon worktrees', 16, muted);
+  out += text(92, 332, zh ? '真正像助理一样秒回' : 'Works Like an Assistant', 21, muted, 600);
+  out += text(92, 414, zh ? '9 项模块化技能' : '9 Plug-In Skills', zh ? 40 : 38, purple, 700);
+  out += text(92, 476, zh ? '代码、日程、收件箱与笔记多线并行' : 'Coding, notes, inbox & admin in parallel', 15.5, muted);
 
-  out += text(456, 332, zh ? '9 项插件与私密隔离' : '9 Plug-Ins & Safe Vault', 21, muted, 600);
+  out += text(456, 332, zh ? '私密隔离与外发门禁' : 'Private & Safe by Default', 21, muted, 600);
   out += text(456, 414, zh ? 'local/ + 一键审批' : 'local/ + 1-Tap', zh ? 36 : 39, teal, 700);
-  out += text(456, 476, zh ? '纯 Markdown 技能、污点隔离与哈希锁' : 'Markdown skills, quarantine & hash lock', 16, muted);
+  out += text(456, 476, zh ? '私密库隔离、污点沙箱与哈希确认' : 'Ignored vault, worktrees & hash lock', 16, muted);
 
-  out += text(820, 332, zh ? '零开销配额透视' : 'Protect Frontier Quota', 21, muted, 600);
+  out += text(820, 332, zh ? '智能派单与配额透视' : 'Smart Routing & Cache', 21, muted, 600);
   out += text(820, 414, '97.9% Cache', 40, amber, 700);
-  out += text(820, 476, zh ? '内置 hq obs 与 160k 水位提醒' : './bin/hq obs & 160k context guard', 16, muted);
+  out += text(820, 476, zh ? '轻重分流 (含 Carbon) 与 hq obs 实测' : 'Flash/Carbon routing & ./bin/hq obs', 16, muted);
 
   out += text(
     64,
     584,
     zh
-      ? '纯 Go 标准库零依赖 · 一行 ./scripts/bootstrap.sh --demo 一分钟体验完整沙箱。'
+      ? '纯 Go 标准库零外部依赖 · 一行 ./scripts/bootstrap.sh --demo 一分钟体验完整沙箱。'
       : 'Zero external Go dependencies · Try the full sandbox in 60s with ./scripts/bootstrap.sh --demo',
     23,
     ink,
@@ -665,11 +665,11 @@ function cover(lang) {
     1200,
     630,
     zh
-      ? 'agy-hq：为 Gemini 4 Carbon 打造的 Google Antigravity 多任务个人 Agent 工作区'
-      : 'Introducing agy-hq: A Multitasking Antigravity Workspace Built for Gemini 4 Carbon',
+      ? 'agy-hq：把 Google Antigravity 用成多任务并行的个人助理 Agent'
+      : 'Introducing agy-hq: A Multitasking Personal Assistant Agent on Google Antigravity',
     zh
-      ? '主台秒回与 Flash + Gemini 4 Carbon 智能分流、9 项可选 Markdown 插件与 local/ 一键门禁、以及内置零开销缓存透视。'
-      : 'Fast Front Desk with Flash + Gemini 4 Carbon routing, 9 modular Markdown skills, private local/ vault with 1-tap approvals, and zero-token cache telemetry.',
+      ? '单入口秒回个人助理、9 项可选 Markdown 插件技能、local/ 私密库与一键审批门禁、以及轻重模型分流与缓存透视。'
+      : 'One responsive Front Desk assistant, 9 modular Markdown skills, private local/ vault with 1-tap approvals, and tiered routing with zero-token cache observability.',
     out,
     '#f4f0e8'
   );
